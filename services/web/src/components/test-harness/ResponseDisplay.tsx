@@ -40,7 +40,7 @@ export default function ResponseDisplay({
           <div className="h-4 w-4/6 animate-pulse rounded bg-gray-100" />
         </div>
         <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-entropy-500" />
+          <div className="bg-entropy-500 h-2 w-2 animate-pulse rounded-full" />
           <span>Generating response...</span>
         </div>
       </div>
@@ -113,7 +113,9 @@ export default function ResponseDisplay({
           {requestId && (
             <span>
               Request ID:{' '}
-              <span className="font-mono font-medium text-gray-600">{requestId.slice(0, 12)}...</span>
+              <span className="font-mono font-medium text-gray-600">
+                {requestId.slice(0, 12)}...
+              </span>
             </span>
           )}
         </div>

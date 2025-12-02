@@ -48,7 +48,7 @@ export default function PromptInput({ onSubmit, loading, disabled }: PromptInput
             value={systemPrompt}
             onChange={(e) => setSystemPrompt(e.target.value)}
             placeholder="You are a helpful assistant..."
-            className="w-full resize-none rounded-md border border-gray-200 px-3 py-2 text-sm focus:border-entropy-500 focus:outline-none focus:ring-1 focus:ring-entropy-500"
+            className="focus:border-entropy-500 focus:ring-entropy-500 w-full resize-none rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-1"
             rows={2}
             disabled={loading || disabled}
           />
@@ -61,7 +61,7 @@ export default function PromptInput({ onSubmit, loading, disabled }: PromptInput
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Enter your test prompt here..."
-          className="w-full resize-none rounded-md border border-gray-200 px-3 py-2 focus:border-entropy-500 focus:outline-none focus:ring-1 focus:ring-entropy-500"
+          className="focus:border-entropy-500 focus:ring-entropy-500 w-full resize-none rounded-md border border-gray-200 px-3 py-2 focus:outline-none focus:ring-1"
           rows={4}
           disabled={loading || disabled}
         />

@@ -72,7 +72,7 @@ export default function ModelConfig({
         <select
           value={config.adapterId}
           onChange={(e) => onConfigChange({ adapterId: e.target.value })}
-          className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:border-entropy-500 focus:outline-none focus:ring-1 focus:ring-entropy-500"
+          className="focus:border-entropy-500 focus:ring-entropy-500 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-1"
           disabled={loading}
         >
           {adapters.map((adapter) => (
@@ -81,9 +81,7 @@ export default function ModelConfig({
             </option>
           ))}
         </select>
-        {selectedAdapter && (
-          <p className="mt-1 text-xs text-gray-400">ID: {selectedAdapter.id}</p>
-        )}
+        {selectedAdapter && <p className="mt-1 text-xs text-gray-400">ID: {selectedAdapter.id}</p>}
       </div>
 
       {/* Temperature */}
@@ -98,7 +96,7 @@ export default function ModelConfig({
           step="0.1"
           value={config.temperature}
           onChange={(e) => onConfigChange({ temperature: parseFloat(e.target.value) })}
-          className="w-full accent-entropy-600"
+          className="accent-entropy-600 w-full"
           disabled={loading}
         />
         <div className="flex justify-between text-xs text-gray-400">
@@ -116,7 +114,7 @@ export default function ModelConfig({
           max="8192"
           value={config.maxTokens}
           onChange={(e) => onConfigChange({ maxTokens: parseInt(e.target.value, 10) || 1024 })}
-          className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:border-entropy-500 focus:outline-none focus:ring-1 focus:ring-entropy-500"
+          className="focus:border-entropy-500 focus:ring-entropy-500 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-1"
           disabled={loading}
         />
       </div>
@@ -132,13 +130,11 @@ export default function ModelConfig({
             type="checkbox"
             checked={config.simulateFailure}
             onChange={(e) => onConfigChange({ simulateFailure: e.target.checked })}
-            className="h-4 w-4 rounded border-gray-300 text-entropy-600 focus:ring-entropy-500"
+            className="text-entropy-600 focus:ring-entropy-500 h-4 w-4 rounded border-gray-300"
             disabled={loading}
           />
           <span className="text-sm text-gray-600">Simulate API Failure</span>
-          {config.simulateFailure && (
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-          )}
+          {config.simulateFailure && <AlertTriangle className="h-4 w-4 text-amber-500" />}
         </label>
 
         <div>
@@ -149,8 +145,10 @@ export default function ModelConfig({
             max="10000"
             step="100"
             value={config.simulateLatencyMs}
-            onChange={(e) => onConfigChange({ simulateLatencyMs: parseInt(e.target.value, 10) || 0 })}
-            className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:border-entropy-500 focus:outline-none focus:ring-1 focus:ring-entropy-500"
+            onChange={(e) =>
+              onConfigChange({ simulateLatencyMs: parseInt(e.target.value, 10) || 0 })
+            }
+            className="focus:border-entropy-500 focus:ring-entropy-500 w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-1"
             disabled={loading}
           />
         </div>
@@ -204,9 +202,7 @@ export default function ModelConfig({
         {healthStatus !== null && (
           <div
             className={`flex items-center justify-center gap-2 rounded-md p-2 text-sm ${
-              healthStatus
-                ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-700'
+              healthStatus ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
             }`}
           >
             {healthStatus ? (
