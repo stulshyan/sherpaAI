@@ -1,30 +1,42 @@
 // OpenAI adapter tests
+/* eslint-disable import/order */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { CompletionRequest, AdapterConfig } from '@entropy/shared';
-import { RateLimitError, AuthError, TimeoutError } from '@entropy/shared';
+import type { AdapterConfig, CompletionRequest } from '@entropy/shared';
+import { AuthError, RateLimitError, TimeoutError } from '@entropy/shared';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Define mock functions at module level BEFORE the mock
-const mockCreate = vi.fn();
+// Use vi.hoisted to define mocks that will be available when vi.mock is hoisted
+const { mockCreate, MockAPIError, MockOpenAI } = vi.hoisted(() => {
+  const mockCreate = vi.fn();
+
+  class MockAPIError extends Error {
+    status: number;
+    constructor(status: number, message: string) {
+      super(message);
+      this.status = status;
+      this.name = 'APIError';
+    }
+  }
+
+  const mockClient = {
+    chat: {
+      completions: {
+        create: mockCreate,
+      },
+    },
+  };
+
+  const MockOpenAI = Object.assign(vi.fn(() => mockClient), {
+    APIError: MockAPIError,
+  });
+
+  return { mockCreate, MockAPIError, MockOpenAI };
+});
 
 // Mock the OpenAI SDK
 vi.mock('openai', () => {
   return {
-    default: vi.fn().mockImplementation(() => ({
-      chat: {
-        completions: {
-          create: mockCreate,
-        },
-      },
-    })),
-    APIError: class APIError extends Error {
-      status: number;
-      constructor(status: number, message: string) {
-        super(message);
-        this.status = status;
-        this.name = 'APIError';
-      }
-    },
+    default: MockOpenAI,
   };
 });
 
@@ -127,11 +139,7 @@ describe('OpenAIAdapter', () => {
     });
 
     it('should throw RateLimitError when rate limit is exceeded', async () => {
-      const OpenAI = await import('openai');
-      const rateLimitError = new (
-        OpenAI as unknown as { APIError: new (status: number, message: string) => Error }
-      ).APIError(429, 'Rate limit exceeded');
-
+      const rateLimitError = new MockAPIError(429, 'Rate limit exceeded');
       mockCreate.mockRejectedValue(rateLimitError);
 
       const request: CompletionRequest = {
@@ -143,11 +151,7 @@ describe('OpenAIAdapter', () => {
     });
 
     it('should throw AuthError on 401 response', async () => {
-      const OpenAI = await import('openai');
-      const authError = new (
-        OpenAI as unknown as { APIError: new (status: number, message: string) => Error }
-      ).APIError(401, 'Invalid API key');
-
+      const authError = new MockAPIError(401, 'Invalid API key');
       mockCreate.mockRejectedValue(authError);
 
       const request: CompletionRequest = {
@@ -159,12 +163,7 @@ describe('OpenAIAdapter', () => {
     });
 
     it('should throw TimeoutError on timeout', async () => {
-      const OpenAI = await import('openai');
-      const timeoutError = new (
-        OpenAI as unknown as { APIError: new (status: number, message: string) => Error }
-      ).APIError(408, 'Request timeout');
-      timeoutError.message = 'timeout';
-
+      const timeoutError = new MockAPIError(408, 'timeout');
       mockCreate.mockRejectedValue(timeoutError);
 
       const request: CompletionRequest = {

@@ -1,9 +1,9 @@
 // Fallback adapter tests
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { FallbackAdapter, createFallbackAdapter, FallbackConfig } from './fallback.js';
 import type { ModelAdapter, CompletionRequest, CompletionResponse } from '@entropy/shared';
 import { CircuitState } from '@entropy/shared';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { FallbackAdapter, createFallbackAdapter, FallbackConfig } from './fallback.js';
 
 // Create mock adapter factory
 function createMockAdapter(

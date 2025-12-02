@@ -1,22 +1,33 @@
 // Google Gemini adapter tests
+/* eslint-disable import/order */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { CompletionRequest, AdapterConfig } from '@entropy/shared';
-import { RateLimitError, AuthError, TimeoutError } from '@entropy/shared';
+import type { AdapterConfig, CompletionRequest } from '@entropy/shared';
+import { AuthError, RateLimitError, TimeoutError } from '@entropy/shared';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Define mock functions at module level BEFORE the mock
-const mockGenerateContent = vi.fn();
-const mockGenerateContentStream = vi.fn();
+// Use vi.hoisted to define mocks that will be available when vi.mock is hoisted
+const { mockGenerateContent, mockGenerateContentStream, MockGoogleGenerativeAI } = vi.hoisted(
+  () => {
+    const mockGenerateContent = vi.fn();
+    const mockGenerateContentStream = vi.fn();
+
+    const mockModel = {
+      generateContent: mockGenerateContent,
+      generateContentStream: mockGenerateContentStream,
+    };
+
+    const MockGoogleGenerativeAI = vi.fn(() => ({
+      getGenerativeModel: vi.fn(() => mockModel),
+    }));
+
+    return { mockGenerateContent, mockGenerateContentStream, MockGoogleGenerativeAI };
+  }
+);
 
 // Mock the Google Generative AI SDK
 vi.mock('@google/generative-ai', () => {
   return {
-    GoogleGenerativeAI: vi.fn().mockImplementation(() => ({
-      getGenerativeModel: vi.fn().mockImplementation(() => ({
-        generateContent: mockGenerateContent,
-        generateContentStream: mockGenerateContentStream,
-      })),
-    })),
+    GoogleGenerativeAI: MockGoogleGenerativeAI,
   };
 });
 

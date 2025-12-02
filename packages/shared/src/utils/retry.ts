@@ -150,6 +150,11 @@ export class CircuitBreaker {
   }
 
   getState(): CircuitState {
+    // Check if we should transition from OPEN to HALF_OPEN
+    if (this.state === CircuitState.OPEN && this.shouldAttemptReset()) {
+      this.state = CircuitState.HALF_OPEN;
+      this.halfOpenCalls = 0;
+    }
     return this.state;
   }
 }

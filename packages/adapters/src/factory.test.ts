@@ -1,48 +1,46 @@
 // Adapter factory tests
+/* eslint-disable import/order */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AdapterFactory, createAdapter } from './factory.js';
 import type { AdapterConfig, ModelProvider } from '@entropy/shared';
-import { AnthropicAdapter } from './anthropic.js';
-import { OpenAIAdapter } from './openai.js';
-import { GoogleAdapter } from './google.js';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+// Use vi.hoisted to define mock adapter factories
+const { MockAnthropicAdapter, MockOpenAIAdapter, MockGoogleAdapter } = vi.hoisted(() => {
+  const createMockAdapter = (provider: string) =>
+    vi.fn((config: AdapterConfig) => ({
+      id: config.id,
+      provider,
+      complete: vi.fn(),
+      stream: vi.fn(),
+      countTokens: vi.fn(),
+      estimateCost: vi.fn(),
+      healthCheck: vi.fn(),
+    }));
+
+  return {
+    MockAnthropicAdapter: createMockAdapter('anthropic'),
+    MockOpenAIAdapter: createMockAdapter('openai'),
+    MockGoogleAdapter: createMockAdapter('google'),
+  };
+});
 
 // Mock all adapters
 vi.mock('./anthropic.js', () => ({
-  AnthropicAdapter: vi.fn().mockImplementation((config) => ({
-    id: config.id,
-    provider: 'anthropic',
-    complete: vi.fn(),
-    stream: vi.fn(),
-    countTokens: vi.fn(),
-    estimateCost: vi.fn(),
-    healthCheck: vi.fn(),
-  })),
+  AnthropicAdapter: MockAnthropicAdapter,
 }));
 
 vi.mock('./openai.js', () => ({
-  OpenAIAdapter: vi.fn().mockImplementation((config) => ({
-    id: config.id,
-    provider: 'openai',
-    complete: vi.fn(),
-    stream: vi.fn(),
-    countTokens: vi.fn(),
-    estimateCost: vi.fn(),
-    healthCheck: vi.fn(),
-  })),
+  OpenAIAdapter: MockOpenAIAdapter,
 }));
 
 vi.mock('./google.js', () => ({
-  GoogleAdapter: vi.fn().mockImplementation((config) => ({
-    id: config.id,
-    provider: 'google',
-    complete: vi.fn(),
-    stream: vi.fn(),
-    countTokens: vi.fn(),
-    estimateCost: vi.fn(),
-    healthCheck: vi.fn(),
-  })),
+  GoogleAdapter: MockGoogleAdapter,
 }));
+
+import { AnthropicAdapter } from './anthropic.js';
+import { AdapterFactory, createAdapter } from './factory.js';
+import { GoogleAdapter } from './google.js';
+import { OpenAIAdapter } from './openai.js';
 
 describe('AdapterFactory', () => {
   beforeEach(() => {
@@ -154,6 +152,9 @@ describe('AdapterFactory', () => {
       AdapterFactory.create(config);
 
       expect(CustomAdapter).toHaveBeenCalledWith(config);
+
+      // Restore original adapter for subsequent tests
+      AdapterFactory.register('anthropic', AnthropicAdapter);
     });
   });
 

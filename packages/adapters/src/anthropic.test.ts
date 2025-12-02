@@ -1,30 +1,42 @@
 // Anthropic adapter tests
+/* eslint-disable import/order */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { CompletionRequest, AdapterConfig } from '@entropy/shared';
-import { RateLimitError, AuthError } from '@entropy/shared';
+import type { AdapterConfig, CompletionRequest } from '@entropy/shared';
+import { AuthError, RateLimitError } from '@entropy/shared';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Define mock functions at module level BEFORE the mock
-const mockCreate = vi.fn();
-const mockStream = vi.fn();
+// Use vi.hoisted to define mocks that will be available when vi.mock is hoisted
+const { mockCreate, mockStream, MockAPIError, MockAnthropic } = vi.hoisted(() => {
+  const mockCreate = vi.fn();
+  const mockStream = vi.fn();
+
+  class MockAPIError extends Error {
+    status: number;
+    constructor(status: number, message: string) {
+      super(message);
+      this.status = status;
+      this.name = 'APIError';
+    }
+  }
+
+  const mockClient = {
+    messages: {
+      create: mockCreate,
+      stream: mockStream,
+    },
+  };
+
+  const MockAnthropic = Object.assign(vi.fn(() => mockClient), {
+    APIError: MockAPIError,
+  });
+
+  return { mockCreate, mockStream, MockAPIError, MockAnthropic };
+});
 
 // Mock the Anthropic SDK
 vi.mock('@anthropic-ai/sdk', () => {
   return {
-    default: vi.fn().mockImplementation(() => ({
-      messages: {
-        create: mockCreate,
-        stream: mockStream,
-      },
-    })),
-    APIError: class APIError extends Error {
-      status: number;
-      constructor(status: number, message: string) {
-        super(message);
-        this.status = status;
-        this.name = 'APIError';
-      }
-    },
+    default: MockAnthropic,
   };
 });
 
@@ -123,11 +135,7 @@ describe('AnthropicAdapter', () => {
     });
 
     it('should throw RateLimitError when rate limit is exceeded', async () => {
-      const Anthropic = await import('@anthropic-ai/sdk');
-      const rateLimitError = new (
-        Anthropic as unknown as { APIError: new (status: number, message: string) => Error }
-      ).APIError(429, 'Rate limit exceeded');
-
+      const rateLimitError = new MockAPIError(429, 'Rate limit exceeded');
       mockCreate.mockRejectedValue(rateLimitError);
 
       const request: CompletionRequest = {
@@ -139,11 +147,7 @@ describe('AnthropicAdapter', () => {
     });
 
     it('should throw AuthError on 401 response', async () => {
-      const Anthropic = await import('@anthropic-ai/sdk');
-      const authError = new (
-        Anthropic as unknown as { APIError: new (status: number, message: string) => Error }
-      ).APIError(401, 'Invalid API key');
-
+      const authError = new MockAPIError(401, 'Invalid API key');
       mockCreate.mockRejectedValue(authError);
 
       const request: CompletionRequest = {

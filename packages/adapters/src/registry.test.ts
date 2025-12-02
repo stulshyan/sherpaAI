@@ -1,5 +1,6 @@
 // Adapter registry tests
 
+import type { AdapterConfig, ModelAdapter } from '@entropy/shared';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   AdapterRegistry,
@@ -7,7 +8,6 @@ import {
   initializeAdapterRegistry,
   RegistryConfig,
 } from './registry.js';
-import type { AdapterConfig, ModelAdapter } from '@entropy/shared';
 
 // Mock the factory
 vi.mock('./factory.js', () => ({
