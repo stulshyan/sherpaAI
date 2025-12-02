@@ -1,9 +1,9 @@
 // Backlog routes
 
-import { Router } from 'express';
 import type { BacklogSummary, Feature } from '@entropy/shared';
+import { Router, type IRouter } from 'express';
 
-export const backlogRouter = Router();
+export const backlogRouter: IRouter = Router();
 
 // Get backlog summary with all views
 backlogRouter.get('/', async (_req, res, next) => {

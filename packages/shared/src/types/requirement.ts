@@ -1,6 +1,6 @@
 // Requirement types for Loop 0
 
-import type { UUID, Timestamps, Status } from './common.js';
+import type { UUID, Timestamps } from './common.js';
 
 export type RequirementStatus =
   | 'uploaded'

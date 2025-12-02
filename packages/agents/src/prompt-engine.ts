@@ -1,7 +1,7 @@
 // Prompt template engine
 
-import Handlebars from 'handlebars';
 import { createLogger } from '@entropy/shared';
+import Handlebars from 'handlebars';
 
 const logger = createLogger('prompt-engine');
 
@@ -57,8 +57,6 @@ export class PromptEngine {
    * Load a template from the source
    */
   async load(templateKey: string, version?: string): Promise<string> {
-    const cacheKey = `${templateKey}@${version || 'latest'}`;
-
     logger.debug('Loading template', { templateKey, version });
     return this.source.load(templateKey, version);
   }
@@ -93,14 +91,16 @@ export class PromptEngine {
   /**
    * Validate that all required variables are present
    */
-  validate(template: string, requiredVars: string[]): ValidationResult {
+  validate(template: string, requiredVars: string[]): TemplateValidationResult {
     const errors: string[] = [];
 
     // Find all variable references in template
     const varPattern = /\{\{([^}]+)\}\}/g;
     const matches = [...template.matchAll(varPattern)];
     const templateVars = new Set(
-      matches.map((m) => m[1]!.trim().split(/[.\s]/)[0])
+      matches
+        .map((m) => m[1]!.trim().split(/[.\s]/)[0])
+        .filter((v): v is string => v !== undefined)
     );
 
     // Check if required vars are referenced
@@ -191,7 +191,7 @@ export class PromptEngine {
   }
 }
 
-export interface ValidationResult {
+export interface TemplateValidationResult {
   valid: boolean;
   errors: string[];
   variables: string[];

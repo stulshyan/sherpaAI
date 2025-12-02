@@ -1,7 +1,7 @@
 // Environment configuration with validation
 
-import { z } from 'zod';
 import { config as dotenvConfig } from 'dotenv';
+import { z } from 'zod';
 
 // Load .env file
 dotenvConfig();

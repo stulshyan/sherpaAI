@@ -33,7 +33,7 @@ interface ConfigUpdate {
 export class ModelConfigManager {
   private config: ModelConfiguration;
   private listeners: Set<(config: ModelConfiguration) => void> = new Set();
-  private pollInterval?: ReturnType<typeof setInterval>;
+  private pollInterval: ReturnType<typeof setInterval> | undefined;
 
   constructor() {
     this.config = this.buildDefaultConfig();
@@ -143,8 +143,6 @@ export class ModelConfigManager {
   }
 
   private buildDefaultConfig(): ModelConfiguration {
-    const env = getEnvConfig();
-
     const adapters: AdapterConfig[] = [
       {
         id: 'anthropic-claude-4-sonnet',
@@ -196,13 +194,19 @@ export class ModelConfigManager {
     for (const adapter of config.adapters) {
       switch (adapter.provider) {
         case 'anthropic':
-          adapter.apiKey = env.ANTHROPIC_API_KEY;
+          if (env.ANTHROPIC_API_KEY) {
+            adapter.apiKey = env.ANTHROPIC_API_KEY;
+          }
           break;
         case 'openai':
-          adapter.apiKey = env.OPENAI_API_KEY;
+          if (env.OPENAI_API_KEY) {
+            adapter.apiKey = env.OPENAI_API_KEY;
+          }
           break;
         case 'google':
-          adapter.apiKey = env.GOOGLE_API_KEY;
+          if (env.GOOGLE_API_KEY) {
+            adapter.apiKey = env.GOOGLE_API_KEY;
+          }
           break;
       }
     }

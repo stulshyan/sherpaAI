@@ -1,20 +1,15 @@
 // Features routes
 
-import { Router } from 'express';
-import type { Feature, FeatureStatus } from '@entropy/shared';
+import type { Feature } from '@entropy/shared';
+import { Router, type IRouter } from 'express';
 
-export const featuresRouter = Router();
+export const featuresRouter: IRouter = Router();
 
 // List features with filtering
 featuresRouter.get('/', async (req, res, next) => {
   try {
-    const {
-      status,
-      minReadiness,
-      search,
-      page = '1',
-      limit = '20',
-    } = req.query;
+    const { page = '1', limit = '20' } = req.query;
+    // TODO: Use status, minReadiness, search for filtering
 
     // TODO: Fetch from database with filters
     const features: Feature[] = [];
@@ -84,7 +79,7 @@ featuresRouter.post('/:id/approve', async (req, res, next) => {
 featuresRouter.post('/:id/answer', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { questionId, answer } = req.body;
+    const { questionId } = req.body;
 
     // TODO: Store answer and recalculate readiness
     res.json({

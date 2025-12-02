@@ -2,7 +2,6 @@
 
 import type {
   ModelAdapter,
-  AdapterConfig,
   CompletionRequest,
   CompletionResponse,
   StreamChunk,
@@ -37,7 +36,7 @@ export class FallbackAdapter implements ModelAdapter {
 
   private adaptersWithBreakers: AdapterWithBreaker[];
 
-  constructor(private config: FallbackConfig) {
+  constructor(config: FallbackConfig) {
     const breakerOptions = config.circuitBreakerOptions || {
       failureThreshold: 3,
       resetTimeoutMs: 30000,

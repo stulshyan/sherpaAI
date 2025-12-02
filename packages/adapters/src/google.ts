@@ -1,6 +1,5 @@
 // Google Gemini adapter implementation
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import type {
   AdapterConfig,
   CompletionRequest,
@@ -10,6 +9,7 @@ import type {
   Message,
 } from '@entropy/shared';
 import { RateLimitError, AuthError, TimeoutError } from '@entropy/shared';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { BaseAdapter } from './base.js';
 
 // Pricing per 1M tokens (as of Dec 2024)

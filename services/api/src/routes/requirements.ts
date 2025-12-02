@@ -1,12 +1,12 @@
 // Requirements routes
 
-import { Router } from 'express';
-import multer from 'multer';
 import { createLogger, MAX_FILE_SIZE_BYTES, SUPPORTED_FILE_TYPES } from '@entropy/shared';
+import { Router, type IRouter } from 'express';
+import multer from 'multer';
 
 const logger = createLogger('requirements-routes');
 
-export const requirementsRouter = Router();
+export const requirementsRouter: IRouter = Router();
 
 // Configure multer for file uploads
 const upload = multer({
@@ -30,11 +30,13 @@ requirementsRouter.post('/upload', upload.single('file'), async (req, res, next)
     const { projectId, title } = req.body;
 
     if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      res.status(400).json({ error: 'No file uploaded' });
+      return;
     }
 
     if (!projectId) {
-      return res.status(400).json({ error: 'projectId is required' });
+      res.status(400).json({ error: 'projectId is required' });
+      return;
     }
 
     logger.info('Received requirement upload', {

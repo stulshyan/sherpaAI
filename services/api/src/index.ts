@@ -1,18 +1,17 @@
 // API Service Entry Point
 
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import compression from 'compression';
-import { createLogger } from '@entropy/shared';
-import { getEnvConfig } from '@entropy/config';
 import { initializeAdapterRegistry } from '@entropy/adapters';
-import { getModelConfigManager } from '@entropy/config';
+import { getEnvConfig , getModelConfigManager } from '@entropy/config';
+import { createLogger } from '@entropy/shared';
+import compression from 'compression';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import { errorHandler } from './middleware/error-handler.js';
+import { backlogRouter } from './routes/backlog.js';
+import { featuresRouter } from './routes/features.js';
 import { healthRouter } from './routes/health.js';
 import { requirementsRouter } from './routes/requirements.js';
-import { featuresRouter } from './routes/features.js';
-import { backlogRouter } from './routes/backlog.js';
-import { errorHandler } from './middleware/error-handler.js';
 
 const logger = createLogger('api');
 

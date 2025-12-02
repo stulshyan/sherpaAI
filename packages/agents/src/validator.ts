@@ -1,7 +1,7 @@
 // Output validation using JSON Schema
 
-import Ajv, { type Schema, type ValidateFunction } from 'ajv';
 import type { JSONSchema } from '@entropy/shared';
+import Ajv, { type Schema, type ValidateFunction } from 'ajv';
 
 const ajv = new Ajv({
   allErrors: true,

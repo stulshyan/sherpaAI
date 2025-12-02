@@ -1,5 +1,6 @@
 // Decomposer agent for breaking requirements into features
 
+import { randomUUID } from 'crypto';
 import type {
   AgentConfig,
   AgentInput,
@@ -14,7 +15,6 @@ import { AgentType as AgentTypeEnum } from '@entropy/shared';
 import { BaseAgent } from '../base-agent.js';
 import { DEFAULT_TEMPLATES } from '../prompt-engine.js';
 import { OUTPUT_SCHEMAS } from '../validator.js';
-import { randomUUID } from 'crypto';
 
 export interface DecomposerInput {
   requirementId: string;
@@ -70,7 +70,7 @@ export class DecomposerAgent extends BaseAgent {
   }
 
   async buildPrompt(input: AgentInput): Promise<string> {
-    const data = input.data as DecomposerInput;
+    const data = input.data as unknown as DecomposerInput;
 
     return this.promptEngine.render(DEFAULT_TEMPLATES.decomposer, {
       requirement: data.requirementText,
@@ -102,7 +102,7 @@ export class DecomposerAgent extends BaseAgent {
       },
     });
 
-    const data = output.data as DecomposerRawOutput;
+    const data = output.data as unknown as DecomposerRawOutput;
 
     // Transform raw output to typed result
     const themes: Theme[] = data.themes.map((t) => ({

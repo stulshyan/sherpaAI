@@ -1,15 +1,15 @@
 // Orchestrator Service Entry Point
 
-import { createLogger } from '@entropy/shared';
-import { getEnvConfig } from '@entropy/config';
 import { initializeAdapterRegistry } from '@entropy/adapters';
-import { getModelConfigManager } from '@entropy/config';
+import { getEnvConfig , getModelConfigManager } from '@entropy/config';
+import { createLogger } from '@entropy/shared';
 import { DecompositionWorker } from './workers/decomposition.worker.js';
 
 const logger = createLogger('orchestrator');
 
 async function main() {
-  const config = getEnvConfig();
+  // Validate environment configuration
+  getEnvConfig();
 
   logger.info('Starting orchestrator service');
 

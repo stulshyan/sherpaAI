@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
-import { Upload, File, CheckCircle, AlertCircle } from 'lucide-react';
 import clsx from 'clsx';
+import { Upload, File, CheckCircle, AlertCircle } from 'lucide-react';
+import { useState, useCallback } from 'react';
 
 export default function IntakeHub() {
   const [isDragging, setIsDragging] = useState(false);

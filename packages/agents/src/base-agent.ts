@@ -1,5 +1,7 @@
 // Base agent class that all agents extend
 
+import { randomUUID } from 'crypto';
+import { getAdapterRegistry } from '@entropy/adapters';
 import type {
   Agent,
   AgentConfig,
@@ -7,17 +9,14 @@ import type {
   AgentOutput,
   AgentType,
   ExecutionContext,
-  QualityScore,
   ModelAdapter,
   CompletionRequest,
   CompletionResponse,
 } from '@entropy/shared';
 import { createLogger, withRetry, withTimeout } from '@entropy/shared';
-import { getAdapterRegistry } from '@entropy/adapters';
 import { PromptEngine } from './prompt-engine.js';
-import { OutputValidator } from './validator.js';
 import { QualityScorer } from './quality.js';
-import { randomUUID } from 'crypto';
+import { OutputValidator } from './validator.js';
 
 export abstract class BaseAgent implements Agent {
   readonly id: string;
@@ -148,7 +147,7 @@ export abstract class BaseAgent implements Agent {
   }
 
   protected async logExecution(
-    input: AgentInput,
+    _input: AgentInput,
     output: AgentOutput,
     context: ExecutionContext
   ): Promise<void> {

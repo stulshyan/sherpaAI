@@ -1,16 +1,15 @@
 // OpenAI adapter implementation
 
-import OpenAI from 'openai';
 import type {
   AdapterConfig,
   CompletionRequest,
   CompletionResponse,
   StreamChunk,
   TokenUsage,
-  Message,
   ToolDefinition,
 } from '@entropy/shared';
 import { RateLimitError, AuthError, TimeoutError } from '@entropy/shared';
+import OpenAI from 'openai';
 import { BaseAdapter } from './base.js';
 
 // Pricing per 1M tokens (as of Dec 2024)

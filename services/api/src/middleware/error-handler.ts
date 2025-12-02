@@ -1,7 +1,7 @@
 // Global error handler middleware
 
-import type { Request, Response, NextFunction } from 'express';
 import { createLogger, AdapterError } from '@entropy/shared';
+import type { Request, Response, NextFunction } from 'express';
 
 const logger = createLogger('error-handler');
 

@@ -2,16 +2,15 @@
 
 import type { ModelAdapter, AdapterConfig, ModelProvider } from '@entropy/shared';
 import { AnthropicAdapter } from './anthropic.js';
-import { OpenAIAdapter } from './openai.js';
 import { GoogleAdapter } from './google.js';
+import { OpenAIAdapter } from './openai.js';
 
 type AdapterConstructor = new (config: AdapterConfig) => ModelAdapter;
 
-const adapterRegistry: Map<ModelProvider, AdapterConstructor> = new Map([
-  ['anthropic', AnthropicAdapter],
-  ['openai', OpenAIAdapter],
-  ['google', GoogleAdapter],
-]);
+const adapterRegistry = new Map<ModelProvider, AdapterConstructor>();
+adapterRegistry.set('anthropic', AnthropicAdapter);
+adapterRegistry.set('openai', OpenAIAdapter);
+adapterRegistry.set('google', GoogleAdapter);
 
 /**
  * Factory for creating model adapters

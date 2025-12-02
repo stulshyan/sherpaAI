@@ -1,6 +1,6 @@
 // Feature and backlog types
 
-import type { UUID, Timestamps, Status } from './common.js';
+import type { UUID, Timestamps } from './common.js';
 import type { ClarificationQuestion, AtomicRequirement } from './requirement.js';
 
 export type FeatureStatus =

@@ -3,7 +3,6 @@
 import type {
   AgentConfig,
   AgentInput,
-  AgentType,
   ClassificationResult,
 } from '@entropy/shared';
 import { AgentType as AgentTypeEnum } from '@entropy/shared';
@@ -41,7 +40,7 @@ export class ClassifierAgent extends BaseAgent {
   }
 
   async buildPrompt(input: AgentInput): Promise<string> {
-    const data = input.data as ClassifierInput;
+    const data = input.data as unknown as ClassifierInput;
 
     return this.promptEngine.render(DEFAULT_TEMPLATES.classifier, {
       requirement: data.requirementText,
@@ -68,7 +67,7 @@ export class ClassifierAgent extends BaseAgent {
       },
     });
 
-    const data = output.data as ClassifierOutput;
+    const data = output.data as unknown as ClassifierOutput;
 
     return {
       requirementId,

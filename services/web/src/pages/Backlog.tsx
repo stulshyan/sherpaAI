@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import clsx from 'clsx';
+import { useState } from 'react';
 
 const columns = [
   { id: 'now-playing', label: 'Now Playing', color: 'bg-blue-500' },

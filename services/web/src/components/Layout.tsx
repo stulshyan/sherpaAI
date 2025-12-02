@@ -1,6 +1,6 @@
-import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Upload, List, Settings } from 'lucide-react';
 import clsx from 'clsx';
+import { LayoutDashboard, Upload, List, Settings } from 'lucide-react';
+import { Outlet, NavLink } from 'react-router-dom';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },

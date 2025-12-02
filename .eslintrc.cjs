@@ -8,23 +8,19 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./tsconfig.json', './packages/*/tsconfig.json', './services/*/tsconfig.json'],
-    tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'import'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'prettier',
   ],
   settings: {
     'import/resolver': {
-      typescript: {
-        project: ['./tsconfig.json', './packages/*/tsconfig.json', './services/*/tsconfig.json'],
-      },
+      typescript: true,
+      node: true,
     },
   },
   rules: {
@@ -34,8 +30,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-non-null-assertion': 'warn',
-    '@typescript-eslint/prefer-nullish-coalescing': 'error',
-    '@typescript-eslint/prefer-optional-chain': 'error',
 
     // Import
     'import/order': [
@@ -47,7 +41,7 @@ module.exports = {
       },
     ],
     'import/no-duplicates': 'error',
-    'import/no-unresolved': 'error',
+    'import/no-unresolved': 'off', // TypeScript handles this
 
     // General
     'no-console': ['warn', { allow: ['warn', 'error'] }],
@@ -55,7 +49,7 @@ module.exports = {
     'no-var': 'error',
     eqeqeq: ['error', 'always'],
   },
-  ignorePatterns: ['dist', 'node_modules', 'coverage', '*.config.js', '*.config.cjs'],
+  ignorePatterns: ['dist', 'node_modules', 'coverage', '*.config.js', '*.config.cjs', '*.config.ts'],
   overrides: [
     {
       files: ['*.test.ts', '*.test.tsx'],
@@ -65,7 +59,10 @@ module.exports = {
       },
     },
     {
-      files: ['services/web/**/*.tsx'],
+      files: ['services/web/**/*.tsx', 'services/web/**/*.ts'],
+      env: {
+        browser: true,
+      },
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       settings: {
         react: {

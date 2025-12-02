@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import Backlog from './pages/Backlog';
 import Dashboard from './pages/Dashboard';
 import IntakeHub from './pages/IntakeHub';
-import Backlog from './pages/Backlog';
 import Settings from './pages/Settings';
 
 export default function App() {

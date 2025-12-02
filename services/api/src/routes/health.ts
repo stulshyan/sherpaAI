@@ -1,9 +1,9 @@
 // Health check routes
 
-import { Router } from 'express';
 import type { HealthCheckResult } from '@entropy/shared';
+import { Router, type IRouter } from 'express';
 
-export const healthRouter = Router();
+export const healthRouter: IRouter = Router();
 
 healthRouter.get('/', async (_req, res) => {
   const result: HealthCheckResult = {

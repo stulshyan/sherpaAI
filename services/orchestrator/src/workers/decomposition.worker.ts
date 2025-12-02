@@ -1,7 +1,7 @@
 // Decomposition worker
 
-import { createLogger } from '@entropy/shared';
 import { createClassifierAgent, createDecomposerAgent } from '@entropy/agents';
+import { createLogger } from '@entropy/shared';
 
 const logger = createLogger('decomposition-worker');
 
@@ -12,9 +12,13 @@ export interface DecompositionJob {
 }
 
 export class DecompositionWorker {
-  private running = false;
+  private _running = false;
   private classifierAgent;
   private decomposerAgent;
+
+  get isRunning(): boolean {
+    return this._running;
+  }
 
   constructor() {
     this.classifierAgent = createClassifierAgent();
@@ -23,7 +27,7 @@ export class DecompositionWorker {
 
   async start(): Promise<void> {
     logger.info('Starting decomposition worker');
-    this.running = true;
+    this._running = true;
 
     // TODO: Connect to BullMQ and process jobs
     // For now, this is a placeholder
@@ -31,7 +35,7 @@ export class DecompositionWorker {
 
   async stop(): Promise<void> {
     logger.info('Stopping decomposition worker');
-    this.running = false;
+    this._running = false;
   }
 
   async processJob(job: DecompositionJob): Promise<void> {
