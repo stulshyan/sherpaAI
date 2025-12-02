@@ -22,14 +22,26 @@ const OPENAI_PRICING: Record<string, { input: number; output: number }> = {
 };
 
 export class OpenAIAdapter extends BaseAdapter {
-  private client: OpenAI;
+  private _client: OpenAI | null = null;
 
   constructor(config: AdapterConfig) {
     super({ ...config, provider: 'openai' });
-    this.client = new OpenAI({
-      apiKey: config.apiKey || process.env.OPENAI_API_KEY,
-      baseURL: config.baseUrl,
-    });
+  }
+
+  private get client(): OpenAI {
+    if (!this._client) {
+      const apiKey = this.config.apiKey || process.env.OPENAI_API_KEY;
+      if (!apiKey) {
+        throw new AuthError(
+          'OpenAI API key not configured. Set OPENAI_API_KEY environment variable or provide apiKey in adapter config.'
+        );
+      }
+      this._client = new OpenAI({
+        apiKey,
+        baseURL: this.config.baseUrl,
+      });
+    }
+    return this._client;
   }
 
   protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {
