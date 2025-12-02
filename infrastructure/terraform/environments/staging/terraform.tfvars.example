@@ -1,0 +1,8 @@
+# Staging Environment Configuration
+# Copy this file to terraform.tfvars and customize as needed
+
+aws_region = "us-east-1"
+
+# Leave empty to use ALB default DNS (no HTTPS)
+# Set to ACM certificate ARN for HTTPS support
+certificate_arn = ""

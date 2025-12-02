@@ -71,21 +71,34 @@ resource "aws_elasticache_parameter_group" "main" {
   tags = local.tags
 }
 
-# Redis Cluster
-resource "aws_elasticache_cluster" "main" {
-  cluster_id           = "entropy-${var.environment}"
+# Redis Replication Group (using replication group for encryption support)
+resource "aws_elasticache_replication_group" "main" {
+  replication_group_id = "entropy-${var.environment}"
+  description          = "Entropy ${var.environment} Redis cluster"
+
   engine               = "redis"
   engine_version       = "7.0"
   node_type            = var.node_type
-  num_cache_nodes      = var.num_cache_nodes
+  num_cache_clusters   = var.num_cache_nodes
   parameter_group_name = aws_elasticache_parameter_group.main.name
   subnet_group_name    = aws_elasticache_subnet_group.main.name
   security_group_ids   = [var.security_group_id]
   port                 = 6379
 
+  # Encryption
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
+
+  # Disable automatic failover for single node (staging)
+  automatic_failover_enabled = var.num_cache_nodes > 1
+
+  # Snapshots
   snapshot_retention_limit = var.environment == "production" ? 7 : 0
   snapshot_window          = "03:00-04:00"
   maintenance_window       = "mon:04:00-mon:05:00"
+
+  # Apply changes immediately in staging
+  apply_immediately = var.environment != "production"
 
   tags = merge(local.tags, {
     Name = "entropy-${var.environment}-redis"
@@ -96,28 +109,33 @@ resource "aws_elasticache_cluster" "main" {
 resource "aws_ssm_parameter" "redis_url" {
   name  = "/entropy/${var.environment}/redis-url"
   type  = "String"
-  value = "redis://${aws_elasticache_cluster.main.cache_nodes[0].address}:6379"
+  value = "rediss://${aws_elasticache_replication_group.main.primary_endpoint_address}:6379"
 
   tags = local.tags
 }
 
 # Outputs
-output "cluster_id" {
-  value = aws_elasticache_cluster.main.cluster_id
-}
-
-output "cache_nodes" {
-  value = aws_elasticache_cluster.main.cache_nodes
+output "replication_group_id" {
+  description = "ElastiCache replication group ID"
+  value       = aws_elasticache_replication_group.main.replication_group_id
 }
 
 output "endpoint" {
-  value = aws_elasticache_cluster.main.cache_nodes[0].address
+  description = "Redis primary endpoint address"
+  value       = aws_elasticache_replication_group.main.primary_endpoint_address
 }
 
 output "port" {
-  value = aws_elasticache_cluster.main.port
+  description = "Redis port"
+  value       = aws_elasticache_replication_group.main.port
 }
 
 output "redis_url_parameter_name" {
-  value = aws_ssm_parameter.redis_url.name
+  description = "SSM parameter name for Redis URL"
+  value       = aws_ssm_parameter.redis_url.name
+}
+
+output "connection_url" {
+  description = "Full Redis connection URL (TLS enabled)"
+  value       = "rediss://${aws_elasticache_replication_group.main.primary_endpoint_address}:6379"
 }

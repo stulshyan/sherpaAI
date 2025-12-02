@@ -114,44 +114,4 @@ module "ecs" {
   orchestrator_memory = 512
 }
 
-# Outputs
-output "vpc_id" {
-  value = module.networking.vpc_id
-}
-
-output "alb_dns_name" {
-  value = module.ecs.alb_dns_name
-}
-
-output "database_endpoint" {
-  value     = module.database.db_instance_address
-  sensitive = true
-}
-
-output "redis_endpoint" {
-  value = module.redis.endpoint
-}
-
-output "ecr_api_repository" {
-  value = module.ecs.api_repository_url
-}
-
-output "ecr_orchestrator_repository" {
-  value = module.ecs.orchestrator_repository_url
-}
-
-output "ecr_web_repository" {
-  value = module.ecs.web_repository_url
-}
-
-output "uploads_bucket" {
-  value = module.storage.uploads_bucket_name
-}
-
-output "artifacts_bucket" {
-  value = module.storage.artifacts_bucket_name
-}
-
-output "prompts_bucket" {
-  value = module.storage.prompts_bucket_name
-}
+# Outputs are defined in outputs.tf

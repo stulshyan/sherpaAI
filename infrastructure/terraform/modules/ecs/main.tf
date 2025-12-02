@@ -163,6 +163,109 @@ resource "aws_ecr_repository" "web" {
   tags = local.tags
 }
 
+# ECR Lifecycle Policies - Keep last N images
+resource "aws_ecr_lifecycle_policy" "api" {
+  repository = aws_ecr_repository.api.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 untagged images"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Keep last 20 tagged images"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["v", "latest", "staging", "production"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_ecr_lifecycle_policy" "orchestrator" {
+  repository = aws_ecr_repository.orchestrator.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 untagged images"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Keep last 20 tagged images"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["v", "latest", "staging", "production"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_ecr_lifecycle_policy" "web" {
+  repository = aws_ecr_repository.web.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Keep last 5 untagged images"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Keep last 20 tagged images"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["v", "latest", "staging", "production"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+}
+
 # IAM Role for ECS Task Execution
 resource "aws_iam_role" "ecs_execution" {
   name = "entropy-${var.environment}-ecs-execution"
@@ -318,21 +421,36 @@ resource "aws_lb_target_group" "api" {
   tags = local.tags
 }
 
+# HTTP Listener - redirects to HTTPS when certificate is provided, otherwise forwards to target
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.main.arn
   port              = 80
   protocol          = "HTTP"
 
-  default_action {
-    type = "redirect"
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+  # When no certificate is provided (staging with ALB default DNS), forward directly
+  # When certificate is provided, redirect to HTTPS
+  dynamic "default_action" {
+    for_each = var.certificate_arn != "" ? [1] : []
+    content {
+      type = "redirect"
+      redirect {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
+    }
+  }
+
+  dynamic "default_action" {
+    for_each = var.certificate_arn == "" ? [1] : []
+    content {
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.api.arn
     }
   }
 }
 
+# HTTPS Listener - only created when certificate is provided
 resource "aws_lb_listener" "https" {
   count = var.certificate_arn != "" ? 1 : 0
 
@@ -430,6 +548,32 @@ resource "aws_ecs_service" "api" {
   }
 
   tags = local.tags
+}
+
+# API Service Auto Scaling
+resource "aws_appautoscaling_target" "api" {
+  max_capacity       = 3
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.api.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "api_cpu" {
+  name               = "entropy-${var.environment}-api-cpu"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.api.resource_id
+  scalable_dimension = aws_appautoscaling_target.api.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.api.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value       = 70.0
+    scale_in_cooldown  = 300
+    scale_out_cooldown = 60
+  }
 }
 
 # Orchestrator Task Definition
