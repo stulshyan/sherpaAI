@@ -23,14 +23,26 @@ const ANTHROPIC_PRICING: Record<string, { input: number; output: number }> = {
 };
 
 export class AnthropicAdapter extends BaseAdapter {
-  private client: Anthropic;
+  private _client: Anthropic | null = null;
 
   constructor(config: AdapterConfig) {
     super({ ...config, provider: 'anthropic' });
-    this.client = new Anthropic({
-      apiKey: config.apiKey || process.env.ANTHROPIC_API_KEY,
-      baseURL: config.baseUrl,
-    });
+  }
+
+  private get client(): Anthropic {
+    if (!this._client) {
+      const apiKey = this.config.apiKey || process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) {
+        throw new AuthError(
+          'Anthropic API key not configured. Set ANTHROPIC_API_KEY environment variable or provide apiKey in adapter config.'
+        );
+      }
+      this._client = new Anthropic({
+        apiKey,
+        baseURL: this.config.baseUrl,
+      });
+    }
+    return this._client;
   }
 
   protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {

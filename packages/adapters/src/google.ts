@@ -20,11 +20,23 @@ const GOOGLE_PRICING: Record<string, { input: number; output: number }> = {
 };
 
 export class GoogleAdapter extends BaseAdapter {
-  private client: GoogleGenerativeAI;
+  private _client: GoogleGenerativeAI | null = null;
 
   constructor(config: AdapterConfig) {
     super({ ...config, provider: 'google' });
-    this.client = new GoogleGenerativeAI(config.apiKey || process.env.GOOGLE_API_KEY || '');
+  }
+
+  private get client(): GoogleGenerativeAI {
+    if (!this._client) {
+      const apiKey = this.config.apiKey || process.env.GOOGLE_API_KEY;
+      if (!apiKey) {
+        throw new AuthError(
+          'Google API key not configured. Set GOOGLE_API_KEY environment variable or provide apiKey in adapter config.'
+        );
+      }
+      this._client = new GoogleGenerativeAI(apiKey);
+    }
+    return this._client;
   }
 
   protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {
