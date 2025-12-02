@@ -26,9 +26,12 @@ const { mockCreate, mockStream, MockAPIError, MockAnthropic } = vi.hoisted(() =>
     },
   };
 
-  const MockAnthropic = Object.assign(vi.fn(() => mockClient), {
-    APIError: MockAPIError,
-  });
+  const MockAnthropic = Object.assign(
+    vi.fn(() => mockClient),
+    {
+      APIError: MockAPIError,
+    }
+  );
 
   return { mockCreate, mockStream, MockAPIError, MockAnthropic };
 });

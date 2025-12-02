@@ -26,9 +26,12 @@ const { mockCreate, MockAPIError, MockOpenAI } = vi.hoisted(() => {
     },
   };
 
-  const MockOpenAI = Object.assign(vi.fn(() => mockClient), {
-    APIError: MockAPIError,
-  });
+  const MockOpenAI = Object.assign(
+    vi.fn(() => mockClient),
+    {
+      APIError: MockAPIError,
+    }
+  );
 
   return { mockCreate, MockAPIError, MockOpenAI };
 });
