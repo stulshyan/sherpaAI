@@ -2,15 +2,8 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "noEmit": false
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"],
-  "references": [
-    { "path": "../../packages/shared" },
-    { "path": "../../packages/adapters" },
-    { "path": "../../packages/agents" },
-    { "path": "../../packages/config" }
-  ]
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
