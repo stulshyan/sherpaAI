@@ -229,13 +229,9 @@ export class ModelConfigManager {
 
   private validateConfig(config: ModelConfiguration): void {
     // Check that default adapter exists
-    const defaultExists = config.adapters.some(
-      (a) => a.id === config.defaultAdapterId
-    );
+    const defaultExists = config.adapters.some((a) => a.id === config.defaultAdapterId);
     if (!defaultExists) {
-      throw new Error(
-        `Default adapter not found: ${config.defaultAdapterId}`
-      );
+      throw new Error(`Default adapter not found: ${config.defaultAdapterId}`);
     }
 
     // Check fallback chains reference valid adapters
@@ -243,9 +239,7 @@ export class ModelConfigManager {
     for (const [adapterId, chain] of Object.entries(config.fallbackChains)) {
       for (const fallbackId of chain) {
         if (!adapterIds.has(fallbackId)) {
-          throw new Error(
-            `Invalid fallback adapter: ${fallbackId} in chain for ${adapterId}`
-          );
+          throw new Error(`Invalid fallback adapter: ${fallbackId} in chain for ${adapterId}`);
         }
       }
     }

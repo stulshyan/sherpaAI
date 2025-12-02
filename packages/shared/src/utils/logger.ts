@@ -34,11 +34,7 @@ export function createLogger(
 ): Logger {
   const minLevelNum = LOG_LEVELS[minLevel];
 
-  function log(
-    level: LogLevel,
-    message: string,
-    context?: Record<string, unknown>
-  ): void {
+  function log(level: LogLevel, message: string, context?: Record<string, unknown>): void {
     if (LOG_LEVELS[level] < minLevelNum) {
       return;
     }
@@ -78,7 +74,4 @@ export function createLogger(
 /**
  * Global logger instance
  */
-export const logger = createLogger(
-  'entropy',
-  (process.env.LOG_LEVEL as LogLevel) || 'info'
-);
+export const logger = createLogger('entropy', (process.env.LOG_LEVEL as LogLevel) || 'info');

@@ -1,7 +1,7 @@
 // API Service Entry Point
 
 import { initializeAdapterRegistry } from '@entropy/adapters';
-import { getEnvConfig , getModelConfigManager } from '@entropy/config';
+import { getEnvConfig, getModelConfigManager } from '@entropy/config';
 import { createLogger } from '@entropy/shared';
 import compression from 'compression';
 import cors from 'cors';

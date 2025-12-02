@@ -56,9 +56,7 @@ export class OutputValidator {
   validateOrThrow(output: unknown, schema: JSONSchema): void {
     const result = this.validate(output, schema);
     if (!result.valid) {
-      const errorMessages = result.errors
-        .map((e) => `${e.path}: ${e.message}`)
-        .join('; ');
+      const errorMessages = result.errors.map((e) => `${e.path}: ${e.message}`).join('; ');
       throw new Error(`Validation failed: ${errorMessages}`);
     }
   }

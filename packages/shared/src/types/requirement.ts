@@ -12,12 +12,7 @@ export type RequirementStatus =
   | 'decomposed'
   | 'failed';
 
-export type RequirementType =
-  | 'new_feature'
-  | 'enhancement'
-  | 'epic'
-  | 'bug_fix'
-  | 'unknown';
+export type RequirementType = 'new_feature' | 'enhancement' | 'epic' | 'bug_fix' | 'unknown';
 
 export interface Requirement extends Timestamps {
   id: UUID;

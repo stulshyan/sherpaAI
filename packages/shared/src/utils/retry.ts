@@ -38,10 +38,7 @@ export async function withRetry<T>(
         throw lastError;
       }
 
-      const delayMs = Math.min(
-        opts.baseDelayMs * Math.pow(2, attempt - 1),
-        opts.maxDelayMs
-      );
+      const delayMs = Math.min(opts.baseDelayMs * Math.pow(2, attempt - 1), opts.maxDelayMs);
 
       if (opts.onRetry) {
         opts.onRetry(lastError, attempt, delayMs);
@@ -71,9 +68,7 @@ export function withTimeout<T>(
 ): Promise<T> {
   return Promise.race([
     promise,
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(message)), timeoutMs)
-    ),
+    new Promise<never>((_, reject) => setTimeout(() => reject(new Error(message)), timeoutMs)),
   ]);
 }
 

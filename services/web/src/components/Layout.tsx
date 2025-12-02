@@ -13,9 +13,9 @@ export default function Layout() {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200">
+      <aside className="w-64 border-r border-gray-200 bg-white">
         <div className="p-6">
-          <h1 className="text-xl font-bold text-entropy-600">Entropy</h1>
+          <h1 className="text-entropy-600 text-xl font-bold">Entropy</h1>
           <p className="text-sm text-gray-500">Platform</p>
         </div>
 
@@ -26,14 +26,12 @@ export default function Layout() {
               to={to}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors',
-                  isActive
-                    ? 'bg-entropy-50 text-entropy-700'
-                    : 'text-gray-600 hover:bg-gray-50'
+                  'mb-1 flex items-center gap-3 rounded-lg px-4 py-3 transition-colors',
+                  isActive ? 'bg-entropy-50 text-entropy-700' : 'text-gray-600 hover:bg-gray-50'
                 )
               }
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="h-5 w-5" />
               <span>{label}</span>
             </NavLink>
           ))}

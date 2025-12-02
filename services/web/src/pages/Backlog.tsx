@@ -18,26 +18,24 @@ export default function Backlog() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Feature Backlog</h1>
+      <h1 className="mb-6 text-2xl font-bold">Feature Backlog</h1>
 
       <div className="grid grid-cols-4 gap-4">
         {columns.map((column) => (
-          <div key={column.id} className="bg-gray-100 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <div className={clsx('w-3 h-3 rounded-full', column.color)} />
+          <div key={column.id} className="rounded-lg bg-gray-100 p-4">
+            <div className="mb-4 flex items-center gap-2">
+              <div className={clsx('h-3 w-3 rounded-full', column.color)} />
               <h2 className="font-semibold">{column.label}</h2>
-              <span className="text-sm text-gray-500">
-                ({features[column.id]?.length || 0})
-              </span>
+              <span className="text-sm text-gray-500">({features[column.id]?.length || 0})</span>
             </div>
 
             <div className="space-y-2">
               {features[column.id]?.map((feature) => (
                 <div
                   key={feature.id}
-                  className="bg-white rounded-lg border border-gray-200 p-4 cursor-pointer hover:shadow-md transition-shadow"
+                  className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md"
                 >
-                  <h3 className="font-medium mb-2">{feature.title}</h3>
+                  <h3 className="mb-2 font-medium">{feature.title}</h3>
                   <div className="flex items-center gap-2">
                     <PriorityBadge score={feature.priorityScore} />
                     <ReadinessIndicator score={feature.readinessScore} />
@@ -46,9 +44,7 @@ export default function Backlog() {
               ))}
 
               {(!features[column.id] || features[column.id].length === 0) && (
-                <p className="text-sm text-gray-500 text-center py-8">
-                  No features
-                </p>
+                <p className="py-8 text-center text-sm text-gray-500">No features</p>
               )}
             </div>
           </div>
@@ -74,9 +70,7 @@ function PriorityBadge({ score }: { score: number }) {
         ? 'bg-yellow-100 text-yellow-700'
         : 'bg-gray-100 text-gray-700';
 
-  return (
-    <span className={clsx('text-xs px-2 py-1 rounded', color)}>{label}</span>
-  );
+  return <span className={clsx('rounded px-2 py-1 text-xs', color)}>{label}</span>;
 }
 
 function ReadinessIndicator({ score }: { score: number }) {
@@ -84,11 +78,8 @@ function ReadinessIndicator({ score }: { score: number }) {
 
   return (
     <div className="flex items-center gap-1">
-      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-entropy-500 rounded-full"
-          style={{ width: `${percentage}%` }}
-        />
+      <div className="h-2 w-16 overflow-hidden rounded-full bg-gray-200">
+        <div className="bg-entropy-500 h-full rounded-full" style={{ width: `${percentage}%` }} />
       </div>
       <span className="text-xs text-gray-500">{percentage}%</span>
     </div>

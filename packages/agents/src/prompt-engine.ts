@@ -98,9 +98,7 @@ export class PromptEngine {
     const varPattern = /\{\{([^}]+)\}\}/g;
     const matches = [...template.matchAll(varPattern)];
     const templateVars = new Set(
-      matches
-        .map((m) => m[1]!.trim().split(/[.\s]/)[0])
-        .filter((v): v is string => v !== undefined)
+      matches.map((m) => m[1]!.trim().split(/[.\s]/)[0]).filter((v): v is string => v !== undefined)
     );
 
     // Check if required vars are referenced
@@ -145,14 +143,11 @@ export class PromptEngine {
     });
 
     // Truncate helper
-    Handlebars.registerHelper(
-      'truncate',
-      (str: string, length: number) => {
-        if (typeof str !== 'string') return '';
-        if (str.length <= length) return str;
-        return str.slice(0, length) + '...';
-      }
-    );
+    Handlebars.registerHelper('truncate', (str: string, length: number) => {
+      if (typeof str !== 'string') return '';
+      if (str.length <= length) return str;
+      return str.slice(0, length) + '...';
+    });
 
     // Date formatting helper
     Handlebars.registerHelper('date', (date: Date | string) => {

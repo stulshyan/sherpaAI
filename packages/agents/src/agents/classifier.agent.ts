@@ -1,10 +1,6 @@
 // Classifier agent for requirement type classification
 
-import type {
-  AgentConfig,
-  AgentInput,
-  ClassificationResult,
-} from '@entropy/shared';
+import type { AgentConfig, AgentInput, ClassificationResult } from '@entropy/shared';
 import { AgentType as AgentTypeEnum } from '@entropy/shared';
 import { BaseAgent } from '../base-agent.js';
 import { DEFAULT_TEMPLATES } from '../prompt-engine.js';
@@ -55,10 +51,7 @@ export class ClassifierAgent extends BaseAgent {
   /**
    * Classify a requirement and return typed result
    */
-  async classify(
-    requirementId: string,
-    requirementText: string
-  ): Promise<ClassificationResult> {
+  async classify(requirementId: string, requirementText: string): Promise<ClassificationResult> {
     const output = await this.execute({
       type: AgentTypeEnum.CLASSIFIER,
       data: {
@@ -82,8 +75,6 @@ export class ClassifierAgent extends BaseAgent {
 /**
  * Create a classifier agent with default configuration
  */
-export function createClassifierAgent(
-  modelId?: string
-): ClassifierAgent {
+export function createClassifierAgent(modelId?: string): ClassifierAgent {
   return new ClassifierAgent({ modelId });
 }

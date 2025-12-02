@@ -23,8 +23,7 @@ export const SUPPORTED_FILE_TYPES = [
 
 export const FILE_EXTENSIONS = {
   'application/pdf': '.pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-    '.docx',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
   'text/plain': '.txt',
   'text/markdown': '.md',
 } as const;

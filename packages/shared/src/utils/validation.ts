@@ -17,10 +17,7 @@ export interface ValidationError {
  * Simple JSON schema validation
  * For production, use a library like ajv
  */
-export function validateSchema(
-  data: unknown,
-  schema: JSONSchema
-): ValidationResult {
+export function validateSchema(data: unknown, schema: JSONSchema): ValidationResult {
   const errors: ValidationError[] = [];
 
   function validate(value: unknown, schema: JSONSchema, path: string): void {
@@ -95,8 +92,7 @@ export function validateSchema(
  * Validate UUID format
  */
 export function isValidUUID(value: string): boolean {
-  const uuidRegex =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(value);
 }
 

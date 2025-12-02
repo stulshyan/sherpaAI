@@ -25,21 +25,18 @@ export abstract class BaseAdapter implements ModelAdapter {
   async complete(request: CompletionRequest): Promise<CompletionResponse> {
     const timeoutMs = this.config.timeoutMs || 60000;
 
-    return withRetry(
-      () => withTimeout(this.doComplete(request), timeoutMs),
-      {
-        maxAttempts: this.config.maxRetries || 3,
-        baseDelayMs: 1000,
-        shouldRetry: (error) => this.isRetryableError(error),
-        onRetry: (error, attempt, delay) => {
-          this.logger.warn('Retrying request', {
-            error: error.message,
-            attempt,
-            delay,
-          });
-        },
-      }
-    );
+    return withRetry(() => withTimeout(this.doComplete(request), timeoutMs), {
+      maxAttempts: this.config.maxRetries || 3,
+      baseDelayMs: 1000,
+      shouldRetry: (error) => this.isRetryableError(error),
+      onRetry: (error, attempt, delay) => {
+        this.logger.warn('Retrying request', {
+          error: error.message,
+          attempt,
+          delay,
+        });
+      },
+    });
   }
 
   abstract stream(request: CompletionRequest): AsyncIterable<StreamChunk>;
@@ -47,9 +44,7 @@ export abstract class BaseAdapter implements ModelAdapter {
   abstract estimateCost(tokens: TokenUsage): number;
   abstract healthCheck(): Promise<boolean>;
 
-  protected abstract doComplete(
-    request: CompletionRequest
-  ): Promise<CompletionResponse>;
+  protected abstract doComplete(request: CompletionRequest): Promise<CompletionResponse>;
 
   protected isRetryableError(error: Error): boolean {
     const message = error.message.toLowerCase();

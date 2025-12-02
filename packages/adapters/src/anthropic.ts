@@ -33,16 +33,12 @@ export class AnthropicAdapter extends BaseAdapter {
     });
   }
 
-  protected async doComplete(
-    request: CompletionRequest
-  ): Promise<CompletionResponse> {
+  protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {
     const startTime = Date.now();
 
     try {
       const messages = this.convertMessages(request.messages);
-      const tools = request.tools
-        ? this.convertTools(request.tools)
-        : undefined;
+      const tools = request.tools ? this.convertTools(request.tools) : undefined;
 
       const response = await this.client.messages.create({
         model: request.model,
@@ -81,8 +77,7 @@ export class AnthropicAdapter extends BaseAdapter {
         usage: {
           inputTokens: response.usage.input_tokens,
           outputTokens: response.usage.output_tokens,
-          totalTokens:
-            response.usage.input_tokens + response.usage.output_tokens,
+          totalTokens: response.usage.input_tokens + response.usage.output_tokens,
         },
         model: response.model,
         latencyMs,
@@ -107,10 +102,7 @@ export class AnthropicAdapter extends BaseAdapter {
       });
 
       for await (const event of stream) {
-        if (
-          event.type === 'content_block_delta' &&
-          event.delta.type === 'text_delta'
-        ) {
+        if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
           yield {
             type: 'content',
             content: event.delta.text,
@@ -124,8 +116,7 @@ export class AnthropicAdapter extends BaseAdapter {
         usage: {
           inputTokens: finalMessage.usage.input_tokens,
           outputTokens: finalMessage.usage.output_tokens,
-          totalTokens:
-            finalMessage.usage.input_tokens + finalMessage.usage.output_tokens,
+          totalTokens: finalMessage.usage.input_tokens + finalMessage.usage.output_tokens,
         },
       };
     } catch (error) {
@@ -167,9 +158,7 @@ export class AnthropicAdapter extends BaseAdapter {
     }
   }
 
-  private convertMessages(
-    messages: Message[]
-  ): Anthropic.MessageParam[] {
+  private convertMessages(messages: Message[]): Anthropic.MessageParam[] {
     return messages
       .filter((m) => m.role !== 'system')
       .map((m) => ({
@@ -186,9 +175,7 @@ export class AnthropicAdapter extends BaseAdapter {
     }));
   }
 
-  private mapStopReason(
-    reason: string | null
-  ): 'stop' | 'length' | 'tool_use' | 'error' {
+  private mapStopReason(reason: string | null): 'stop' | 'length' | 'tool_use' | 'error' {
     switch (reason) {
       case 'end_turn':
         return 'stop';

@@ -63,10 +63,7 @@ export abstract class BaseAgent implements Agent {
       }
 
       // Calculate quality score
-      const quality = this.qualityScorer.score(
-        parsedOutput,
-        this.config.outputSchema
-      );
+      const quality = this.qualityScorer.score(parsedOutput, this.config.outputSchema);
 
       const output: AgentOutput = {
         type: this.type,
@@ -100,9 +97,7 @@ export abstract class BaseAgent implements Agent {
   onAfterExecute?(result: AgentOutput): Promise<void>;
   onError?(error: Error): Promise<void>;
 
-  protected async executeWithRetry(
-    prompt: string
-  ): Promise<CompletionResponse> {
+  protected async executeWithRetry(prompt: string): Promise<CompletionResponse> {
     const request: CompletionRequest = {
       messages: [{ role: 'user', content: prompt }],
       model: this.config.modelId,

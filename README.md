@@ -93,11 +93,13 @@ interface ModelAdapter {
 ```
 
 Supported providers:
+
 - **Anthropic**: Claude 4 Sonnet, Claude 4 Opus
 - **OpenAI**: GPT-4o, GPT-4 Turbo
 - **Google**: Gemini 1.5 Pro, Gemini 1.5 Flash
 
 Features:
+
 - Automatic fallback chains with circuit breaker
 - Hot-swap configuration without restarts
 - Cost tracking and token counting
@@ -110,6 +112,7 @@ Agents handle specific AI-powered tasks:
 - **DecomposerAgent**: Break requirements into atomic units and feature candidates
 
 Each agent provides:
+
 - Retry logic with exponential backoff
 - Output validation against JSON schemas
 - Quality scoring for responses

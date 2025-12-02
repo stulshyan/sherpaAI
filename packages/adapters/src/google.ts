@@ -24,14 +24,10 @@ export class GoogleAdapter extends BaseAdapter {
 
   constructor(config: AdapterConfig) {
     super({ ...config, provider: 'google' });
-    this.client = new GoogleGenerativeAI(
-      config.apiKey || process.env.GOOGLE_API_KEY || ''
-    );
+    this.client = new GoogleGenerativeAI(config.apiKey || process.env.GOOGLE_API_KEY || '');
   }
 
-  protected async doComplete(
-    request: CompletionRequest
-  ): Promise<CompletionResponse> {
+  protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {
     const startTime = Date.now();
 
     try {
@@ -57,7 +53,9 @@ export class GoogleAdapter extends BaseAdapter {
       return {
         content: text,
         usage: {
-          inputTokens: usage?.promptTokenCount || this.countTokens(request.messages.map(m => m.content).join('')),
+          inputTokens:
+            usage?.promptTokenCount ||
+            this.countTokens(request.messages.map((m) => m.content).join('')),
           outputTokens: usage?.candidatesTokenCount || this.countTokens(text),
           totalTokens: usage?.totalTokenCount || 0,
         },
@@ -143,7 +141,9 @@ export class GoogleAdapter extends BaseAdapter {
     }
   }
 
-  private convertMessages(messages: Message[]): Array<{ role: string; parts: Array<{ text: string }> }> {
+  private convertMessages(
+    messages: Message[]
+  ): Array<{ role: string; parts: Array<{ text: string }> }> {
     return messages
       .filter((m) => m.role !== 'system')
       .map((m) => ({
@@ -152,9 +152,7 @@ export class GoogleAdapter extends BaseAdapter {
       }));
   }
 
-  private mapFinishReason(
-    reason?: string
-  ): 'stop' | 'length' | 'tool_use' | 'error' {
+  private mapFinishReason(reason?: string): 'stop' | 'length' | 'tool_use' | 'error' {
     switch (reason) {
       case 'STOP':
         return 'stop';

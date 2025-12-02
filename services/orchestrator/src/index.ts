@@ -1,7 +1,7 @@
 // Orchestrator Service Entry Point
 
 import { initializeAdapterRegistry } from '@entropy/adapters';
-import { getEnvConfig , getModelConfigManager } from '@entropy/config';
+import { getEnvConfig, getModelConfigManager } from '@entropy/config';
 import { createLogger } from '@entropy/shared';
 import { DecompositionWorker } from './workers/decomposition.worker.js';
 

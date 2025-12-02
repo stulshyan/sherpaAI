@@ -49,7 +49,14 @@ module.exports = {
     'no-var': 'error',
     eqeqeq: ['error', 'always'],
   },
-  ignorePatterns: ['dist', 'node_modules', 'coverage', '*.config.js', '*.config.cjs', '*.config.ts'],
+  ignorePatterns: [
+    'dist',
+    'node_modules',
+    'coverage',
+    '*.config.js',
+    '*.config.cjs',
+    '*.config.ts',
+  ],
   overrides: [
     {
       files: ['*.test.ts', '*.test.tsx'],

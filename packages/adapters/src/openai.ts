@@ -32,16 +32,12 @@ export class OpenAIAdapter extends BaseAdapter {
     });
   }
 
-  protected async doComplete(
-    request: CompletionRequest
-  ): Promise<CompletionResponse> {
+  protected async doComplete(request: CompletionRequest): Promise<CompletionResponse> {
     const startTime = Date.now();
 
     try {
       const messages = this.convertMessages(request);
-      const tools = request.tools
-        ? this.convertTools(request.tools)
-        : undefined;
+      const tools = request.tools ? this.convertTools(request.tools) : undefined;
 
       const response = await this.client.chat.completions.create({
         model: request.model,
@@ -49,10 +45,7 @@ export class OpenAIAdapter extends BaseAdapter {
         temperature: request.temperature,
         messages,
         tools,
-        response_format:
-          request.responseFormat === 'json'
-            ? { type: 'json_object' }
-            : undefined,
+        response_format: request.responseFormat === 'json' ? { type: 'json_object' } : undefined,
         stop: request.stopSequences,
       });
 
@@ -112,9 +105,7 @@ export class OpenAIAdapter extends BaseAdapter {
       yield {
         type: 'done',
         usage: {
-          inputTokens: this.countTokens(
-            messages.map((m) => m.content).join('')
-          ),
+          inputTokens: this.countTokens(messages.map((m) => m.content).join('')),
           outputTokens: this.countTokens(totalContent),
           totalTokens: 0, // Will be calculated
         },
@@ -157,9 +148,7 @@ export class OpenAIAdapter extends BaseAdapter {
     }
   }
 
-  private convertMessages(
-    request: CompletionRequest
-  ): OpenAI.ChatCompletionMessageParam[] {
+  private convertMessages(request: CompletionRequest): OpenAI.ChatCompletionMessageParam[] {
     const messages: OpenAI.ChatCompletionMessageParam[] = [];
 
     if (request.systemPrompt) {
@@ -185,9 +174,7 @@ export class OpenAIAdapter extends BaseAdapter {
     return messages;
   }
 
-  private convertTools(
-    tools: ToolDefinition[]
-  ): OpenAI.ChatCompletionTool[] {
+  private convertTools(tools: ToolDefinition[]): OpenAI.ChatCompletionTool[] {
     return tools.map((t) => ({
       type: 'function' as const,
       function: {
@@ -198,9 +185,7 @@ export class OpenAIAdapter extends BaseAdapter {
     }));
   }
 
-  private mapFinishReason(
-    reason?: string | null
-  ): 'stop' | 'length' | 'tool_use' | 'error' {
+  private mapFinishReason(reason?: string | null): 'stop' | 'length' | 'tool_use' | 'error' {
     switch (reason) {
       case 'stop':
         return 'stop';

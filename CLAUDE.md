@@ -80,26 +80,32 @@ make db:down
 ## Key Concepts
 
 ### Model Adapters (F-001)
+
 Located in `packages/adapters/`. Provides a unified interface for different AI providers:
+
 - AnthropicAdapter - Claude models
 - OpenAIAdapter - GPT models
 - GoogleAdapter - Gemini models
 - FallbackAdapter - Automatic failover
 
 ### Agent Framework (F-002)
+
 Located in `packages/agents/`. Base classes and utilities for AI agents:
+
 - BaseAgent - Abstract class with lifecycle hooks
 - PromptEngine - Template rendering
 - OutputValidator - JSON Schema validation
 - QualityScorer - Output quality metrics
 
 ### Core Agents
+
 - ClassifierAgent - Requirement type classification
 - DecomposerAgent - Break requirements into features
 
 ## Environment Variables
 
 Copy `.env.example` to `.env` and configure:
+
 - Database URL
 - Redis URL
 - API keys (Anthropic, OpenAI, Google)
@@ -108,6 +114,7 @@ Copy `.env.example` to `.env` and configure:
 ## Testing
 
 Tests are co-located with source files (`*.test.ts`). Run with:
+
 ```bash
 pnpm test              # Run all tests
 pnpm test:coverage     # With coverage report

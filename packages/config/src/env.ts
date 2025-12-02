@@ -8,9 +8,7 @@ dotenvConfig();
 
 const envSchema = z.object({
   // Node environment
-  NODE_ENV: z
-    .enum(['development', 'staging', 'production', 'test'])
-    .default('development'),
+  NODE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),
 
   // Server configuration
   PORT: z.coerce.number().default(3000),
@@ -39,9 +37,7 @@ const envSchema = z.object({
   GOOGLE_API_KEY: z.string().optional(),
 
   // Default model configuration
-  DEFAULT_MODEL_PROVIDER: z
-    .enum(['anthropic', 'openai', 'google'])
-    .default('anthropic'),
+  DEFAULT_MODEL_PROVIDER: z.enum(['anthropic', 'openai', 'google']).default('anthropic'),
   DEFAULT_MODEL_ID: z.string().default('claude-sonnet-4-5-20250929'),
 
   // Logging
@@ -67,9 +63,7 @@ export function getEnvConfig(): EnvConfig {
   const result = envSchema.safeParse(process.env);
 
   if (!result.success) {
-    const errors = result.error.errors
-      .map((e) => `  ${e.path.join('.')}: ${e.message}`)
-      .join('\n');
+    const errors = result.error.errors.map((e) => `  ${e.path.join('.')}: ${e.message}`).join('\n');
     throw new Error(`Environment validation failed:\n${errors}`);
   }
 

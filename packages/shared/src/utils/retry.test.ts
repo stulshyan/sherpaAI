@@ -10,10 +10,7 @@ describe('withRetry', () => {
   });
 
   it('should retry on failure and succeed', async () => {
-    const fn = vi
-      .fn()
-      .mockRejectedValueOnce(new Error('fail'))
-      .mockResolvedValue('success');
+    const fn = vi.fn().mockRejectedValueOnce(new Error('fail')).mockResolvedValue('success');
 
     const result = await withRetry(fn, { maxAttempts: 3, baseDelayMs: 10 });
     expect(result).toBe('success');
@@ -23,17 +20,14 @@ describe('withRetry', () => {
   it('should throw after max attempts', async () => {
     const fn = vi.fn().mockRejectedValue(new Error('always fails'));
 
-    await expect(
-      withRetry(fn, { maxAttempts: 3, baseDelayMs: 10 })
-    ).rejects.toThrow('always fails');
+    await expect(withRetry(fn, { maxAttempts: 3, baseDelayMs: 10 })).rejects.toThrow(
+      'always fails'
+    );
     expect(fn).toHaveBeenCalledTimes(3);
   });
 
   it('should call onRetry callback', async () => {
-    const fn = vi
-      .fn()
-      .mockRejectedValueOnce(new Error('fail'))
-      .mockResolvedValue('success');
+    const fn = vi.fn().mockRejectedValueOnce(new Error('fail')).mockResolvedValue('success');
     const onRetry = vi.fn();
 
     await withRetry(fn, { maxAttempts: 3, baseDelayMs: 10, onRetry });

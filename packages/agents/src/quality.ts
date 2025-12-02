@@ -9,10 +9,7 @@ export class QualityScorer {
   /**
    * Calculate quality score for an output
    */
-  score(
-    output: Record<string, unknown>,
-    schema?: JSONSchema
-  ): QualityScore {
+  score(output: Record<string, unknown>, schema?: JSONSchema): QualityScore {
     const completeness = this.scoreCompleteness(output, schema);
     const consistency = this.scoreConsistency(output);
     const confidence = this.extractConfidence(output);
@@ -30,16 +27,11 @@ export class QualityScorer {
   /**
    * Score completeness (are all expected fields present?)
    */
-  private scoreCompleteness(
-    output: Record<string, unknown>,
-    schema?: JSONSchema
-  ): number {
+  private scoreCompleteness(output: Record<string, unknown>, schema?: JSONSchema): number {
     if (!schema?.properties) {
       // Without schema, score based on non-empty values
       const values = Object.values(output);
-      const nonEmpty = values.filter(
-        (v) => v !== null && v !== undefined && v !== ''
-      );
+      const nonEmpty = values.filter((v) => v !== null && v !== undefined && v !== '');
       return values.length > 0 ? nonEmpty.length / values.length : 1;
     }
 
@@ -81,8 +73,8 @@ export class QualityScorer {
 
         // Check for duplicate IDs in arrays of objects
         const ids = value
-          .filter((item): item is Record<string, unknown> =>
-            typeof item === 'object' && item !== null
+          .filter(
+            (item): item is Record<string, unknown> => typeof item === 'object' && item !== null
           )
           .map((item) => item.id)
           .filter(Boolean);

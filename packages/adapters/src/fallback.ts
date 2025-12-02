@@ -70,9 +70,7 @@ export class FallbackAdapter implements ModelAdapter {
 
       try {
         const startTime = Date.now();
-        const response = await breaker.execute(() =>
-          adapter.complete(request)
-        );
+        const response = await breaker.execute(() => adapter.complete(request));
 
         logger.info('Fallback request succeeded', {
           adapterId: adapter.id,

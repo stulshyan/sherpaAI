@@ -28,9 +28,7 @@ export default function IntakeHub() {
     newUploads.forEach((upload) => {
       setTimeout(() => {
         setUploads((prev) =>
-          prev.map((u) =>
-            u.id === upload.id ? { ...u, status: 'complete' } : u
-          )
+          prev.map((u) => (u.id === upload.id ? { ...u, status: 'complete' } : u))
         );
       }, 1500);
     });
@@ -38,7 +36,7 @@ export default function IntakeHub() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Intake Hub</h1>
+      <h1 className="mb-6 text-2xl font-bold">Intake Hub</h1>
 
       {/* Upload Zone */}
       <div
@@ -49,19 +47,13 @@ export default function IntakeHub() {
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         className={clsx(
-          'border-2 border-dashed rounded-lg p-12 text-center transition-colors',
-          isDragging
-            ? 'border-entropy-500 bg-entropy-50'
-            : 'border-gray-300 hover:border-gray-400'
+          'rounded-lg border-2 border-dashed p-12 text-center transition-colors',
+          isDragging ? 'border-entropy-500 bg-entropy-50' : 'border-gray-300 hover:border-gray-400'
         )}
       >
-        <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-        <p className="text-lg font-medium mb-2">
-          Drop requirement documents here
-        </p>
-        <p className="text-sm text-gray-500 mb-4">
-          Supports PDF, DOCX, TXT, MD (max 10MB)
-        </p>
+        <Upload className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+        <p className="mb-2 text-lg font-medium">Drop requirement documents here</p>
+        <p className="mb-4 text-sm text-gray-500">Supports PDF, DOCX, TXT, MD (max 10MB)</p>
         <input
           type="file"
           id="file-upload"
@@ -76,7 +68,7 @@ export default function IntakeHub() {
         />
         <label
           htmlFor="file-upload"
-          className="inline-flex items-center px-4 py-2 bg-entropy-600 text-white rounded-lg cursor-pointer hover:bg-entropy-700 transition-colors"
+          className="bg-entropy-600 hover:bg-entropy-700 inline-flex cursor-pointer items-center rounded-lg px-4 py-2 text-white transition-colors"
         >
           Browse Files
         </label>
@@ -85,29 +77,23 @@ export default function IntakeHub() {
       {/* Recent Uploads */}
       {uploads.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-4">Recent Uploads</h2>
+          <h2 className="mb-4 text-lg font-semibold">Recent Uploads</h2>
           <div className="space-y-2">
             {uploads.map((upload) => (
               <div
                 key={upload.id}
-                className="flex items-center gap-4 bg-white rounded-lg border border-gray-200 p-4"
+                className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-4"
               >
-                <File className="w-8 h-8 text-gray-400" />
+                <File className="h-8 w-8 text-gray-400" />
                 <div className="flex-1">
                   <p className="font-medium">{upload.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {formatFileSize(upload.size)}
-                  </p>
+                  <p className="text-sm text-gray-500">{formatFileSize(upload.size)}</p>
                 </div>
                 {upload.status === 'uploading' && (
-                  <div className="w-6 h-6 border-2 border-entropy-500 border-t-transparent rounded-full animate-spin" />
+                  <div className="border-entropy-500 h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
                 )}
-                {upload.status === 'complete' && (
-                  <CheckCircle className="w-6 h-6 text-green-500" />
-                )}
-                {upload.status === 'error' && (
-                  <AlertCircle className="w-6 h-6 text-red-500" />
-                )}
+                {upload.status === 'complete' && <CheckCircle className="h-6 w-6 text-green-500" />}
+                {upload.status === 'error' && <AlertCircle className="h-6 w-6 text-red-500" />}
               </div>
             ))}
           </div>

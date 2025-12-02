@@ -1,18 +1,16 @@
 export default function Settings() {
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+      <h1 className="mb-6 text-2xl font-bold">Settings</h1>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Model Configuration</h2>
+      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6">
+        <h2 className="mb-4 text-lg font-semibold">Model Configuration</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Default Model
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Default Model</label>
             <select
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
               defaultValue="claude-sonnet-4-5"
             >
               <option value="claude-sonnet-4-5">Claude 4 Sonnet</option>
@@ -23,24 +21,22 @@ export default function Settings() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Anthropic API Key
             </label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
               placeholder="sk-ant-..."
               defaultValue="••••••••••••••••"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              OpenAI API Key
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">OpenAI API Key</label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2"
               placeholder="sk-..."
               defaultValue=""
             />
@@ -48,8 +44,8 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-4">Project Information</h2>
+      <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <h2 className="mb-4 text-lg font-semibold">Project Information</h2>
 
         <div className="space-y-2 text-sm">
           <p>

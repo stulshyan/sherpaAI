@@ -115,39 +115,35 @@ export class DecomposerAgent extends BaseAgent {
         .map((ar) => ar.id),
     }));
 
-    const atomicRequirements: AtomicRequirement[] = data.atomicRequirements.map(
-      (ar, index) => ({
-        id: ar.id || randomUUID(),
-        featureId: '', // Will be set when features are created
-        text: ar.text,
-        clarityScore: ar.clarityScore,
-        theme: ar.theme,
-        dependencies: ar.dependencies || [],
-        order: index,
-      })
-    );
-
-    const featureCandidates: FeatureCandidate[] = data.featureCandidates.map(
-      (fc) => ({
-        title: fc.title,
-        description: fc.description,
-        theme: fc.theme,
-        atomicRequirementIds: fc.atomicRequirementIds,
-        estimatedComplexity: fc.estimatedComplexity || 'medium',
-        suggestedPriority: fc.suggestedPriority || 5,
-      })
-    );
-
-    const clarificationQuestions: ClarificationQuestion[] = (
-      data.clarificationQuestions || []
-    ).map((q) => ({
-      id: randomUUID(),
+    const atomicRequirements: AtomicRequirement[] = data.atomicRequirements.map((ar, index) => ({
+      id: ar.id || randomUUID(),
       featureId: '', // Will be set when features are created
-      question: q.question,
-      questionType: q.questionType,
-      options: q.options,
-      priority: q.priority,
+      text: ar.text,
+      clarityScore: ar.clarityScore,
+      theme: ar.theme,
+      dependencies: ar.dependencies || [],
+      order: index,
     }));
+
+    const featureCandidates: FeatureCandidate[] = data.featureCandidates.map((fc) => ({
+      title: fc.title,
+      description: fc.description,
+      theme: fc.theme,
+      atomicRequirementIds: fc.atomicRequirementIds,
+      estimatedComplexity: fc.estimatedComplexity || 'medium',
+      suggestedPriority: fc.suggestedPriority || 5,
+    }));
+
+    const clarificationQuestions: ClarificationQuestion[] = (data.clarificationQuestions || []).map(
+      (q) => ({
+        id: randomUUID(),
+        featureId: '', // Will be set when features are created
+        question: q.question,
+        questionType: q.questionType,
+        options: q.options,
+        priority: q.priority,
+      })
+    );
 
     return {
       requirementId,
@@ -164,8 +160,6 @@ export class DecomposerAgent extends BaseAgent {
 /**
  * Create a decomposer agent with default configuration
  */
-export function createDecomposerAgent(
-  modelId?: string
-): DecomposerAgent {
+export function createDecomposerAgent(modelId?: string): DecomposerAgent {
   return new DecomposerAgent({ modelId });
 }
