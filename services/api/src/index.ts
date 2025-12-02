@@ -12,6 +12,7 @@ import { backlogRouter } from './routes/backlog.js';
 import { featuresRouter } from './routes/features.js';
 import { healthRouter } from './routes/health.js';
 import { requirementsRouter } from './routes/requirements.js';
+import { testHarnessRouter } from './routes/test-harness.js';
 
 const logger = createLogger('api');
 
@@ -37,6 +38,7 @@ async function main() {
   app.use('/api/v1/requirements', requirementsRouter);
   app.use('/api/v1/features', featuresRouter);
   app.use('/api/v1/backlog', backlogRouter);
+  app.use('/api/v1/test-harness', testHarnessRouter);
 
   // Error handling
   app.use(errorHandler);
