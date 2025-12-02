@@ -1,0 +1,122 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: staging
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infrastructure/docker/Dockerfile.api
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/entropy-api:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/entropy-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Orchestrator image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infrastructure/docker/Dockerfile.orchestrator
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/entropy-orchestrator:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/entropy-orchestrator:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Web image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infrastructure/docker/Dockerfile.web
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/entropy-web:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/entropy-web:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update ECS API service
+        run: |
+          aws ecs update-service \
+            --cluster entropy-staging \
+            --service entropy-api \
+            --force-new-deployment
+
+      - name: Update ECS Orchestrator service
+        run: |
+          aws ecs update-service \
+            --cluster entropy-staging \
+            --service entropy-orchestrator \
+            --force-new-deployment
+
+      - name: Wait for API deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster entropy-staging \
+            --services entropy-api
+
+      - name: Wait for Orchestrator deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster entropy-staging \
+            --services entropy-orchestrator
+
+      - name: Run smoke tests
+        run: |
+          # Wait for service to be healthy
+          sleep 30
+
+          # Run smoke tests
+          curl -f https://staging.entropy.example.com/health || exit 1
+
+          echo "Smoke tests passed!"
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment ${{ job.status }}'
+          fields: repo,message,commit,author,action,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

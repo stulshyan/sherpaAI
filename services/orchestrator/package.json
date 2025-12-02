@@ -1,0 +1,31 @@
+{
+  "name": "@entropy/orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@entropy/shared": "workspace:*",
+    "@entropy/adapters": "workspace:*",
+    "@entropy/agents": "workspace:*",
+    "@entropy/config": "workspace:*",
+    "@prisma/client": "^5.7.0",
+    "@aws-sdk/client-s3": "^3.450.0",
+    "ioredis": "^5.3.2",
+    "bullmq": "^4.14.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
