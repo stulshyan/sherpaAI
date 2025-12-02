@@ -35,6 +35,11 @@ jobs:
           fi
           echo "All required secrets are configured"
 
+          # Check optional API keys
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "::warning::ANTHROPIC_API_KEY is not set - AI features will not work"
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -44,6 +49,27 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: github-actions-deploy
+
+      - name: Store API keys in AWS Secrets Manager
+        if: secrets.ANTHROPIC_API_KEY != ''
+        run: |
+          # Create or update the secrets in AWS Secrets Manager
+          aws secretsmanager create-secret \
+            --name entropy/staging/api-keys \
+            --secret-string '{
+              "ANTHROPIC_API_KEY": "${{ secrets.ANTHROPIC_API_KEY }}",
+              "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
+              "GOOGLE_API_KEY": "${{ secrets.GOOGLE_API_KEY }}"
+            }' \
+            2>/dev/null || \
+          aws secretsmanager update-secret \
+            --secret-id entropy/staging/api-keys \
+            --secret-string '{
+              "ANTHROPIC_API_KEY": "${{ secrets.ANTHROPIC_API_KEY }}",
+              "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
+              "GOOGLE_API_KEY": "${{ secrets.GOOGLE_API_KEY }}"
+            }'
+          echo "API keys stored in AWS Secrets Manager"
 
       - name: Login to Amazon ECR
         id: login-ecr
