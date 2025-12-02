@@ -1,11 +1,12 @@
 import clsx from 'clsx';
-import { LayoutDashboard, Upload, List, Settings } from 'lucide-react';
+import { LayoutDashboard, Upload, List, Settings, FlaskConical } from 'lucide-react';
 import { Outlet, NavLink } from 'react-router-dom';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/intake', icon: Upload, label: 'Intake Hub' },
   { to: '/backlog', icon: List, label: 'Backlog' },
+  { to: '/test-harness', icon: FlaskConical, label: 'Test Harness' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
