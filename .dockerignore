@@ -1,0 +1,53 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+**/dist
+coverage
+**/coverage
+
+# Git
+.git
+.gitignore
+
+# Environment files (secrets)
+.env
+.env.*
+!.env.example
+
+# IDE and editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Documentation (not needed in image)
+*.md
+docs/
+!README.md
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+__tests__/
+
+# Misc
+.husky/
+.eslintcache
+*.tsbuildinfo
