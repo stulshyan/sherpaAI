@@ -55,6 +55,7 @@ export interface CompletionResponse {
   latencyMs: number;
   finishReason: 'stop' | 'length' | 'tool_use' | 'error';
   toolCalls?: ToolCall[];
+  requestId: string;
 }
 
 export interface StreamChunk {

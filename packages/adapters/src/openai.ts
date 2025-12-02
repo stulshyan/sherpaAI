@@ -69,6 +69,7 @@ export class OpenAIAdapter extends BaseAdapter {
         latencyMs,
         finishReason: this.mapFinishReason(choice?.finish_reason),
         toolCalls,
+        requestId: response.id,
       };
     } catch (error) {
       throw this.handleError(error);
