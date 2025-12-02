@@ -33,6 +33,21 @@ async function main() {
   app.use(compression());
   app.use(express.json({ limit: '10mb' }));
 
+  // Root route
+  app.get('/', (_req, res) => {
+    res.json({
+      name: 'Entropy Platform API',
+      version: '0.1.0',
+      endpoints: {
+        health: '/health',
+        testHarness: '/api/v1/test-harness',
+        requirements: '/api/v1/requirements',
+        features: '/api/v1/features',
+        backlog: '/api/v1/backlog',
+      },
+    });
+  });
+
   // Routes
   app.use('/health', healthRouter);
   app.use('/api/v1/requirements', requirementsRouter);
