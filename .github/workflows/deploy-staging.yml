@@ -16,13 +16,25 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: staging
+    # environment: staging  # Uncomment when environment is configured
 
     permissions:
       id-token: write
       contents: read
 
     steps:
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.AWS_ACCOUNT_ID }}" ]; then
+            echo "::error::AWS_ACCOUNT_ID secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.AWS_ROLE_ARN }}" ]; then
+            echo "::error::AWS_ROLE_ARN secret is not set"
+            exit 1
+          fi
+          echo "All required secrets are configured"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -31,6 +43,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-deploy
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -112,7 +125,7 @@ jobs:
           echo "Smoke tests passed!"
 
       - name: Notify Slack
-        if: always()
+        if: always() && secrets.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
