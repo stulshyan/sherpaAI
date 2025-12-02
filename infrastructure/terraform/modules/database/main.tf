@@ -66,7 +66,9 @@ resource "aws_db_subnet_group" "main" {
   })
 }
 
-# DB Parameter Group with pgvector
+# DB Parameter Group for PostgreSQL 15
+# pgvector extension is available in RDS PostgreSQL 15+ and can be enabled with:
+# CREATE EXTENSION IF NOT EXISTS vector;
 resource "aws_db_parameter_group" "main" {
   name   = "entropy-${var.environment}-pg15"
   family = "postgres15"
@@ -79,6 +81,13 @@ resource "aws_db_parameter_group" "main" {
   parameter {
     name  = "log_statement"
     value = "ddl"
+  }
+
+  # Allow vector extension to be created
+  parameter {
+    name         = "rds.allowed_extensions"
+    value        = "vector,pg_stat_statements,pgcrypto"
+    apply_method = "pending-reboot"
   }
 
   tags = local.tags
