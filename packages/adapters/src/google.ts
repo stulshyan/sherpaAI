@@ -62,6 +62,7 @@ export class GoogleAdapter extends BaseAdapter {
         model: request.model,
         latencyMs,
         finishReason: this.mapFinishReason(response.candidates?.[0]?.finishReason),
+        requestId: `google-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       };
     } catch (error) {
       throw this.handleError(error);

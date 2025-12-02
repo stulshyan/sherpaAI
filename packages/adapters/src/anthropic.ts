@@ -83,6 +83,7 @@ export class AnthropicAdapter extends BaseAdapter {
         latencyMs,
         finishReason: this.mapStopReason(response.stop_reason),
         toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+        requestId: response.id,
       };
     } catch (error) {
       throw this.handleError(error);

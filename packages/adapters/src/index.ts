@@ -1,5 +1,6 @@
 // @entropy/adapters - Model adapter implementations
 
+export * from './base.js';
 export * from './factory.js';
 export * from './registry.js';
 export * from './fallback.js';
