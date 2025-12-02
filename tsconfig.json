@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": false,
+    "baseUrl": ".",
+    "paths": {
+      "@entropy/shared": ["packages/shared/src"],
+      "@entropy/shared/*": ["packages/shared/src/*"],
+      "@entropy/adapters": ["packages/adapters/src"],
+      "@entropy/adapters/*": ["packages/adapters/src/*"],
+      "@entropy/agents": ["packages/agents/src"],
+      "@entropy/agents/*": ["packages/agents/src/*"],
+      "@entropy/config": ["packages/config/src"],
+      "@entropy/config/*": ["packages/config/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "coverage", ".turbo"]
+}

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: entropy-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: entropy
+      POSTGRES_PASSWORD: entropy
+      POSTGRES_DB: entropy_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U entropy -d entropy_dev']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: entropy-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LocalStack for S3 emulation (optional)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: entropy-localstack
+    ports:
+      - '4566:4566'
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+volumes:
+  postgres_data:
+  redis_data:
+  localstack_data:

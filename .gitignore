@@ -1,0 +1,80 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# IDE
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+.temp/
+
+# Docker
+.docker/
+
+# Terraform
+infrastructure/terraform/**/.terraform/
+infrastructure/terraform/**/*.tfstate
+infrastructure/terraform/**/*.tfstate.*
+infrastructure/terraform/**/*.tfvars
+!infrastructure/terraform/**/*.tfvars.example
+infrastructure/terraform/**/*.tfplan
+infrastructure/terraform/**/.terraform.lock.hcl
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+.prettiercache
+
+# Secrets (never commit these)
+*.pem
+*.key
+credentials.json
+secrets.json
+.secrets/
+
+# Generated files
+*.generated.*
+
+# Vitest
+.vitest/
+
+# Turbo
+.turbo/
