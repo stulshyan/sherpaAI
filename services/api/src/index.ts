@@ -12,6 +12,7 @@ import { backlogRouter } from './routes/backlog.js';
 import { featuresRouter } from './routes/features.js';
 import { healthRouter } from './routes/health.js';
 import { intakeRouter } from './routes/intake.js';
+import { questionsRouter } from './routes/questions.js';
 import { requirementsRouter } from './routes/requirements.js';
 import { settingsRouter } from './routes/settings.js';
 import { testHarnessRouter } from './routes/test-harness.js';
@@ -47,6 +48,7 @@ async function main() {
         features: '/api/v1/features',
         backlog: '/api/v1/backlog',
         intake: '/api/v1/intake',
+        questions: '/api/v1/questions',
       },
     });
   });
@@ -58,6 +60,7 @@ async function main() {
   app.use('/api/v1/features', featuresRouter);
   app.use('/api/v1/backlog', backlogRouter);
   app.use('/api/v1/intake', intakeRouter);
+  app.use('/api/v1/questions', questionsRouter);
   app.use('/api/v1/settings', settingsRouter);
   app.use('/api/v1/test-harness', testHarnessRouter);
 

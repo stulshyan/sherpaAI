@@ -126,6 +126,24 @@ export const OUTPUT_SCHEMAS = {
       suggestedDecomposition: {
         type: 'boolean',
       },
+      indicators: {
+        type: 'object',
+        properties: {
+          hasMultipleThemes: { type: 'boolean' },
+          estimatedComplexity: {
+            type: 'string',
+            enum: ['low', 'medium', 'high'],
+          },
+          scopeIndicators: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          ambiguityFlags: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+        },
+      },
     },
   } as JSONSchema,
 
