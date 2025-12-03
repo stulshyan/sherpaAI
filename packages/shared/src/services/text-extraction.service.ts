@@ -1,9 +1,9 @@
 // Text Extraction Service for S-034
 // Extracts text from PDF, DOCX, TXT, and MD files
 
-import { PDFParse } from 'pdf-parse';
-import * as mammoth from 'mammoth';
 import { franc } from 'franc';
+import mammoth from 'mammoth';
+import { PDFParse } from 'pdf-parse';
 import { createStorageService, type StorageService } from '../storage/storage.service.js';
 
 /**

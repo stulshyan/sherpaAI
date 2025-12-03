@@ -1,9 +1,9 @@
 // Readiness Scoring Service for S-037
 // Calculates feature readiness for Loop A promotion
 
+import { READINESS_THRESHOLD_LOOP_A } from '../constants/index.js';
 import type { Feature } from '../types/feature.js';
 import type { AtomicRequirement, ClarificationQuestion } from '../types/requirement.js';
-import { READINESS_THRESHOLD_LOOP_A } from '../constants/index.js';
 
 /**
  * Extended readiness score with component details

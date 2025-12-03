@@ -2,8 +2,8 @@
 // Handles versioned storage of decomposition results
 
 import { randomUUID } from 'crypto';
-import { createStorageService, type StorageService } from '../storage/storage.service.js';
 import { getDatabase, type DatabaseClient } from '../database/client.js';
+import { createStorageService, type StorageService } from '../storage/storage.service.js';
 import type {
   DecompositionResult,
   Theme,

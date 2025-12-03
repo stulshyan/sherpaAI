@@ -162,7 +162,7 @@ requirementsRouter.post(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const file = req.file;
-      const { projectId, title, description: _description, priority: _priority, requestedBy: _requestedBy, metadata: _metadata } = req.body;
+      const { projectId, title } = req.body;
 
       // Validate required fields
       if (!file) {
@@ -321,7 +321,7 @@ requirementsRouter.get('/:id', async (req: Request, res: Response, next: NextFun
  */
 requirementsRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { projectId, status: _status, page = '1', limit = '20' } = req.query;
+    const { projectId, page = '1', limit = '20' } = req.query;
 
     if (!projectId) {
       res.status(400).json({
@@ -513,7 +513,7 @@ requirementsRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id!;
-      const { version: _version, include: _include } = req.query;
+      // version and include query params reserved for future use
 
       const repo = await getRequirementRepository();
       const requirement = await repo.findById(id);

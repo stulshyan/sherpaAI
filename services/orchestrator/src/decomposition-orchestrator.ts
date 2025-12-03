@@ -2,18 +2,18 @@
 // Coordinates the full decomposition pipeline: Extract → Classify → Decompose → Score → Store
 
 import { randomUUID } from 'crypto';
+import { createClassifierAgent, createDecomposerAgent } from '@entropy/agents';
 import {
   createLogger,
-  getDatabase,
-  RequirementRepository,
-  FeatureRepository,
+  createReadinessService,
   createStorageService,
   createTextExtractionService,
-  createReadinessService,
+  FeatureRepository,
+  getDatabase,
+  RequirementRepository,
   type DecompositionResult,
   type RequirementStatus,
 } from '@entropy/shared';
-import { createClassifierAgent, createDecomposerAgent } from '@entropy/agents';
 
 const logger = createLogger('decomposition-orchestrator');
 
