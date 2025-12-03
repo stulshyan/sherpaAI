@@ -789,10 +789,20 @@ backlogRouter.post(
       const { id } = req.params;
       const { targetLoop, force = false } = req.body;
 
-      const repo = await getFeatureRepository();
-      const feature = await repo.findByIdWithDetails(id);
+      if (!id) {
+        res.status(400).json({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Feature ID is required',
+          },
+        });
+        return;
+      }
 
-      if (!feature) {
+      const repo = await getFeatureRepository();
+      const featureEntity = await repo.findById(id);
+
+      if (!featureEntity) {
         res.status(404).json({
           error: {
             code: 'NOT_FOUND',
@@ -802,9 +812,13 @@ backlogRouter.post(
         return;
       }
 
+      // Get full details for blocking questions check
+      const featureDetails = await repo.findByIdWithDetails(id);
+
       // Define loop progression rules
       const loopOrder = ['loop_0', 'loop_a', 'loop_b', 'loop_c'];
-      const currentLoopIndex = loopOrder.indexOf(feature.currentLoop || 'loop_0');
+      const currentLoop = featureEntity.currentLoop || 'loop_0';
+      const currentLoopIndex = loopOrder.indexOf(currentLoop);
       const nextLoop = targetLoop || loopOrder[currentLoopIndex + 1];
 
       if (!nextLoop || !loopOrder.includes(nextLoop)) {
@@ -827,23 +841,24 @@ backlogRouter.post(
 
       const requiredReadiness = readinessRequirements[nextLoop] || 0;
 
-      if (feature.readinessScore < requiredReadiness && !force) {
+      if (featureEntity.readinessScore < requiredReadiness && !force) {
+        const blockingQuestions = featureDetails?.clarificationQuestions.filter(
+          (q) => !q.answer && q.priority === 'blocking'
+        ) || [];
         res.status(400).json({
           error: {
             code: 'INSUFFICIENT_READINESS',
-            message: `Feature readiness (${feature.readinessScore.toFixed(2)}) below threshold (${requiredReadiness})`,
-            currentReadiness: feature.readinessScore,
+            message: `Feature readiness (${featureEntity.readinessScore.toFixed(2)}) below threshold (${requiredReadiness})`,
+            currentReadiness: featureEntity.readinessScore,
             requiredReadiness,
-            blockingQuestions: feature.clarificationQuestions.filter(
-              (q) => !q.answer && q.priority === 'blocking'
-            ),
+            blockingQuestions,
           },
         });
         return;
       }
 
       // Check for blocking dependencies
-      const blockingDeps = feature.dependencies.filter((d) => d.dependencyType === 'blocks');
+      const blockingDeps = featureDetails?.dependencies.filter((d) => d.dependencyType === 'blocks') || [];
       if (blockingDeps.length > 0 && !force) {
         // Check if blocking features are completed
         const db = getDatabase();
@@ -883,7 +898,7 @@ backlogRouter.post(
 
       logger.info('Feature promoted', {
         featureId: id,
-        fromLoop: feature.currentLoop || 'loop_0',
+        fromLoop: currentLoop,
         toLoop: nextLoop,
         forced: force,
       });
@@ -891,7 +906,7 @@ backlogRouter.post(
       res.json({
         featureId: id,
         promoted: true,
-        previousLoop: feature.currentLoop || 'loop_0',
+        previousLoop: currentLoop,
         currentLoop: nextLoop,
         message: `Feature promoted to ${nextLoop}`,
       });
@@ -914,6 +929,16 @@ backlogRouter.post(
     try {
       const { id } = req.params;
       const { status, reason } = req.body;
+
+      if (!id) {
+        res.status(400).json({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Feature ID is required',
+          },
+        });
+        return;
+      }
 
       if (!status) {
         res.status(400).json({
@@ -1001,12 +1026,8 @@ backlogRouter.post(
       const previousStatus = feature.status;
 
       // Update status
-      const userId = process.env.DEFAULT_USER_ID || '00000000-0000-0000-0000-000000000001';
-      await repo.updateStatus(id, status, {
-        userId,
-        action: 'status_transition',
-        details: { from: previousStatus, to: status, reason },
-      });
+      const actor = process.env.DEFAULT_USER_ID || '00000000-0000-0000-0000-000000000001';
+      await repo.updateStatus(id, status, { actor });
 
       logger.info('Feature status transitioned', {
         featureId: id,
