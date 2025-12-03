@@ -119,9 +119,9 @@ export class PromptEngine {
    * Register custom Handlebars helpers
    */
   private registerHelpers(): void {
-    // JSON stringify helper
+    // JSON stringify helper (use SafeString to avoid HTML escaping)
     Handlebars.registerHelper('json', (context) => {
-      return JSON.stringify(context, null, 2);
+      return new Handlebars.SafeString(JSON.stringify(context, null, 2));
     });
 
     // List formatting helper

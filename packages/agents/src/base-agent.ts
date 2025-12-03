@@ -14,9 +14,16 @@ import type {
   CompletionResponse,
 } from '@entropy/shared';
 import { createLogger, withRetry, withTimeout } from '@entropy/shared';
+import { getExecutionLogger, type ExecutionLogger } from './execution-logger.js';
+import { getPluginRegistry, type PluginRegistry } from './plugin-registry.js';
 import { PromptEngine } from './prompt-engine.js';
 import { QualityScorer } from './quality.js';
 import { OutputValidator } from './validator.js';
+
+export interface BaseAgentOptions {
+  executionLogger?: ExecutionLogger;
+  pluginRegistry?: PluginRegistry;
+}
 
 export abstract class BaseAgent implements Agent {
   readonly id: string;
@@ -27,9 +34,11 @@ export abstract class BaseAgent implements Agent {
   protected promptEngine: PromptEngine;
   protected validator: OutputValidator;
   protected qualityScorer: QualityScorer;
+  protected executionLogger: ExecutionLogger;
+  protected pluginRegistry: PluginRegistry;
   protected logger;
 
-  constructor(config: AgentConfig) {
+  constructor(config: AgentConfig, options?: BaseAgentOptions) {
     this.id = config.id;
     this.type = config.type;
     this.config = config;
@@ -38,6 +47,8 @@ export abstract class BaseAgent implements Agent {
     this.promptEngine = new PromptEngine();
     this.validator = new OutputValidator();
     this.qualityScorer = new QualityScorer();
+    this.executionLogger = options?.executionLogger ?? getExecutionLogger();
+    this.pluginRegistry = options?.pluginRegistry ?? getPluginRegistry();
     this.logger = createLogger(`agent:${config.type}`);
   }
 
@@ -45,11 +56,14 @@ export abstract class BaseAgent implements Agent {
     const context = this.createContext(input);
 
     try {
+      // Apply pre-processors from plugins
+      const processedInput = await this.pluginRegistry.applyPreProcessors(input);
+
       // Lifecycle hook: before execute
       await this.onBeforeExecute?.(context);
 
       // Build prompt from template
-      const prompt = await this.buildPrompt(input);
+      const prompt = await this.buildPrompt(processedInput);
 
       // Execute with retry and timeout
       const response = await this.executeWithRetry(prompt);
@@ -59,13 +73,13 @@ export abstract class BaseAgent implements Agent {
 
       // Validate output against schema
       if (this.config.outputSchema) {
-        await this.validator.validate(parsedOutput, this.config.outputSchema);
+        this.validator.validateOrThrow(parsedOutput, this.config.outputSchema);
       }
 
       // Calculate quality score
       const quality = this.qualityScorer.score(parsedOutput, this.config.outputSchema);
 
-      const output: AgentOutput = {
+      let output: AgentOutput = {
         type: this.type,
         data: parsedOutput,
         quality,
@@ -74,11 +88,14 @@ export abstract class BaseAgent implements Agent {
         latencyMs: response.latencyMs,
       };
 
+      // Apply post-processors from plugins
+      output = await this.pluginRegistry.applyPostProcessors(output);
+
       // Lifecycle hook: after execute
       await this.onAfterExecute?.(output);
 
-      // Log execution
-      await this.logExecution(input, output, context);
+      // Log execution (persists to database if configured)
+      await this.logExecution(processedInput, output, context);
 
       return output;
     } catch (error) {
@@ -142,7 +159,7 @@ export abstract class BaseAgent implements Agent {
   }
 
   protected async logExecution(
-    _input: AgentInput,
+    input: AgentInput,
     output: AgentOutput,
     context: ExecutionContext
   ): Promise<void> {
@@ -157,7 +174,8 @@ export abstract class BaseAgent implements Agent {
       qualityScore: output.quality.overall,
     });
 
-    // TODO: Persist to database
+    // Persist to database via execution logger
+    await this.executionLogger.log({ input, output, context });
   }
 
   /**
