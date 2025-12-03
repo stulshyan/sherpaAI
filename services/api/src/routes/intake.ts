@@ -1,9 +1,9 @@
 // Intake routes for file uploads and requirement processing
 
+import { randomUUID } from 'crypto';
 import { createLogger } from '@entropy/shared';
 import { Router, type IRouter, type Request } from 'express';
 import multer from 'multer';
-import { randomUUID } from 'crypto';
 
 const logger = createLogger('intake');
 
