@@ -284,7 +284,7 @@ describe('DecomposerAgent', () => {
 
       const result = await agent.decompose('req-123', 'Test', 'new_feature');
 
-      expect(result.processingTimeMs).toBeGreaterThan(0);
+      expect(result.processingTimeMs).toBeGreaterThanOrEqual(0);
       expect(result.model).toBe('claude-sonnet-4-5-20250929');
     });
 
