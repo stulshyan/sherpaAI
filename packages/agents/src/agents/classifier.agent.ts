@@ -76,5 +76,5 @@ export class ClassifierAgent extends BaseAgent {
  * Create a classifier agent with default configuration
  */
 export function createClassifierAgent(modelId?: string): ClassifierAgent {
-  return new ClassifierAgent({ modelId });
+  return new ClassifierAgent(modelId ? { modelId } : undefined);
 }

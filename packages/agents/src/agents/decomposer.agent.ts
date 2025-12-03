@@ -161,5 +161,5 @@ export class DecomposerAgent extends BaseAgent {
  * Create a decomposer agent with default configuration
  */
 export function createDecomposerAgent(modelId?: string): DecomposerAgent {
-  return new DecomposerAgent({ modelId });
+  return new DecomposerAgent(modelId ? { modelId } : undefined);
 }
