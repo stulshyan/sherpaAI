@@ -37,10 +37,7 @@ export default function Dashboard() {
     },
   });
 
-  const {
-    data: recentData,
-    isLoading: recentLoading,
-  } = useQuery<{ features: RecentFeature[] }>({
+  const { data: recentData, isLoading: recentLoading } = useQuery<{ features: RecentFeature[] }>({
     queryKey: ['recent-features'],
     queryFn: async () => {
       const response = await api.get('/features/recent');
@@ -86,9 +83,7 @@ export default function Dashboard() {
         <p className="text-red-600">
           {statsError instanceof Error ? statsError.message : 'Unknown error'}
         </p>
-        <p className="mt-2 text-sm text-red-500">
-          Make sure the API server is running
-        </p>
+        <p className="mt-2 text-sm text-red-500">Make sure the API server is running</p>
       </div>
     );
   }

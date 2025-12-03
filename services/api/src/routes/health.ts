@@ -30,7 +30,11 @@ async function getDbClient() {
 
 // Storage service (lazy loaded)
 let storageService: {
-  list: (prefix: string, bucket?: string, maxKeys?: number) => Promise<{
+  list: (
+    prefix: string,
+    bucket?: string,
+    maxKeys?: number
+  ) => Promise<{
     objects: Array<{ key: string; size: number; lastModified: Date }>;
   }>;
 } | null = null;
@@ -158,10 +162,12 @@ healthRouter.get('/detailed', async (_req, res) => {
         LIMIT 20
       `);
 
-      const tables = (tablesQuery.rows as Array<{ name: string; row_count: number }>).map((row) => ({
-        name: row.name,
-        rowCount: Number(row.row_count),
-      }));
+      const tables = (tablesQuery.rows as Array<{ name: string; row_count: number }>).map(
+        (row) => ({
+          name: row.name,
+          rowCount: Number(row.row_count),
+        })
+      );
 
       result.services.database = {
         status: 'up',

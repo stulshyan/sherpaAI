@@ -99,9 +99,7 @@ export default function HealthDashboard() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-6">
         <h2 className="mb-2 text-lg font-semibold text-red-700">Failed to load health status</h2>
-        <p className="text-red-600">
-          {error instanceof Error ? error.message : 'Unknown error'}
-        </p>
+        <p className="text-red-600">{error instanceof Error ? error.message : 'Unknown error'}</p>
         <button
           onClick={() => refetch()}
           className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
@@ -126,7 +124,7 @@ export default function HealthDashboard() {
             'flex items-center gap-2 rounded-lg px-4 py-2 transition-colors',
             isFetching
               ? 'bg-gray-100 text-gray-400'
-              : 'bg-entropy-600 text-white hover:bg-entropy-700'
+              : 'bg-entropy-600 hover:bg-entropy-700 text-white'
           )}
         >
           <RefreshCw className={clsx('h-4 w-4', isFetching && 'animate-spin')} />
@@ -141,10 +139,10 @@ export default function HealthDashboard() {
           isLoading
             ? 'bg-gray-100'
             : health?.status === 'healthy'
-              ? 'bg-green-50 border border-green-200'
+              ? 'border border-green-200 bg-green-50'
               : health?.status === 'degraded'
-                ? 'bg-yellow-50 border border-yellow-200'
-                : 'bg-red-50 border border-red-200'
+                ? 'border border-yellow-200 bg-yellow-50'
+                : 'border border-red-200 bg-red-50'
         )}
       >
         <div className="flex items-center gap-3">
@@ -192,15 +190,21 @@ export default function HealthDashboard() {
                 <div className="flex gap-4 text-sm">
                   <div>
                     <span className="text-gray-500">Pool Total:</span>{' '}
-                    <span className="font-medium">{health.services.database.poolStats.totalCount}</span>
+                    <span className="font-medium">
+                      {health.services.database.poolStats.totalCount}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Idle:</span>{' '}
-                    <span className="font-medium">{health.services.database.poolStats.idleCount}</span>
+                    <span className="font-medium">
+                      {health.services.database.poolStats.idleCount}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Waiting:</span>{' '}
-                    <span className="font-medium">{health.services.database.poolStats.waitingCount}</span>
+                    <span className="font-medium">
+                      {health.services.database.poolStats.waitingCount}
+                    </span>
                   </div>
                 </div>
               )}
@@ -220,7 +224,9 @@ export default function HealthDashboard() {
                       {health.services.database.tables.map((table) => (
                         <tr key={table.name} className="border-t border-gray-200">
                           <td className="px-3 py-2 font-mono text-xs">{table.name}</td>
-                          <td className="px-3 py-2 text-right">{table.rowCount.toLocaleString()}</td>
+                          <td className="px-3 py-2 text-right">
+                            {table.rowCount.toLocaleString()}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -251,7 +257,9 @@ export default function HealthDashboard() {
               <div className="flex gap-4 text-sm">
                 <div>
                   <span className="text-gray-500">Objects:</span>{' '}
-                  <span className="font-medium">{health.services.storage.objectCount?.toLocaleString()}</span>
+                  <span className="font-medium">
+                    {health.services.storage.objectCount?.toLocaleString()}
+                  </span>
                 </div>
                 <div>
                   <span className="text-gray-500">Total Size:</span>{' '}
@@ -262,22 +270,23 @@ export default function HealthDashboard() {
               </div>
 
               {/* Recent Objects */}
-              {health.services.storage.recentObjects && health.services.storage.recentObjects.length > 0 && (
-                <div>
-                  <p className="mb-2 text-sm font-medium text-gray-700">Recent Objects</p>
-                  <div className="max-h-32 overflow-y-auto rounded border border-gray-200 bg-gray-50 p-2">
-                    {health.services.storage.recentObjects.map((obj) => (
-                      <div
-                        key={obj.key}
-                        className="flex items-center justify-between py-1 text-xs"
-                      >
-                        <span className="truncate font-mono">{obj.key}</span>
-                        <span className="text-gray-500">{formatBytes(obj.size)}</span>
-                      </div>
-                    ))}
+              {health.services.storage.recentObjects &&
+                health.services.storage.recentObjects.length > 0 && (
+                  <div>
+                    <p className="mb-2 text-sm font-medium text-gray-700">Recent Objects</p>
+                    <div className="max-h-32 overflow-y-auto rounded border border-gray-200 bg-gray-50 p-2">
+                      {health.services.storage.recentObjects.map((obj) => (
+                        <div
+                          key={obj.key}
+                          className="flex items-center justify-between py-1 text-xs"
+                        >
+                          <span className="truncate font-mono">{obj.key}</span>
+                          <span className="text-gray-500">{formatBytes(obj.size)}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           )}
         </ServiceCard>
@@ -296,16 +305,22 @@ export default function HealthDashboard() {
             <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-500">Memory Used:</span>{' '}
-                <span className="font-medium">{health.services.cache.memoryUsedMb?.toFixed(1)} MB</span>
+                <span className="font-medium">
+                  {health.services.cache.memoryUsedMb?.toFixed(1)} MB
+                </span>
               </div>
               <div>
                 <span className="text-gray-500">Keys:</span>{' '}
-                <span className="font-medium">{health.services.cache.keyCount?.toLocaleString()}</span>
+                <span className="font-medium">
+                  {health.services.cache.keyCount?.toLocaleString()}
+                </span>
               </div>
               {health.services.cache.hitRate !== undefined && (
                 <div>
                   <span className="text-gray-500">Hit Rate:</span>{' '}
-                  <span className="font-medium">{(health.services.cache.hitRate * 100).toFixed(1)}%</span>
+                  <span className="font-medium">
+                    {(health.services.cache.hitRate * 100).toFixed(1)}%
+                  </span>
                 </div>
               )}
             </div>
@@ -337,7 +352,7 @@ export default function HealthDashboard() {
                   )}
                 >
                   <div>
-                    <p className="font-medium text-sm">{adapter.provider}</p>
+                    <p className="text-sm font-medium">{adapter.provider}</p>
                     <p className="text-xs text-gray-500">{adapter.model}</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -433,9 +448,7 @@ function ServiceCard({
         </div>
       </div>
 
-      {message && status !== 'up' && (
-        <p className="mt-3 text-sm text-gray-500">{message}</p>
-      )}
+      {message && status !== 'up' && <p className="mt-3 text-sm text-gray-500">{message}</p>}
 
       {children}
     </div>
@@ -454,7 +467,9 @@ function StatusBadge({ status }: { status?: 'up' | 'down' | 'degraded' | 'not_co
 
   const { label, className } = config[status];
 
-  return <span className={clsx('rounded-full px-2 py-1 text-xs font-medium', className)}>{label}</span>;
+  return (
+    <span className={clsx('rounded-full px-2 py-1 text-xs font-medium', className)}>{label}</span>
+  );
 }
 
 function formatBytes(bytes: number): string {

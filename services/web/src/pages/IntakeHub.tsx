@@ -1,7 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
-import { Upload, File, CheckCircle, AlertCircle, RefreshCw, Trash2, Clock, Loader2 } from 'lucide-react';
+import {
+  Upload,
+  File,
+  CheckCircle,
+  AlertCircle,
+  RefreshCw,
+  Trash2,
+  Clock,
+  Loader2,
+} from 'lucide-react';
 import { useState, useCallback } from 'react';
 
 const api = axios.create({
@@ -147,7 +156,7 @@ export default function IntakeHub() {
         className={clsx(
           'rounded-lg border-2 border-dashed p-12 text-center transition-colors',
           isDragging ? 'border-entropy-500 bg-entropy-50' : 'border-gray-300 hover:border-gray-400',
-          uploadMutation.isPending && 'opacity-50 pointer-events-none'
+          uploadMutation.isPending && 'pointer-events-none opacity-50'
         )}
       >
         <Upload className="mx-auto mb-4 h-12 w-12 text-gray-400" />
@@ -172,7 +181,7 @@ export default function IntakeHub() {
           className={clsx(
             'inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-white transition-colors',
             uploadMutation.isPending
-              ? 'bg-gray-400 cursor-not-allowed'
+              ? 'cursor-not-allowed bg-gray-400'
               : 'bg-entropy-600 hover:bg-entropy-700'
           )}
         >
@@ -192,9 +201,7 @@ export default function IntakeHub() {
         <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
           <p className="text-red-700">
             Upload failed:{' '}
-            {uploadMutation.error instanceof Error
-              ? uploadMutation.error.message
-              : 'Unknown error'}
+            {uploadMutation.error instanceof Error ? uploadMutation.error.message : 'Unknown error'}
           </p>
         </div>
       )}
@@ -217,14 +224,14 @@ export default function IntakeHub() {
             {pendingUploads.map(([id, { name, size }]) => (
               <div
                 key={id}
-                className="flex items-center gap-4 rounded-lg border border-entropy-200 bg-entropy-50 p-4"
+                className="border-entropy-200 bg-entropy-50 flex items-center gap-4 rounded-lg border p-4"
               >
-                <File className="h-8 w-8 text-entropy-500" />
+                <File className="text-entropy-500 h-8 w-8" />
                 <div className="flex-1">
                   <p className="font-medium">{name}</p>
                   <p className="text-sm text-gray-500">{formatFileSize(size)}</p>
                 </div>
-                <div className="flex items-center gap-2 text-entropy-600">
+                <div className="text-entropy-600 flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
                   <span className="text-sm">Uploading...</span>
                 </div>

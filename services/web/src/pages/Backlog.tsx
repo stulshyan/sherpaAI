@@ -43,7 +43,12 @@ interface FeaturesResponse {
 const columns = [
   { id: 'in_progress', label: 'In Progress', color: 'bg-blue-500', statuses: ['in_progress'] },
   { id: 'ready', label: 'Ready', color: 'bg-green-500', statuses: ['ready'] },
-  { id: 'needs-attention', label: 'Needs Attention', color: 'bg-yellow-500', statuses: ['needs_attention'] },
+  {
+    id: 'needs-attention',
+    label: 'Needs Attention',
+    color: 'bg-yellow-500',
+    statuses: ['needs_attention'],
+  },
   { id: 'pending', label: 'Pending', color: 'bg-gray-400', statuses: ['pending'] },
 ];
 
@@ -90,8 +95,7 @@ export default function Backlog() {
 
   features.forEach((feature) => {
     // Check if feature needs attention (has pending clarifications)
-    const needsAttention =
-      feature.clarifications?.some((c) => c.status === 'pending') ?? false;
+    const needsAttention = feature.clarifications?.some((c) => c.status === 'pending') ?? false;
 
     if (needsAttention) {
       groupedFeatures['needs-attention'].push(feature);
@@ -108,9 +112,7 @@ export default function Backlog() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-6">
         <h2 className="mb-2 text-lg font-semibold text-red-700">Failed to load backlog</h2>
-        <p className="text-red-600">
-          {error instanceof Error ? error.message : 'Unknown error'}
-        </p>
+        <p className="text-red-600">{error instanceof Error ? error.message : 'Unknown error'}</p>
         <button
           onClick={() => refetch()}
           className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
@@ -128,9 +130,7 @@ export default function Backlog() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Feature Backlog</h1>
-            <p className="text-gray-500">
-              {features.length} features • Drag to change status
-            </p>
+            <p className="text-gray-500">{features.length} features • Drag to change status</p>
           </div>
           <button
             onClick={() => refetch()}
@@ -139,7 +139,7 @@ export default function Backlog() {
               'flex items-center gap-2 rounded-lg px-4 py-2 transition-colors',
               isFetching
                 ? 'bg-gray-100 text-gray-400'
-                : 'bg-entropy-600 text-white hover:bg-entropy-700'
+                : 'bg-entropy-600 hover:bg-entropy-700 text-white'
             )}
           >
             <RefreshCw className={clsx('h-4 w-4', isFetching && 'animate-spin')} />
@@ -181,8 +181,7 @@ export default function Backlog() {
                     />
                   ))}
 
-                  {(!groupedFeatures[column.id] ||
-                    groupedFeatures[column.id].length === 0) && (
+                  {(!groupedFeatures[column.id] || groupedFeatures[column.id].length === 0) && (
                     <p className="py-8 text-center text-sm text-gray-500">No features</p>
                   )}
                 </div>
@@ -225,12 +224,12 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
       className={clsx(
         'cursor-pointer rounded-lg border bg-white p-4 transition-all',
         isSelected
-          ? 'border-entropy-500 ring-2 ring-entropy-200'
+          ? 'border-entropy-500 ring-entropy-200 ring-2'
           : 'border-gray-200 hover:shadow-md'
       )}
     >
       <h3 className="mb-2 font-medium">{feature.title}</h3>
-      <p className="mb-3 text-sm text-gray-500 line-clamp-2">{feature.description}</p>
+      <p className="mb-3 line-clamp-2 text-sm text-gray-500">{feature.description}</p>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -249,10 +248,7 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
       {feature.themes && feature.themes.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
           {feature.themes.slice(0, 2).map((theme) => (
-            <span
-              key={theme}
-              className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600"
-            >
+            <span key={theme} className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">
               {theme}
             </span>
           ))}
@@ -272,17 +268,13 @@ interface FeatureDetailPanelProps {
 }
 
 function FeatureDetailPanel({ feature, onClose, onStatusChange }: FeatureDetailPanelProps) {
-  const pendingClarifications =
-    feature.clarifications?.filter((c) => c.status === 'pending') || [];
+  const pendingClarifications = feature.clarifications?.filter((c) => c.status === 'pending') || [];
 
   return (
     <div className="w-96 rounded-lg border border-gray-200 bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Feature Details</h2>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600"
-        >
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
@@ -312,9 +304,7 @@ function FeatureDetailPanel({ feature, onClose, onStatusChange }: FeatureDetailP
         {/* Metrics */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Readiness
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Readiness</label>
             <div className="flex items-center gap-2">
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
                 <div
@@ -328,9 +318,7 @@ function FeatureDetailPanel({ feature, onClose, onStatusChange }: FeatureDetailP
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Priority
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Priority</label>
             <PriorityBadge score={feature.priorityScore} />
           </div>
         </div>

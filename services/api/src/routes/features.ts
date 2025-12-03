@@ -181,7 +181,9 @@ featuresRouter.get('/stats', async (_req, res, next) => {
     const needsAttention = mockFeatures.filter(
       (f) => f.clarifications && f.clarifications.some((c) => c.status === 'pending')
     ).length;
-    const pending = mockFeatures.filter((f) => f.status === 'draft' || f.status === 'needs_clarification').length;
+    const pending = mockFeatures.filter(
+      (f) => f.status === 'draft' || f.status === 'needs_clarification'
+    ).length;
 
     res.json({
       total,
@@ -234,13 +236,7 @@ featuresRouter.get('/recent', async (_req, res, next) => {
  */
 featuresRouter.get('/', async (req, res, next) => {
   try {
-    const {
-      page = '1',
-      limit = '20',
-      status,
-      minReadiness,
-      search,
-    } = req.query;
+    const { page = '1', limit = '20', status, minReadiness, search } = req.query;
 
     let filtered = [...mockFeatures];
 
@@ -437,7 +433,8 @@ featuresRouter.post('/:id/answer', async (req, res, next) => {
 
     // Recalculate readiness score
     const totalClarifications = feature.clarifications?.length || 0;
-    const answeredClarifications = feature.clarifications?.filter((c) => c.status === 'answered').length || 0;
+    const answeredClarifications =
+      feature.clarifications?.filter((c) => c.status === 'answered').length || 0;
 
     if (totalClarifications > 0) {
       // Boost readiness based on answered clarifications
