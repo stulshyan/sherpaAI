@@ -1,8 +1,8 @@
 // Base repository class with common CRUD operations
 
 import { PoolClient, QueryResultRow } from 'pg';
-import { DatabaseClient, QueryBuilder } from './client.js';
 import type { UUID, PaginationParams, PaginatedResult } from '../types/common.js';
+import { DatabaseClient, QueryBuilder } from './client.js';
 
 /**
  * Audit context for tracking changes

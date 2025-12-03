@@ -1,10 +1,10 @@
 // Repository for Audit Log entity
 
 import { QueryResultRow } from 'pg';
-import { DatabaseClient } from '../client.js';
-import { rowToEntityBase } from '../base-repository.js';
 import type { UUID, PaginatedResult, PaginationParams } from '../../types/common.js';
 import type { AuditLogEntry } from '../../types/feature.js';
+import { rowToEntityBase } from '../base-repository.js';
+import { DatabaseClient } from '../client.js';
 
 /**
  * Extended audit log entity

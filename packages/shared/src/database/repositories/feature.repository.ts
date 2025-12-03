@@ -1,13 +1,13 @@
 // Repository for Feature entity
 
 import { QueryResultRow } from 'pg';
-import { DatabaseClient } from '../client.js';
 import {
-  BaseRepository,
-  AuditContext,
-  rowToEntityBase,
-  entityToRowBase,
-} from '../base-repository.js';
+  READINESS_THRESHOLD_LOOP_A,
+  READINESS_THRESHOLD_READY_SOON,
+  READINESS_THRESHOLD_NEEDS_ATTENTION,
+  DEFAULT_WIP_LIMIT,
+} from '../../constants/index.js';
+import type { UUID, PaginationParams } from '../../types/common.js';
 import type {
   Feature,
   FeatureStatus,
@@ -16,14 +16,14 @@ import type {
   FeatureWithDetails,
   DependencyType,
 } from '../../types/feature.js';
-import type { UUID, PaginationParams } from '../../types/common.js';
 import type { ClarificationQuestion } from '../../types/requirement.js';
 import {
-  READINESS_THRESHOLD_LOOP_A,
-  READINESS_THRESHOLD_READY_SOON,
-  READINESS_THRESHOLD_NEEDS_ATTENTION,
-  DEFAULT_WIP_LIMIT,
-} from '../../constants/index.js';
+  BaseRepository,
+  AuditContext,
+  rowToEntityBase,
+  entityToRowBase,
+} from '../base-repository.js';
+import { DatabaseClient } from '../client.js';
 
 /**
  * Database row type for features
