@@ -11,6 +11,7 @@ import { errorHandler } from './middleware/error-handler.js';
 import { backlogRouter } from './routes/backlog.js';
 import { featuresRouter } from './routes/features.js';
 import { healthRouter } from './routes/health.js';
+import { intakeRouter } from './routes/intake.js';
 import { requirementsRouter } from './routes/requirements.js';
 import { testHarnessRouter } from './routes/test-harness.js';
 
@@ -44,15 +45,18 @@ async function main() {
         requirements: '/api/v1/requirements',
         features: '/api/v1/features',
         backlog: '/api/v1/backlog',
+        intake: '/api/v1/intake',
       },
     });
   });
 
   // Routes
   app.use('/health', healthRouter);
+  app.use('/api/v1/health', healthRouter); // Also serve health under /api/v1
   app.use('/api/v1/requirements', requirementsRouter);
   app.use('/api/v1/features', featuresRouter);
   app.use('/api/v1/backlog', backlogRouter);
+  app.use('/api/v1/intake', intakeRouter);
   app.use('/api/v1/test-harness', testHarnessRouter);
 
   // Error handling
