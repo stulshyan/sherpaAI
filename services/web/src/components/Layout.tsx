@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { LayoutDashboard, Upload, List, Settings, FlaskConical } from 'lucide-react';
+import { LayoutDashboard, Upload, List, Settings, FlaskConical, Activity } from 'lucide-react';
 import { Outlet, NavLink } from 'react-router-dom';
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/intake', icon: Upload, label: 'Intake Hub' },
   { to: '/backlog', icon: List, label: 'Backlog' },
   { to: '/test-harness', icon: FlaskConical, label: 'Test Harness' },
+  { to: '/health', icon: Activity, label: 'System Health' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
