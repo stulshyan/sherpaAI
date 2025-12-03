@@ -1,11 +1,7 @@
 // Tests for S3 Key Utilities
 
 import { describe, it, expect } from 'vitest';
-import {
-  S3KeyBuilder,
-  getS3BucketName,
-  detectContentType,
-} from './s3-keys.js';
+import { S3KeyBuilder, getS3BucketName, detectContentType } from './s3-keys.js';
 
 describe('S3KeyBuilder', () => {
   const clientId = 'client-123';
@@ -16,48 +12,92 @@ describe('S3KeyBuilder', () => {
   describe('uploadKey', () => {
     it('should generate correct upload key', () => {
       const key = S3KeyBuilder.uploadKey(clientId, projectId, requirementId, 'document.pdf');
-      expect(key).toBe('clients/client-123/projects/proj-456/requirements/req-789/original/document.pdf');
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/requirements/req-789/original/document.pdf'
+      );
     });
   });
 
   describe('extractedTextKey', () => {
     it('should generate correct extracted text key', () => {
       const key = S3KeyBuilder.extractedTextKey(clientId, projectId, requirementId);
-      expect(key).toBe('clients/client-123/projects/proj-456/requirements/req-789/processed/extracted_text.txt');
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/requirements/req-789/processed/extracted_text.txt'
+      );
     });
   });
 
   describe('artifactKey', () => {
     it('should generate correct decomposition artifact key', () => {
-      const key = S3KeyBuilder.artifactKey(clientId, projectId, featureId, 1, 'decomposition', 'result.json');
-      expect(key).toBe('clients/client-123/projects/proj-456/features/feat-001/v1/01_decomposition/result.json');
+      const key = S3KeyBuilder.artifactKey(
+        clientId,
+        projectId,
+        featureId,
+        1,
+        'decomposition',
+        'result.json'
+      );
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/features/feat-001/v1/01_decomposition/result.json'
+      );
     });
 
     it('should generate correct impact analysis artifact key', () => {
-      const key = S3KeyBuilder.artifactKey(clientId, projectId, featureId, 2, 'impact_analysis', 'report.json');
-      expect(key).toBe('clients/client-123/projects/proj-456/features/feat-001/v2/02_impact_analysis/report.json');
+      const key = S3KeyBuilder.artifactKey(
+        clientId,
+        projectId,
+        featureId,
+        2,
+        'impact_analysis',
+        'report.json'
+      );
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/features/feat-001/v2/02_impact_analysis/report.json'
+      );
     });
 
     it('should generate correct living spec artifact key', () => {
-      const key = S3KeyBuilder.artifactKey(clientId, projectId, featureId, 1, 'living_spec', 'spec.md');
-      expect(key).toBe('clients/client-123/projects/proj-456/features/feat-001/v1/03_living_spec/spec.md');
+      const key = S3KeyBuilder.artifactKey(
+        clientId,
+        projectId,
+        featureId,
+        1,
+        'living_spec',
+        'spec.md'
+      );
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/features/feat-001/v1/03_living_spec/spec.md'
+      );
     });
 
     it('should generate correct code draft artifact key', () => {
-      const key = S3KeyBuilder.artifactKey(clientId, projectId, featureId, 1, 'code_draft', 'code.zip');
-      expect(key).toBe('clients/client-123/projects/proj-456/features/feat-001/v1/04_code_draft/code.zip');
+      const key = S3KeyBuilder.artifactKey(
+        clientId,
+        projectId,
+        featureId,
+        1,
+        'code_draft',
+        'code.zip'
+      );
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/features/feat-001/v1/04_code_draft/code.zip'
+      );
     });
   });
 
   describe('decompositionKey', () => {
     it('should generate correct decomposition key with default filename', () => {
       const key = S3KeyBuilder.decompositionKey(clientId, projectId, requirementId);
-      expect(key).toBe('clients/client-123/projects/proj-456/requirements/req-789/01_decomposition/result.json');
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/requirements/req-789/01_decomposition/result.json'
+      );
     });
 
     it('should generate correct decomposition key with custom filename', () => {
       const key = S3KeyBuilder.decompositionKey(clientId, projectId, requirementId, 'themes.json');
-      expect(key).toBe('clients/client-123/projects/proj-456/requirements/req-789/01_decomposition/themes.json');
+      expect(key).toBe(
+        'clients/client-123/projects/proj-456/requirements/req-789/01_decomposition/themes.json'
+      );
     });
   });
 
@@ -129,7 +169,8 @@ describe('S3KeyBuilder', () => {
     });
 
     it('should parse feature key with version correctly', () => {
-      const key = 'clients/client-123/projects/proj-456/features/feat-001/v2/01_decomposition/result.json';
+      const key =
+        'clients/client-123/projects/proj-456/features/feat-001/v2/01_decomposition/result.json';
       const parsed = S3KeyBuilder.parseKey(key);
       expect(parsed).toEqual({
         clientId: 'client-123',
@@ -178,7 +219,9 @@ describe('S3KeyBuilder', () => {
     });
 
     it('should preserve valid characters', () => {
-      expect(S3KeyBuilder.sanitizeFilename('valid-file_name.v1.pdf')).toBe('valid-file_name.v1.pdf');
+      expect(S3KeyBuilder.sanitizeFilename('valid-file_name.v1.pdf')).toBe(
+        'valid-file_name.v1.pdf'
+      );
     });
   });
 });
@@ -198,7 +241,9 @@ describe('detectContentType', () => {
     expect(detectContentType('data.json')).toBe('application/json');
     expect(detectContentType('readme.md')).toBe('text/markdown');
     expect(detectContentType('notes.txt')).toBe('text/plain');
-    expect(detectContentType('report.docx')).toBe('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    expect(detectContentType('report.docx')).toBe(
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    );
   });
 
   it('should detect image types', () => {

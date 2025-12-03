@@ -155,7 +155,6 @@ export class ExecutionRepository {
     };
   }
 
-
   /**
    * Find execution by ID
    */
@@ -404,7 +403,9 @@ export class ExecutionRepository {
   /**
    * Get daily cost summary for the last N days
    */
-  async getDailyCostSummary(days: number = 30): Promise<Array<{ date: string; cost: number; executions: number }>> {
+  async getDailyCostSummary(
+    days: number = 30
+  ): Promise<Array<{ date: string; cost: number; executions: number }>> {
     const rows = await this.db.queryAll<{ date: string; cost: string; executions: string }>(
       `SELECT
          DATE(created_at) as date,

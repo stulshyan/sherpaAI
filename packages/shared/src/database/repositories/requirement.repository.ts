@@ -90,7 +90,10 @@ export class RequirementRepository extends BaseRepository<RequirementEntity> {
     };
 
     if (audit) {
-      return this.createWithAudit(data as Omit<RequirementEntity, 'id' | 'createdAt' | 'updatedAt'>, audit);
+      return this.createWithAudit(
+        data as Omit<RequirementEntity, 'id' | 'createdAt' | 'updatedAt'>,
+        audit
+      );
     }
     return this.create(data as Omit<RequirementEntity, 'id' | 'createdAt' | 'updatedAt'>);
   }
@@ -225,10 +228,7 @@ export class RequirementRepository extends BaseRepository<RequirementEntity> {
   /**
    * Mark requirement as decomposed
    */
-  async markDecomposed(
-    id: UUID,
-    audit?: AuditContext
-  ): Promise<RequirementEntity | null> {
+  async markDecomposed(id: UUID, audit?: AuditContext): Promise<RequirementEntity | null> {
     if (audit) {
       return this.updateWithAudit(id, { status: 'decomposed' as RequirementStatus }, audit);
     }
@@ -269,9 +269,7 @@ export class RequirementRepository extends BaseRepository<RequirementEntity> {
   /**
    * Count requirements by status for a project
    */
-  async countByStatusForProject(
-    projectId: UUID
-  ): Promise<Record<RequirementStatus, number>> {
+  async countByStatusForProject(projectId: UUID): Promise<Record<RequirementStatus, number>> {
     const rows = await this.db.queryAll<{ status: string; count: string }>(
       `SELECT status, COUNT(*) as count
        FROM requirements

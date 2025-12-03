@@ -54,11 +54,10 @@ describe('QueryBuilder', () => {
     });
 
     it('should support custom RETURNING clause', () => {
-      const { text, values } = QueryBuilder.insert(
-        'features',
-        { title: 'Test', status: 'draft' },
-        ['id', 'title']
-      );
+      const { text, values } = QueryBuilder.insert('features', { title: 'Test', status: 'draft' }, [
+        'id',
+        'title',
+      ]);
 
       expect(text).toContain('RETURNING id, title');
       expect(values).toEqual(['Test', 'draft']);

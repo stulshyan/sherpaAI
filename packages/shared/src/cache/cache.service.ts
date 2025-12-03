@@ -193,11 +193,7 @@ export class CacheService {
   /**
    * Get value or set if not exists
    */
-  async getOrSet<T>(
-    key: string,
-    factory: () => Promise<T>,
-    ttlSeconds?: number
-  ): Promise<T> {
+  async getOrSet<T>(key: string, factory: () => Promise<T>, ttlSeconds?: number): Promise<T> {
     const existing = await this.get<T>(key);
     if (existing !== null) {
       return existing;
@@ -255,11 +251,7 @@ export class CacheService {
   /**
    * Acquire a distributed lock
    */
-  async acquireLock(
-    lockKey: string,
-    value: string,
-    ttlSeconds: number = 300
-  ): Promise<boolean> {
+  async acquireLock(lockKey: string, value: string, ttlSeconds: number = 300): Promise<boolean> {
     const client = this.getClient();
     const result = await client.set(lockKey, value, {
       NX: true,
@@ -291,11 +283,7 @@ export class CacheService {
   /**
    * Extend lock TTL
    */
-  async extendLock(
-    lockKey: string,
-    value: string,
-    ttlSeconds: number
-  ): Promise<boolean> {
+  async extendLock(lockKey: string, value: string, ttlSeconds: number): Promise<boolean> {
     const client = this.getClient();
     const script = `
       if redis.call("get", KEYS[1]) == ARGV[1] then

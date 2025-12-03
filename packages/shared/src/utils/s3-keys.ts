@@ -46,11 +46,7 @@ export class S3KeyBuilder {
    * Generate S3 key for extracted text from requirement
    * Pattern: clients/{clientId}/projects/{projectId}/requirements/{reqId}/processed/extracted_text.txt
    */
-  static extractedTextKey(
-    clientId: string,
-    projectId: string,
-    requirementId: string
-  ): string {
+  static extractedTextKey(clientId: string, projectId: string, requirementId: string): string {
     return `clients/${clientId}/projects/${projectId}/requirements/${requirementId}/${S3_PATHS.PROCESSED}/extracted_text.txt`;
   }
 
@@ -119,11 +115,7 @@ export class S3KeyBuilder {
    * Generate S3 prefix for listing requirement files
    * Pattern: clients/{clientId}/projects/{projectId}/requirements/{reqId}/
    */
-  static requirementPrefix(
-    clientId: string,
-    projectId: string,
-    requirementId: string
-  ): string {
+  static requirementPrefix(clientId: string, projectId: string, requirementId: string): string {
     return `clients/${clientId}/projects/${projectId}/requirements/${requirementId}/`;
   }
 
@@ -131,11 +123,7 @@ export class S3KeyBuilder {
    * Generate S3 prefix for listing feature artifacts
    * Pattern: clients/{clientId}/projects/{projectId}/features/{featureId}/
    */
-  static featurePrefix(
-    clientId: string,
-    projectId: string,
-    featureId: string
-  ): string {
+  static featurePrefix(clientId: string, projectId: string, featureId: string): string {
     return `clients/${clientId}/projects/${projectId}/features/${featureId}/`;
   }
 

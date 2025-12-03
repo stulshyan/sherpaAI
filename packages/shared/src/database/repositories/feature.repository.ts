@@ -89,7 +89,9 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
       status: typedRow.status as FeatureStatus,
       priorityScore: parseFloat(typedRow.priority_score) || 0,
       readinessScore: parseFloat(typedRow.readiness_score) || 0,
-      complexityScore: typedRow.complexity_score ? parseFloat(typedRow.complexity_score) : undefined,
+      complexityScore: typedRow.complexity_score
+        ? parseFloat(typedRow.complexity_score)
+        : undefined,
       businessValue: typedRow.business_value ? parseFloat(typedRow.business_value) : undefined,
       urgencyScore: typedRow.urgency_score ? parseFloat(typedRow.urgency_score) : undefined,
     };
@@ -111,10 +113,7 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
   /**
    * Create a new feature
    */
-  async createFeature(
-    input: CreateFeatureInput,
-    audit?: AuditContext
-  ): Promise<FeatureEntity> {
+  async createFeature(input: CreateFeatureInput, audit?: AuditContext): Promise<FeatureEntity> {
     const data = {
       requirementId: input.requirementId,
       projectId: input.projectId,
@@ -131,7 +130,10 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
     };
 
     if (audit) {
-      return this.createWithAudit(data as Omit<FeatureEntity, 'id' | 'createdAt' | 'updatedAt'>, audit);
+      return this.createWithAudit(
+        data as Omit<FeatureEntity, 'id' | 'createdAt' | 'updatedAt'>,
+        audit
+      );
     }
     return this.create(data as Omit<FeatureEntity, 'id' | 'createdAt' | 'updatedAt'>);
   }
@@ -156,10 +158,7 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
   /**
    * Find features by project ID
    */
-  async findByProjectId(
-    projectId: UUID,
-    pagination?: PaginationParams
-  ): Promise<FeatureEntity[]> {
+  async findByProjectId(projectId: UUID, pagination?: PaginationParams): Promise<FeatureEntity[]> {
     let query = `
       SELECT * FROM features
       WHERE project_id = $1
@@ -192,10 +191,7 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
   /**
    * Find features by status
    */
-  async findByStatus(
-    projectId: UUID,
-    status: FeatureStatus
-  ): Promise<FeatureEntity[]> {
+  async findByStatus(projectId: UUID, status: FeatureStatus): Promise<FeatureEntity[]> {
     const rows = await this.db.queryAll<FeatureRow>(
       `SELECT * FROM features WHERE project_id = $1 AND status = $2 ORDER BY priority_score DESC`,
       [projectId, status]
@@ -206,10 +202,7 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
   /**
    * Find features ready for Loop A (high readiness, status = 'ready')
    */
-  async findReadyForLoopA(
-    projectId: UUID,
-    limit: number = 10
-  ): Promise<FeatureEntity[]> {
+  async findReadyForLoopA(projectId: UUID, limit: number = 10): Promise<FeatureEntity[]> {
     const rows = await this.db.queryAll<FeatureRow>(
       `SELECT * FROM features
        WHERE project_id = $1
@@ -498,10 +491,7 @@ export class FeatureRepository extends BaseRepository<FeatureEntity> {
   /**
    * Update feature readiness details
    */
-  async updateReadiness(
-    featureId: UUID,
-    readiness: Partial<FeatureReadiness>
-  ): Promise<void> {
+  async updateReadiness(featureId: UUID, readiness: Partial<FeatureReadiness>): Promise<void> {
     const existing = await this.db.queryOne<QueryResultRow>(
       `SELECT * FROM feature_readiness WHERE feature_id = $1`,
       [featureId]

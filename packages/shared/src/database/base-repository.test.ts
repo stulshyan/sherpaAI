@@ -1,12 +1,7 @@
 // Tests for Base Repository utilities
 
 import { describe, it, expect } from 'vitest';
-import {
-  snakeToCamel,
-  camelToSnake,
-  rowToEntityBase,
-  entityToRowBase,
-} from './base-repository.js';
+import { snakeToCamel, camelToSnake, rowToEntityBase, entityToRowBase } from './base-repository.js';
 
 describe('snakeToCamel', () => {
   it('should convert snake_case to camelCase', () => {

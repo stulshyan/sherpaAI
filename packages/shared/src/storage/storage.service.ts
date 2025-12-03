@@ -158,12 +158,7 @@ export class StorageService {
     bucket?: string
   ): Promise<string> {
     const content = JSON.stringify(data, null, 2);
-    return this.upload(
-      key,
-      content,
-      { ...options, contentType: 'application/json' },
-      bucket
-    );
+    return this.upload(key, content, { ...options, contentType: 'application/json' }, bucket);
   }
 
   /**
@@ -245,7 +240,12 @@ export class StorageService {
   async getMetadata(
     key: string,
     bucket?: string
-  ): Promise<{ size: number; lastModified: Date; contentType?: string; metadata?: Record<string, string> } | null> {
+  ): Promise<{
+    size: number;
+    lastModified: Date;
+    contentType?: string;
+    metadata?: Record<string, string>;
+  } | null> {
     const targetBucket = bucket || this.defaultBucket;
     if (!targetBucket) {
       throw new Error('Bucket name required');
@@ -397,11 +397,7 @@ export class StorageService {
   /**
    * Generate presigned URL for download
    */
-  async getDownloadUrl(
-    key: string,
-    expiresIn: number = 3600,
-    bucket?: string
-  ): Promise<string> {
+  async getDownloadUrl(key: string, expiresIn: number = 3600, bucket?: string): Promise<string> {
     const targetBucket = bucket || this.defaultBucket;
     if (!targetBucket) {
       throw new Error('Bucket name required');

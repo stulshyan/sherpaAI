@@ -108,10 +108,7 @@ export class AuditRepository {
    * Find audit log by ID
    */
   async findById(id: UUID): Promise<AuditLogEntity | null> {
-    const row = await this.db.queryOne<AuditRow>(
-      `SELECT * FROM audit_log WHERE id = $1`,
-      [id]
-    );
+    const row = await this.db.queryOne<AuditRow>(`SELECT * FROM audit_log WHERE id = $1`, [id]);
     return row ? this.rowToEntity(row) : null;
   }
 
@@ -176,10 +173,7 @@ export class AuditRepository {
   /**
    * Find audit logs by actor
    */
-  async findByActor(
-    actor: string,
-    pagination?: PaginationParams
-  ): Promise<AuditLogEntity[]> {
+  async findByActor(actor: string, pagination?: PaginationParams): Promise<AuditLogEntity[]> {
     let query = `
       SELECT * FROM audit_log
       WHERE actor = $1
@@ -201,10 +195,7 @@ export class AuditRepository {
   /**
    * Find audit logs by action type
    */
-  async findByAction(
-    action: string,
-    pagination?: PaginationParams
-  ): Promise<AuditLogEntity[]> {
+  async findByAction(action: string, pagination?: PaginationParams): Promise<AuditLogEntity[]> {
     let query = `
       SELECT * FROM audit_log
       WHERE action = $1
@@ -294,10 +285,7 @@ export class AuditRepository {
   /**
    * Get recent audit logs for a specific entity type
    */
-  async getRecentForEntityType(
-    entityType: string,
-    limit: number = 50
-  ): Promise<AuditLogEntity[]> {
+  async getRecentForEntityType(entityType: string, limit: number = 50): Promise<AuditLogEntity[]> {
     const rows = await this.db.queryAll<AuditRow>(
       `SELECT * FROM audit_log WHERE entity_type = $1 ORDER BY created_at DESC LIMIT $2`,
       [entityType, limit]
@@ -338,9 +326,7 @@ export class AuditRepository {
   /**
    * Get audit log summary for a time period
    */
-  async getSummary(
-    days: number = 30
-  ): Promise<{
+  async getSummary(days: number = 30): Promise<{
     totalEntries: number;
     byEntityType: Record<string, number>;
     byAction: Record<string, number>;

@@ -50,10 +50,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
    * Find entity by ID
    */
   async findById(id: UUID): Promise<T | null> {
-    const row = await this.db.queryOne(
-      `SELECT * FROM ${this.tableName} WHERE id = $1`,
-      [id]
-    );
+    const row = await this.db.queryOne(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
     return row ? this.rowToEntity(row) : null;
   }
 
@@ -105,9 +102,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
         `SELECT * FROM ${this.tableName} ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
         [pagination.limit, offset]
       ),
-      this.db.queryOne<{ count: string }>(
-        `SELECT COUNT(*) as count FROM ${this.tableName}`
-      ),
+      this.db.queryOne<{ count: string }>(`SELECT COUNT(*) as count FROM ${this.tableName}`),
     ]);
 
     const total = parseInt(countResult?.count || '0', 10);
@@ -172,17 +167,10 @@ export abstract class BaseRepository<T extends BaseEntity> {
   /**
    * Update entity with audit trail
    */
-  async updateWithAudit(
-    id: UUID,
-    data: Partial<T>,
-    audit: AuditContext
-  ): Promise<T | null> {
+  async updateWithAudit(id: UUID, data: Partial<T>, audit: AuditContext): Promise<T | null> {
     return this.db.withTransaction(async (client) => {
       // Get previous state
-      const prevResult = await client.query(
-        `SELECT * FROM ${this.tableName} WHERE id = $1`,
-        [id]
-      );
+      const prevResult = await client.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
       const previous = prevResult.rows[0] ? this.rowToEntity(prevResult.rows[0]) : null;
 
       if (!previous) {
@@ -216,10 +204,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
    * Delete entity by ID
    */
   async delete(id: UUID): Promise<boolean> {
-    const result = await this.db.query(
-      `DELETE FROM ${this.tableName} WHERE id = $1`,
-      [id]
-    );
+    const result = await this.db.query(`DELETE FROM ${this.tableName} WHERE id = $1`, [id]);
     return (result.rowCount ?? 0) > 0;
   }
 
@@ -229,10 +214,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
   async deleteWithAudit(id: UUID, audit: AuditContext): Promise<boolean> {
     return this.db.withTransaction(async (client) => {
       // Get previous state
-      const prevResult = await client.query(
-        `SELECT * FROM ${this.tableName} WHERE id = $1`,
-        [id]
-      );
+      const prevResult = await client.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
       const previous = prevResult.rows[0] ? this.rowToEntity(prevResult.rows[0]) : null;
 
       if (!previous) {
@@ -240,10 +222,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
       }
 
       // Delete the entity
-      const deleteResult = await client.query(
-        `DELETE FROM ${this.tableName} WHERE id = $1`,
-        [id]
-      );
+      const deleteResult = await client.query(`DELETE FROM ${this.tableName} WHERE id = $1`, [id]);
 
       // Create audit log entry
       await this.createAuditLog(client, {
@@ -301,10 +280,7 @@ export abstract class BaseRepository<T extends BaseEntity> {
   /**
    * Find first entity matching a condition
    */
-  protected async findOneWhere(
-    whereClause: string,
-    params: unknown[]
-  ): Promise<T | null> {
+  protected async findOneWhere(whereClause: string, params: unknown[]): Promise<T | null> {
     const row = await this.db.queryOne(
       `SELECT * FROM ${this.tableName} WHERE ${whereClause}`,
       params
