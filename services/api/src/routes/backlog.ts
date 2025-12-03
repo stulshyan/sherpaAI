@@ -842,9 +842,10 @@ backlogRouter.post(
       const requiredReadiness = readinessRequirements[nextLoop] || 0;
 
       if (featureEntity.readinessScore < requiredReadiness && !force) {
-        const blockingQuestions = featureDetails?.clarificationQuestions.filter(
-          (q) => !q.answer && q.priority === 'blocking'
-        ) || [];
+        const blockingQuestions =
+          featureDetails?.clarificationQuestions.filter(
+            (q) => !q.answer && q.priority === 'blocking'
+          ) || [];
         res.status(400).json({
           error: {
             code: 'INSUFFICIENT_READINESS',
@@ -858,7 +859,8 @@ backlogRouter.post(
       }
 
       // Check for blocking dependencies
-      const blockingDeps = featureDetails?.dependencies.filter((d) => d.dependencyType === 'blocks') || [];
+      const blockingDeps =
+        featureDetails?.dependencies.filter((d) => d.dependencyType === 'blocks') || [];
       if (blockingDeps.length > 0 && !force) {
         // Check if blocking features are completed
         const db = getDatabase();
