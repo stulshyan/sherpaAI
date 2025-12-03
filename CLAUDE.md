@@ -164,11 +164,13 @@ interface ModelAdapter {
 ```
 
 **Supported Providers:**
+
 - **Anthropic**: Claude Sonnet 4.5 (recommended), Claude Opus 4.5, Claude 3.5 Sonnet, Claude 3 Haiku
 - **OpenAI**: GPT-4o (recommended), GPT-4o Mini, GPT-4 Turbo
 - **Google**: Gemini 1.5 Pro (recommended), Gemini 1.5 Flash
 
 **Features:**
+
 - Automatic fallback chains with circuit breaker pattern
 - Hot-swap configuration without restarts
 - Cost tracking and token counting
@@ -186,6 +188,7 @@ Located in `packages/agents/`. Base classes and utilities for AI agents:
 - `PluginRegistry` - Pre/post processors for extensibility
 
 **Implemented Agents:**
+
 - `ClassifierAgent` - Categorizes requirements (new_feature, enhancement, epic, bug_fix)
 - `DecomposerAgent` - Breaks requirements into themes, atomic requirements, and features
 
@@ -201,32 +204,35 @@ Located in `packages/shared/src/services/`:
 
 Located in `services/api/src/routes/`:
 
-| Route | Description |
-|-------|-------------|
-| `/health` | Service health, readiness, liveness probes |
-| `/api/v1/requirements` | Upload, retrieve, decompose requirements |
-| `/api/v1/features` | CRUD operations for features |
-| `/api/v1/backlog` | Backlog views (now-playing, ready-soon, needs-attention) |
-| `/api/v1/questions` | Clarification questions management |
-| `/api/v1/intake` | Document intake processing |
-| `/api/v1/settings` | Model and configuration settings |
-| `/api/test-harness` | Testing utilities (non-production) |
+| Route                  | Description                                              |
+| ---------------------- | -------------------------------------------------------- |
+| `/health`              | Service health, readiness, liveness probes               |
+| `/api/v1/requirements` | Upload, retrieve, decompose requirements                 |
+| `/api/v1/features`     | CRUD operations for features                             |
+| `/api/v1/backlog`      | Backlog views (now-playing, ready-soon, needs-attention) |
+| `/api/v1/questions`    | Clarification questions management                       |
+| `/api/v1/intake`       | Document intake processing                               |
+| `/api/v1/settings`     | Model and configuration settings                         |
+| `/api/test-harness`    | Testing utilities (non-production)                       |
 
 ## Key Types
 
 ### Requirement Lifecycle
+
 ```
 uploaded -> extracting -> extracted -> classifying -> classified -> decomposing -> decomposed
                                                                               └-> failed
 ```
 
 ### Feature Status
+
 ```
 draft -> needs_clarification -> ready -> in_progress -> completed
                                     └-> blocked     └-> cancelled
 ```
 
 ### Requirement Types
+
 - `new_feature` - Entirely new functionality
 - `enhancement` - Improvement to existing feature
 - `epic` - Large multi-feature initiative
@@ -271,6 +277,7 @@ ENABLE_FALLBACK_CHAIN=true
 ## Testing
 
 Tests are co-located with source files (`*.test.ts`). Uses Vitest with:
+
 - Global test functions enabled
 - Node environment
 - V8 coverage provider
@@ -288,18 +295,21 @@ pnpm test packages/agents/src/base-agent.test.ts
 ## Code Style
 
 ### TypeScript
+
 - Strict mode enabled
 - ES2022 target with ESNext modules
 - `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns` enabled
 - `noUncheckedIndexedAccess` for safer array access
 
 ### ESLint Rules
+
 - No unused variables (except those prefixed with `_`)
 - Import ordering: builtin > external > internal > parent > sibling > index
 - No console.log (use console.warn/error or proper logging)
 - Strict equality (`===`) required
 
 ### Prettier
+
 - Single quotes
 - 2-space indentation
 - Trailing commas (ES5)
@@ -309,7 +319,9 @@ pnpm test packages/agents/src/base-agent.test.ts
 ## CI/CD
 
 ### CI Pipeline (`.github/workflows/ci.yml`)
+
 Runs on every push/PR to main:
+
 1. **Lint** - ESLint + Prettier check
 2. **Type Check** - TypeScript compilation
 3. **Test** - Vitest with coverage
@@ -317,6 +329,7 @@ Runs on every push/PR to main:
 5. **Docker Build** - API, Orchestrator, Web images
 
 ### CD Pipeline (`.github/workflows/deploy-staging.yml`)
+
 Deploys to staging on merge to main.
 
 ## Notes for AI Assistants
@@ -335,6 +348,7 @@ Deploys to staging on merge to main.
 ## Common Patterns
 
 ### Creating a New Agent
+
 ```typescript
 import { BaseAgent, AgentInput, AgentOutput } from '@entropy/agents';
 import { AgentType } from '@entropy/shared/types';
@@ -352,6 +366,7 @@ export class MyAgent extends BaseAgent {
 ```
 
 ### Adding API Routes
+
 ```typescript
 import { Router } from 'express';
 const router = Router();
@@ -366,6 +381,7 @@ export default router;
 ```
 
 ### Working with Decomposition Results
+
 ```typescript
 import { DecompositionStorageService } from '@entropy/shared/services';
 
