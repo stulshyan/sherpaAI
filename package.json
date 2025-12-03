@@ -29,7 +29,9 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@types/franc": "^6.0.0",
     "@types/node": "^20.10.0",
+    "@types/pdf-parse": "^1.1.5",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
     "@vitest/coverage-v8": "^1.0.0",
@@ -54,5 +56,11 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "file-type": "^21.1.1",
+    "franc": "^6.2.0",
+    "mammoth": "^1.11.0",
+    "pdf-parse": "^2.4.5"
   }
 }

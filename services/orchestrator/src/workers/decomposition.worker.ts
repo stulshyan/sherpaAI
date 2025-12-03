@@ -1,88 +1,157 @@
-// Decomposition worker
+// Decomposition worker for S-039
+// Processes decomposition jobs using the orchestrator
 
-import { createClassifierAgent, createDecomposerAgent } from '@entropy/agents';
-import { createLogger } from '@entropy/shared';
+import { createLogger, getDatabase, RequirementRepository } from '@entropy/shared';
+import {
+  createDecompositionOrchestrator,
+  type PipelineState,
+} from '../decomposition-orchestrator.js';
 
 const logger = createLogger('decomposition-worker');
 
 export interface DecompositionJob {
   requirementId: string;
   projectId: string;
-  requirementText: string;
+  priority?: 'normal' | 'high';
+  force?: boolean;
 }
 
 export class DecompositionWorker {
   private _running = false;
-  private classifierAgent;
-  private decomposerAgent;
+  private pollInterval: NodeJS.Timeout | null = null;
+  private processingJobs = new Set<string>();
+  private requirementRepo: RequirementRepository | null = null;
 
   get isRunning(): boolean {
     return this._running;
   }
 
   constructor() {
-    this.classifierAgent = createClassifierAgent();
-    this.decomposerAgent = createDecomposerAgent();
+    // Services will be initialized on start
   }
 
   async start(): Promise<void> {
     logger.info('Starting decomposition worker');
     this._running = true;
 
-    // TODO: Connect to BullMQ and process jobs
-    // For now, this is a placeholder
+    // Initialize database connection
+    const db = getDatabase();
+    await db.connect();
+    this.requirementRepo = new RequirementRepository(db);
+
+    // Start polling for pending jobs
+    // In production, this would be replaced with BullMQ job queue
+    this.startPolling();
   }
 
   async stop(): Promise<void> {
     logger.info('Stopping decomposition worker');
     this._running = false;
+
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
+
+    // Wait for any in-progress jobs to complete
+    while (this.processingJobs.size > 0) {
+      logger.info('Waiting for jobs to complete', { count: this.processingJobs.size });
+      await this.sleep(1000);
+    }
   }
 
-  async processJob(job: DecompositionJob): Promise<void> {
+  /**
+   * Start polling for pending requirements
+   */
+  private startPolling(): void {
+    // Poll every 5 seconds for pending requirements
+    this.pollInterval = setInterval(async () => {
+      if (!this._running) return;
+
+      try {
+        await this.pollForJobs();
+      } catch (error) {
+        logger.error('Polling error', { error });
+      }
+    }, 5000);
+
+    // Initial poll
+    this.pollForJobs().catch((error) => {
+      logger.error('Initial poll error', { error });
+    });
+  }
+
+  /**
+   * Poll for pending requirements to process
+   */
+  private async pollForJobs(): Promise<void> {
+    if (!this.requirementRepo) return;
+
+    // Find requirements in 'extracting' status (triggered by API)
+    const pending = await this.requirementRepo.findByStatus('extracting');
+
+    for (const requirement of pending) {
+      // Skip if already processing
+      if (this.processingJobs.has(requirement.id)) continue;
+
+      // Process the job
+      this.processJob({
+        requirementId: requirement.id,
+        projectId: requirement.projectId,
+      }).catch((error) => {
+        logger.error('Job processing failed', {
+          requirementId: requirement.id,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      });
+    }
+  }
+
+  /**
+   * Process a decomposition job
+   */
+  async processJob(job: DecompositionJob): Promise<PipelineState> {
     logger.info('Processing decomposition job', {
       requirementId: job.requirementId,
       projectId: job.projectId,
     });
 
+    this.processingJobs.add(job.requirementId);
+
     try {
-      // Step 1: Classify the requirement
-      const classification = await this.classifierAgent.classify(
-        job.requirementId,
-        job.requirementText
-      );
-
-      logger.info('Requirement classified', {
-        requirementId: job.requirementId,
-        type: classification.type,
-        confidence: classification.confidence,
+      // Create orchestrator with progress callback
+      const orchestrator = createDecompositionOrchestrator({
+        maxRetries: 3,
+        timeoutMs: 120000,
+        onProgress: async (state) => {
+          logger.debug('Pipeline progress', {
+            requirementId: state.requirementId,
+            stage: state.stage,
+            progress: state.progress,
+          });
+          // In production, store progress in Redis for API polling
+        },
       });
 
-      // Step 2: Decompose if suggested
-      if (classification.suggestedDecomposition) {
-        const decomposition = await this.decomposerAgent.decompose(
-          job.requirementId,
-          job.requirementText,
-          classification.type
-        );
+      // Execute the full pipeline
+      const result = await orchestrator.execute(job.requirementId);
 
-        logger.info('Requirement decomposed', {
-          requirementId: job.requirementId,
-          themes: decomposition.themes.length,
-          atomicRequirements: decomposition.atomicRequirements.length,
-          featureCandidates: decomposition.featureCandidates.length,
-          questions: decomposition.clarificationQuestions.length,
-        });
-
-        // TODO: Store results in database and S3
-      }
-
-      // TODO: Update requirement status
-    } catch (error) {
-      logger.error('Decomposition job failed', {
+      logger.info('Decomposition job completed', {
         requirementId: job.requirementId,
-        error: error instanceof Error ? error.message : 'Unknown',
+        status: result.stage,
+        featureCount: result.metadata.featureCount,
       });
-      throw error;
+
+      return result;
+    } finally {
+      this.processingJobs.delete(job.requirementId);
     }
+  }
+
+  /**
+   * Sleep helper
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

@@ -81,10 +81,18 @@ export interface FeatureCandidate {
   suggestedPriority: number;
 }
 
+export interface ClassificationIndicators {
+  hasMultipleThemes: boolean;
+  estimatedComplexity: 'low' | 'medium' | 'high';
+  scopeIndicators: string[];
+  ambiguityFlags: string[];
+}
+
 export interface ClassificationResult {
   requirementId: UUID;
   type: RequirementType;
   confidence: number;
   reasoning: string;
   suggestedDecomposition: boolean;
+  indicators?: ClassificationIndicators;
 }
