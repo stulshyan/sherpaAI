@@ -116,14 +116,19 @@ export class TextExtractionService {
 
     // Save extracted text
     const textKey = `${basePath}/extracted_text.txt`;
-    await this.storageService.upload(textKey, result.text, {
-      contentType: 'text/plain; charset=utf-8',
-      metadata: {
-        wordCount: result.wordCount.toString(),
-        pageCount: result.pageCount.toString(),
-        detectedLanguage: result.detectedLanguage,
+    await this.storageService.upload(
+      textKey,
+      result.text,
+      {
+        contentType: 'text/plain; charset=utf-8',
+        metadata: {
+          wordCount: result.wordCount.toString(),
+          pageCount: result.pageCount.toString(),
+          detectedLanguage: result.detectedLanguage,
+        },
       },
-    }, this.bucket);
+      this.bucket
+    );
 
     // Save metadata as JSON
     const metadataKey = `${basePath}/extraction_metadata.json`;
@@ -269,15 +274,17 @@ export class TextExtractionService {
 
     // Detect headings (lines that look like titles)
     const headingPatterns = [
-      /^#+\s/,                                    // Markdown headings
-      /^[A-Z][A-Z\s]{5,}$/,                      // ALL CAPS lines
-      /^\d+\.\s+[A-Z]/,                          // Numbered sections
-      /^[A-Z][^.!?]*:?\s*$/,                     // Title case lines ending with colon or nothing
+      /^#+\s/, // Markdown headings
+      /^[A-Z][A-Z\s]{5,}$/, // ALL CAPS lines
+      /^\d+\.\s+[A-Z]/, // Numbered sections
+      /^[A-Z][^.!?]*:?\s*$/, // Title case lines ending with colon or nothing
     ];
 
     const headings = lines.filter((line) => {
       const trimmed = line.trim();
-      return trimmed.length > 0 && trimmed.length < 100 && headingPatterns.some((p) => p.test(trimmed));
+      return (
+        trimmed.length > 0 && trimmed.length < 100 && headingPatterns.some((p) => p.test(trimmed))
+      );
     });
 
     // Detect lists
@@ -350,7 +357,10 @@ export class TextExtractionService {
       const level = this.inferHeadingLevel(heading);
 
       sections.push({
-        title: heading.replace(/^#+\s*/, '').replace(/^\d+\.\s*/, '').trim(),
+        title: heading
+          .replace(/^#+\s*/, '')
+          .replace(/^\d+\.\s*/, '')
+          .trim(),
         level,
         startOffset: index,
         wordCount: 0,

@@ -152,8 +152,8 @@ export class DecompositionStorageService {
         );
 
         // Create atomic requirement records for this feature
-        const featureARs = decomposition.atomicRequirements.filter(
-          (ar) => candidate.atomicRequirementIds.includes(ar.id)
+        const featureARs = decomposition.atomicRequirements.filter((ar) =>
+          candidate.atomicRequirementIds.includes(ar.id)
         );
 
         for (let i = 0; i < featureARs.length; i++) {
@@ -222,12 +222,7 @@ export class DecompositionStorageService {
    */
   private async storeToS3(basePath: string, decomposition: DecompositionResult): Promise<void> {
     // Store full result
-    await this.storageService.uploadJson(
-      `${basePath}/result.json`,
-      decomposition,
-      {},
-      this.bucket
-    );
+    await this.storageService.uploadJson(`${basePath}/result.json`, decomposition, {}, this.bucket);
 
     // Store themes separately
     await this.storageService.uploadJson(
@@ -335,10 +330,7 @@ export class DecompositionStorageService {
   /**
    * Get decomposition result by version
    */
-  async getByVersion(
-    requirementId: string,
-    version: number
-  ): Promise<DecompositionResult | null> {
+  async getByVersion(requirementId: string, version: number): Promise<DecompositionResult | null> {
     await this.init();
 
     const row = await this.db.queryOne(
@@ -370,10 +362,7 @@ export class DecompositionStorageService {
    * Get decomposition result from S3
    */
   async getFromS3(s3Key: string): Promise<DecompositionResult | null> {
-    const result = await this.storageService.downloadJson<DecompositionResult>(
-      s3Key,
-      this.bucket
-    );
+    const result = await this.storageService.downloadJson<DecompositionResult>(s3Key, this.bucket);
     return result;
   }
 
@@ -452,10 +441,7 @@ export class DecompositionStorageService {
 
     if (row) {
       // Delete from database
-      await this.db.query(
-        `DELETE FROM decomposition_results WHERE id = $1`,
-        [versionId]
-      );
+      await this.db.query(`DELETE FROM decomposition_results WHERE id = $1`, [versionId]);
 
       // Delete from S3
       const s3Key = row.output_s3_key as string;

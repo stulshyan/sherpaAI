@@ -149,12 +149,12 @@ export class ClassifierAgent extends BaseAgent {
   preAnalyze(text: string): PreAnalysisResult {
     const wordCount = text.split(/\s+/).filter((w) => w.length > 0).length;
     const hasMultipleSections = (text.match(/#+\s|^\d+\.\s/gm)?.length || 0) > 3;
-    const hasTechnicalTerms = /\b(API|database|integration|authentication|authorization|component|module|service)\b/i.test(
-      text
-    );
-    const hasActionVerbs = /\b(shall|must|should|will|can|may|implement|create|add|update|delete|display)\b/i.test(
-      text
-    );
+    const hasTechnicalTerms =
+      /\b(API|database|integration|authentication|authorization|component|module|service)\b/i.test(
+        text
+      );
+    const hasActionVerbs =
+      /\b(shall|must|should|will|can|may|implement|create|add|update|delete|display)\b/i.test(text);
 
     // Estimate complexity based on indicators
     let complexityScore = 0;

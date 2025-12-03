@@ -39,11 +39,11 @@ export interface FeatureCandidateForScoring {
  * Scoring weights for each component
  */
 const SCORING_WEIGHTS = {
-  businessClarity: 0.30,
+  businessClarity: 0.3,
   technicalClarity: 0.25,
   testability: 0.25,
-  completeness: 0.10,
-  consistency: 0.10,
+  completeness: 0.1,
+  consistency: 0.1,
 };
 
 /**
@@ -80,12 +80,8 @@ export class ReadinessService {
     questions: ClarificationQuestion[]
   ): ReadinessScore {
     // Filter requirements and questions for this feature
-    const featureARs = atomicRequirements.filter(
-      (ar) => feature.childRequirements.includes(ar.id)
-    );
-    const featureQuestions = questions.filter(
-      (q) => q.featureId === feature.id
-    );
+    const featureARs = atomicRequirements.filter((ar) => feature.childRequirements.includes(ar.id));
+    const featureQuestions = questions.filter((q) => q.featureId === feature.id);
 
     // Calculate component scores
     const components = {
@@ -98,8 +94,7 @@ export class ReadinessService {
 
     // Calculate weighted overall score
     const overall = Object.entries(components).reduce(
-      (sum, [key, value]) =>
-        sum + value * SCORING_WEIGHTS[key as keyof typeof SCORING_WEIGHTS],
+      (sum, [key, value]) => sum + value * SCORING_WEIGHTS[key as keyof typeof SCORING_WEIGHTS],
       0
     );
 
@@ -214,9 +209,7 @@ export class ReadinessService {
     }
 
     // All dependencies are defined (not UNDEFINED)
-    const undefinedDeps = feature.dependencies.filter((d) =>
-      d.startsWith('UNDEFINED')
-    );
+    const undefinedDeps = feature.dependencies.filter((d) => d.startsWith('UNDEFINED'));
     if (undefinedDeps.length === 0) {
       score += 0.2;
     }
@@ -233,8 +226,7 @@ export class ReadinessService {
     let score = 0;
 
     // Calculate average clarity score from atomic requirements
-    const avgClarity =
-      ars.reduce((sum, ar) => sum + (ar.clarityScore || 0), 0) / ars.length;
+    const avgClarity = ars.reduce((sum, ar) => sum + (ar.clarityScore || 0), 0) / ars.length;
     score += avgClarity * 0.4;
 
     // Check for measurable criteria in text
@@ -281,10 +273,7 @@ export class ReadinessService {
   /**
    * Score consistency
    */
-  private scoreConsistency(
-    feature: FeatureCandidateForScoring,
-    ars: AtomicRequirement[]
-  ): number {
+  private scoreConsistency(feature: FeatureCandidateForScoring, ars: AtomicRequirement[]): number {
     let score = 1;
 
     // Check circular dependencies
@@ -293,7 +282,10 @@ export class ReadinessService {
     }
 
     // Check for contradicting keywords (basic check)
-    const text = ars.map((ar) => ar.text).join(' ').toLowerCase();
+    const text = ars
+      .map((ar) => ar.text)
+      .join(' ')
+      .toLowerCase();
     const contradictions = [
       { pattern: /\brequired\b.*\boptional\b/i, weight: 0.2 },
       { pattern: /\balways\b.*\bnever\b/i, weight: 0.2 },
@@ -338,9 +330,7 @@ export class ReadinessService {
 
     if (components.testability < 0.7) {
       suggestions.push('Add measurable acceptance criteria');
-      suggestions.push(
-        'Define specific success metrics (response time, error rate, etc.)'
-      );
+      suggestions.push('Define specific success metrics (response time, error rate, etc.)');
     }
 
     if (components.completeness < 0.7) {

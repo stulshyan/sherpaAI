@@ -2,7 +2,10 @@
 // Processes decomposition jobs using the orchestrator
 
 import { createLogger, getDatabase, RequirementRepository } from '@entropy/shared';
-import { createDecompositionOrchestrator, type PipelineState } from '../decomposition-orchestrator.js';
+import {
+  createDecompositionOrchestrator,
+  type PipelineState,
+} from '../decomposition-orchestrator.js';
 
 const logger = createLogger('decomposition-worker');
 

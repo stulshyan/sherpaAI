@@ -265,10 +265,7 @@ export class DecompositionOrchestrator {
 
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
-        return await Promise.race([
-          fn(),
-          this.createTimeout(this.timeoutMs),
-        ]) as T;
+        return (await Promise.race([fn(), this.createTimeout(this.timeoutMs)])) as T;
       } catch (error: unknown) {
         lastError = error instanceof Error ? error : new Error(String(error));
 
@@ -436,12 +433,15 @@ export class DecompositionOrchestrator {
       throw new Error('DECOMPOSITION_RESULT_NOT_FOUND');
     }
 
-    logger.info('Scoring features', { requirementId, featureCount: decomposition.featureCandidates.length });
+    logger.info('Scoring features', {
+      requirementId,
+      featureCount: decomposition.featureCandidates.length,
+    });
 
     // Calculate readiness for each feature
     for (const feature of decomposition.featureCandidates) {
-      const featureARs = decomposition.atomicRequirements.filter(
-        (ar) => feature.atomicRequirementIds.includes(ar.id)
+      const featureARs = decomposition.atomicRequirements.filter((ar) =>
+        feature.atomicRequirementIds.includes(ar.id)
       );
 
       const featureQuestions = decomposition.clarificationQuestions.filter(
@@ -516,7 +516,9 @@ export class DecompositionOrchestrator {
 
     // Create feature records in database
     for (const featureCandidate of decomposition.featureCandidates) {
-      const readinessScore = (featureCandidate as unknown as { readinessScore?: { overall: number } }).readinessScore;
+      const readinessScore = (
+        featureCandidate as unknown as { readinessScore?: { overall: number } }
+      ).readinessScore;
 
       await this.featureRepo!.createFeature({
         requirementId,

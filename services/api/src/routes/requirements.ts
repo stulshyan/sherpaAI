@@ -70,12 +70,7 @@ const upload = multer({
 });
 
 // Error handling for multer
-function handleMulterError(
-  err: Error,
-  _req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+function handleMulterError(err: Error, _req: Request, res: Response, next: NextFunction): void {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       res.status(413).json({
@@ -215,14 +210,19 @@ requirementsRouter.post(
       // Upload to S3
       const storage = getStorageService();
       const bucket = process.env.S3_BUCKET || 'entropy-artifacts';
-      await storage.upload(s3Key, file.buffer, {
-        contentType: file.mimetype,
-        metadata: {
-          requirementId,
-          projectId,
-          originalFilename: file.originalname,
+      await storage.upload(
+        s3Key,
+        file.buffer,
+        {
+          contentType: file.mimetype,
+          metadata: {
+            requirementId,
+            projectId,
+            originalFilename: file.originalname,
+          },
         },
-      }, bucket);
+        bucket
+      );
 
       logger.info('File uploaded to S3', { s3Key, requirementId });
 
@@ -395,10 +395,7 @@ requirementsRouter.post(
       }
 
       // Check if already in progress
-      if (
-        ['extracting', 'classifying', 'decomposing'].includes(requirement.status) &&
-        !force
-      ) {
+      if (['extracting', 'classifying', 'decomposing'].includes(requirement.status) && !force) {
         res.status(409).json({
           error: {
             code: 'ALREADY_PROCESSING',

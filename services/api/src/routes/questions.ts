@@ -242,12 +242,7 @@ questionsRouter.post('/:id/answer', async (req: Request, res: Response, next: Ne
       `UPDATE clarification_questions
        SET answer = $1, answered_at = $2, answered_by = $3
        WHERE id = $4`,
-      [
-        typeof answer === 'object' ? JSON.stringify(answer) : answer,
-        answeredAt,
-        userId,
-        id,
-      ]
+      [typeof answer === 'object' ? JSON.stringify(answer) : answer, answeredAt, userId, id]
     );
 
     // Store notes if provided
@@ -321,43 +316,37 @@ questionsRouter.post('/:id/answer', async (req: Request, res: Response, next: Ne
  * DELETE /api/v1/questions/:id/answer
  * Clear an answer (allow re-answering)
  */
-questionsRouter.delete(
-  '/:id/answer',
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { id } = req.params;
-      const db = getDatabase();
-      await db.connect();
+questionsRouter.delete('/:id/answer', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const db = getDatabase();
+    await db.connect();
 
-      // Check question exists
-      const exists = await db.queryOne(
-        `SELECT id FROM clarification_questions WHERE id = $1`,
-        [id]
-      );
+    // Check question exists
+    const exists = await db.queryOne(`SELECT id FROM clarification_questions WHERE id = $1`, [id]);
 
-      if (!exists) {
-        res.status(404).json({
-          error: {
-            code: 'NOT_FOUND',
-            message: `Question ${id} not found`,
-          },
-        });
-        return;
-      }
+    if (!exists) {
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: `Question ${id} not found`,
+        },
+      });
+      return;
+    }
 
-      // Clear the answer
-      await db.query(
-        `UPDATE clarification_questions
+    // Clear the answer
+    await db.query(
+      `UPDATE clarification_questions
          SET answer = NULL, answered_at = NULL, answered_by = NULL
          WHERE id = $1`,
-        [id]
-      );
+      [id]
+    );
 
-      logger.info('Question answer cleared', { questionId: id });
+    logger.info('Question answer cleared', { questionId: id });
 
-      res.status(204).send();
-    } catch (error) {
-      next(error);
-    }
+    res.status(204).send();
+  } catch (error) {
+    next(error);
   }
-);
+});
