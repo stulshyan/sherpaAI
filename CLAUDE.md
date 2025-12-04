@@ -6,6 +6,8 @@ Entropy is an AI-powered requirements decomposition and backlog management platf
 
 ## Tech Stack
 
+### Backend
+
 - **Language**: TypeScript (strict mode, ES2022 target)
 - **Package Manager**: pnpm 9+ with workspaces
 - **Runtime**: Node.js 20 LTS
@@ -13,9 +15,21 @@ Entropy is an AI-powered requirements decomposition and backlog management platf
 - **Linting**: ESLint + Prettier
 - **Database**: PostgreSQL 15 with pgvector
 - **Cache**: Redis 7
+- **Job Queue**: BullMQ for background task processing
 - **Cloud**: AWS (ECS Fargate, RDS, S3, ElastiCache)
 - **IaC**: Terraform 1.6+
-- **Frontend**: React with Vite
+
+### Frontend
+
+- **Framework**: React 18 with Vite 5
+- **Routing**: React Router DOM v6
+- **State Management**: Zustand v5
+- **Data Fetching**: TanStack React Query v5
+- **Forms**: React Hook Form v7
+- **Styling**: TailwindCSS v3
+- **UI Components**: Headless UI, Lucide React icons
+- **HTTP Client**: Axios
+- **Development Mocking**: MSW (Mock Service Worker) v2
 
 ## Directory Structure
 
@@ -69,8 +83,38 @@ sherpaAI/
 │   │       │   ├── settings.ts
 │   │       │   └── test-harness.ts
 │   │       └── middleware/
-│   ├── orchestrator/       # Background workers
+│   ├── orchestrator/       # Background workers (BullMQ)
+│   │   └── src/
+│   │       ├── decomposition-orchestrator.ts
+│   │       └── workers/
+│   │           └── decomposition.worker.ts
 │   └── web/                # React frontend (Vite)
+│       └── src/
+│           ├── pages/          # Page components
+│           │   ├── Login.tsx
+│           │   ├── Dashboard.tsx
+│           │   ├── IntakeHub.tsx
+│           │   ├── Backlog.tsx
+│           │   ├── DecompositionPage.tsx
+│           │   ├── HealthDashboard.tsx
+│           │   ├── Settings.tsx
+│           │   └── TestHarness.tsx
+│           ├── features/       # Feature modules
+│           │   ├── auth/       # Authentication
+│           │   ├── intake/     # Document intake
+│           │   ├── decomposition/  # Decomposition views
+│           │   ├── feature-detail/ # Feature detail modal
+│           │   ├── backlog/    # Backlog management
+│           │   └── settings/   # Settings configuration
+│           ├── components/     # Shared components
+│           │   ├── layout/     # AppLayout, Header, Sidebar
+│           │   ├── ui/         # Button, Input, Dropdown, etc.
+│           │   └── test-harness/
+│           ├── stores/         # Zustand state stores
+│           ├── hooks/          # Custom React hooks
+│           ├── mocks/          # MSW mock handlers
+│           ├── lib/            # Utilities/helpers
+│           └── types/          # Type definitions
 ├── infrastructure/
 │   ├── terraform/          # AWS IaC
 │   │   ├── environments/
@@ -136,6 +180,18 @@ pnpm db:seed      # Seed database
 pnpm docker:up    # Start all services in Docker
 pnpm docker:down  # Stop Docker services
 pnpm docker:build # Build Docker images
+
+# Makefile shortcuts
+make install      # Install dependencies
+make setup        # Full setup (install + db:up)
+make test-coverage # Run tests with coverage
+make lint-fix     # Fix linting issues
+make format       # Format code
+make typecheck    # Type check all packages
+
+# Frontend development
+cd services/web && pnpm dev  # Start web dev server
+cd services/web && pnpm build # Build for production
 ```
 
 ## Package Aliases
@@ -215,6 +271,76 @@ Located in `services/api/src/routes/`:
 | `/api/v1/settings`     | Model and configuration settings                         |
 | `/api/test-harness`    | Testing utilities (non-production)                       |
 
+### Orchestrator Service
+
+Located in `services/orchestrator/`. Background job processing using BullMQ:
+
+- `DecompositionOrchestrator` - Manages decomposition job lifecycle
+- `decomposition.worker.ts` - Processes decomposition jobs asynchronously
+
+**Job Queue Features:**
+
+- Redis-backed persistent queues
+- Automatic retry with exponential backoff
+- Job progress tracking
+- Concurrency control
+
+### Web Frontend Architecture
+
+Located in `services/web/src/`. Feature-based React application:
+
+**Pages:**
+
+| Page               | Description                                    |
+| ------------------ | ---------------------------------------------- |
+| `Login`            | Authentication page                            |
+| `Dashboard`        | Main dashboard overview                        |
+| `IntakeHub`        | Document upload and intake processing          |
+| `Backlog`          | Feature backlog management view                |
+| `DecompositionPage`| Decomposition results display                  |
+| `HealthDashboard`  | Service health monitoring                      |
+| `Settings`         | Configuration and model settings               |
+| `TestHarness`      | Testing utilities (development only)           |
+
+**Feature Modules:**
+
+- `auth/` - Authentication with ProtectedRoute, LoginForm
+- `intake/` - Document upload and processing components
+- `decomposition/` - Decomposition result viewers
+- `feature-detail/` - Multi-tab feature editor (Overview, Requirements, Questions, History)
+- `backlog/` - Backlog list and management components
+- `settings/` - Project settings, model config, API key management
+
+**State Management (Zustand):**
+
+- `authStore` - Authentication state and user session
+- `uiStore` - UI state (sidebar, modals, themes)
+
+**Data Fetching (React Query):**
+
+- Automatic caching and background refetch
+- Optimistic updates for mutations
+- Polling with `usePolling` hook
+
+**Mock Service Worker (MSW):**
+
+Development mocking for API endpoints:
+
+- `handlers/auth.ts` - Authentication mocks
+- `handlers/intake.ts` - Intake API mocks
+- `handlers/decomposition.ts` - Decomposition mocks
+- `handlers/features.ts` - Feature CRUD mocks
+- `handlers/settings.ts` - Settings API mocks
+
+### Shared Utilities
+
+Located in `packages/shared/src/utils/`:
+
+- `logger.ts` - Structured logging utility
+- `retry.ts` - Retry logic with exponential backoff
+- `validation.ts` - JSON Schema validation helpers
+- `s3-keys.ts` - S3 key generation and manipulation
+
 ## Key Types
 
 ### Requirement Lifecycle
@@ -268,10 +394,14 @@ DEFAULT_MODEL_ID=claude-sonnet-4-5-20250929
 AWS_REGION=us-east-1
 S3_BUCKET_UPLOADS=entropy-staging-uploads
 S3_BUCKET_ARTIFACTS=entropy-staging-artifacts
+S3_BUCKET_PROMPTS=entropy-staging-prompts
 
 # Feature Flags
 ENABLE_HOT_RELOAD=true
 ENABLE_FALLBACK_CHAIN=true
+
+# Frontend (services/web)
+VITE_API_URL=http://localhost:3000
 ```
 
 ## Testing
