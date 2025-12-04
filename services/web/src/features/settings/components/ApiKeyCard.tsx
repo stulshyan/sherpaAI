@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui';
 import type { ApiKeyInfo, ApiKeyTestResult } from '../types';
 import { getStatusLabel, PROVIDER_CONFIG, STATUS_CONFIG } from '../types';
+import { Button } from '@/components/ui';
 
 interface ApiKeyCardProps {
   apiKey: ApiKeyInfo;

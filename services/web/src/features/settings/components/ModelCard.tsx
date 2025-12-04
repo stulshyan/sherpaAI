@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import { Bot, Info } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui';
 import type { ModelAssignment } from '../types';
 import {
   formatContextWindow,
@@ -10,6 +9,7 @@ import {
   PROVIDER_CONFIG,
   STATUS_CONFIG,
 } from '../types';
+import { Button } from '@/components/ui';
 
 interface ModelCardProps {
   assignment: ModelAssignment;

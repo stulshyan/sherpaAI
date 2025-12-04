@@ -1,8 +1,8 @@
 import { Check, Pencil, X } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from '@/components/ui';
 import type { ProjectSettingsData } from '../types';
 import { SettingsSection } from './SettingsSection';
+import { Button } from '@/components/ui';
 
 interface ProjectSettingsProps {
   project: ProjectSettingsData;
