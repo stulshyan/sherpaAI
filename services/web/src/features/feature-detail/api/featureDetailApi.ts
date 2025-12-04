@@ -1,10 +1,5 @@
 import axios from 'axios';
-import type {
-  FeatureDetail,
-  FeatureRequirement,
-  FeatureQuestion,
-  AuditLogEntry,
-} from '../types';
+import type { FeatureDetail, FeatureRequirement, FeatureQuestion, AuditLogEntry } from '../types';
 
 const api = axios.create({
   baseURL: '/api/v1',

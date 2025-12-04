@@ -84,14 +84,17 @@ export function HistoryTab({ history, isLoading }: HistoryTabProps) {
   }
 
   // Group by date
-  const groupedHistory = history.reduce((acc, entry) => {
-    const date = formatDate(entry.timestamp);
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(entry);
-    return acc;
-  }, {} as Record<string, AuditLogEntry[]>);
+  const groupedHistory = history.reduce(
+    (acc, entry) => {
+      const date = formatDate(entry.timestamp);
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(entry);
+      return acc;
+    },
+    {} as Record<string, AuditLogEntry[]>
+  );
 
   return (
     <div className="space-y-6 p-4">
@@ -140,9 +143,7 @@ function HistoryItem({ entry }: { entry: AuditLogEntry }) {
         {/* Details based on action type */}
         {entry.action === 'question_answered' && typeof entry.details.question === 'string' && (
           <div className="mt-2 text-sm">
-            <p className="text-gray-500 dark:text-gray-400">
-              Q: {entry.details.question}
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">Q: {entry.details.question}</p>
             <p className="mt-1 text-gray-700 dark:text-gray-300">
               A: {String(entry.details.answer)}
             </p>
@@ -156,9 +157,7 @@ function HistoryItem({ entry }: { entry: AuditLogEntry }) {
               {(entry.newValue as number).toFixed(2)}
             </span>
             {typeof entry.details.reason === 'string' && (
-              <p className="mt-1 text-gray-500 dark:text-gray-400">
-                {entry.details.reason}
-              </p>
+              <p className="mt-1 text-gray-500 dark:text-gray-400">{entry.details.reason}</p>
             )}
           </div>
         )}
@@ -170,9 +169,7 @@ function HistoryItem({ entry }: { entry: AuditLogEntry }) {
               {(entry.newValue as number).toFixed(2)}
             </span>
             {typeof entry.details.reason === 'string' && (
-              <p className="mt-1 text-gray-500 dark:text-gray-400">
-                {entry.details.reason}
-              </p>
+              <p className="mt-1 text-gray-500 dark:text-gray-400">{entry.details.reason}</p>
             )}
           </div>
         )}
@@ -185,11 +182,7 @@ function HistoryItem({ entry }: { entry: AuditLogEntry }) {
 
         {/* Actor */}
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-          {isSystem ? (
-            <Bot className="h-3 w-3" />
-          ) : (
-            <User className="h-3 w-3" />
-          )}
+          {isSystem ? <Bot className="h-3 w-3" /> : <User className="h-3 w-3" />}
           <span>{entry.actor.name}</span>
         </div>
       </div>

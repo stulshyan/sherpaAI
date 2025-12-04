@@ -5,14 +5,18 @@ const api = axios.create({
   baseURL: '/api/v1',
 });
 
-export async function fetchDecompositionStatus(requirementId: string): Promise<DecompositionStatus> {
+export async function fetchDecompositionStatus(
+  requirementId: string
+): Promise<DecompositionStatus> {
   const response = await api.get<DecompositionStatus>(
     `/requirements/${requirementId}/decomposition/status`
   );
   return response.data;
 }
 
-export async function fetchDecompositionResult(requirementId: string): Promise<DecompositionResult> {
+export async function fetchDecompositionResult(
+  requirementId: string
+): Promise<DecompositionResult> {
   const response = await api.get<DecompositionResult>(
     `/requirements/${requirementId}/decomposition`
   );

@@ -194,7 +194,12 @@ const mockDecompositionResult = {
       featureId: 'f-006',
       question: 'Which payment providers should be supported?',
       questionType: 'multiple_choice',
-      options: ['Stripe only', 'Stripe + PayPal', 'Stripe + PayPal + Apple Pay', 'Custom selection'],
+      options: [
+        'Stripe only',
+        'Stripe + PayPal',
+        'Stripe + PayPal + Apple Pay',
+        'Custom selection',
+      ],
       impact: 'blocking',
       category: 'business',
       answered: false,

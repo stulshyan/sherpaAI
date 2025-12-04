@@ -42,22 +42,23 @@ export function RequirementsTab({ requirements, isLoading }: RequirementsTabProp
   }
 
   // Group by theme
-  const groupedByTheme = requirements.reduce((acc, req) => {
-    const themeName = req.themeName || 'Uncategorized';
-    if (!acc[themeName]) {
-      acc[themeName] = [];
-    }
-    acc[themeName].push(req);
-    return acc;
-  }, {} as Record<string, FeatureRequirement[]>);
+  const groupedByTheme = requirements.reduce(
+    (acc, req) => {
+      const themeName = req.themeName || 'Uncategorized';
+      if (!acc[themeName]) {
+        acc[themeName] = [];
+      }
+      acc[themeName].push(req);
+      return acc;
+    },
+    {} as Record<string, FeatureRequirement[]>
+  );
 
   return (
     <div className="space-y-4 p-4">
       {Object.entries(groupedByTheme).map(([themeName, reqs]) => (
         <div key={themeName}>
-          <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            {themeName}
-          </h4>
+          <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">{themeName}</h4>
           <div className="space-y-2">
             {reqs.map((req) => (
               <RequirementItem
@@ -81,7 +82,8 @@ interface RequirementItemProps {
 }
 
 function RequirementItem({ requirement, isExpanded, onToggle }: RequirementItemProps) {
-  const hasAcceptanceCriteria = requirement.acceptanceCriteria && requirement.acceptanceCriteria.length > 0;
+  const hasAcceptanceCriteria =
+    requirement.acceptanceCriteria && requirement.acceptanceCriteria.length > 0;
   const clarityPercent = Math.round(requirement.clarity * 100);
 
   return (
@@ -90,7 +92,7 @@ function RequirementItem({ requirement, isExpanded, onToggle }: RequirementItemP
         onClick={hasAcceptanceCriteria ? onToggle : undefined}
         className={clsx(
           'flex items-start gap-3 p-3',
-          hasAcceptanceCriteria && 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750'
+          hasAcceptanceCriteria && 'dark:hover:bg-gray-750 cursor-pointer hover:bg-gray-50'
         )}
       >
         {/* AR ID */}
@@ -104,7 +106,13 @@ function RequirementItem({ requirement, isExpanded, onToggle }: RequirementItemP
         </div>
 
         {/* Clarity Badge */}
-        <div className={clsx('flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium', getClarityBgColor(requirement.clarity), getClarityColor(requirement.clarity))}>
+        <div
+          className={clsx(
+            'flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
+            getClarityBgColor(requirement.clarity),
+            getClarityColor(requirement.clarity)
+          )}
+        >
           {clarityPercent}%
         </div>
 
@@ -131,7 +139,7 @@ function RequirementItem({ requirement, isExpanded, onToggle }: RequirementItemP
 
       {/* Acceptance Criteria (expanded) */}
       {isExpanded && hasAcceptanceCriteria && (
-        <div className="border-t border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-750">
+        <div className="dark:bg-gray-750 border-t border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700">
           <p className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
             Acceptance Criteria:
           </p>

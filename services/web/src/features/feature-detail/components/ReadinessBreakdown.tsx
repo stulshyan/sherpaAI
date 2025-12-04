@@ -34,11 +34,25 @@ export function ReadinessBreakdown({ score, breakdown, className }: ReadinessBre
   const overallPercent = Math.round(score * 100);
 
   return (
-    <div className={clsx('rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50', className)}>
+    <div
+      className={clsx(
+        'rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50',
+        className
+      )}
+    >
       <div className="mb-4">
         <div className="mb-2 flex items-center justify-between">
           <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Readiness Score</h4>
-          <span className={clsx('text-lg font-bold', score >= 0.8 ? 'text-green-600 dark:text-green-400' : score >= 0.6 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-600 dark:text-gray-400')}>
+          <span
+            className={clsx(
+              'text-lg font-bold',
+              score >= 0.8
+                ? 'text-green-600 dark:text-green-400'
+                : score >= 0.6
+                  ? 'text-yellow-600 dark:text-yellow-400'
+                  : 'text-gray-600 dark:text-gray-400'
+            )}
+          >
             {overallPercent}%
           </span>
         </div>

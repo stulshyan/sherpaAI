@@ -25,14 +25,8 @@ export function OverviewTab({ feature }: OverviewTabProps) {
 
       {/* Scores Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <ReadinessBreakdown
-          score={feature.readinessScore}
-          breakdown={feature.readinessBreakdown}
-        />
-        <PriorityFactors
-          score={feature.priorityScore}
-          factors={feature.priorityFactors}
-        />
+        <ReadinessBreakdown score={feature.readinessScore} breakdown={feature.readinessBreakdown} />
+        <PriorityFactors score={feature.priorityScore} factors={feature.priorityFactors} />
       </div>
 
       {/* Status & Complexity */}
@@ -41,7 +35,12 @@ export function OverviewTab({ feature }: OverviewTabProps) {
           <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             Status
           </h4>
-          <span className={clsx('inline-block rounded-full px-2.5 py-1 text-xs font-medium', getStatusColor(feature.status))}>
+          <span
+            className={clsx(
+              'inline-block rounded-full px-2.5 py-1 text-xs font-medium',
+              getStatusColor(feature.status)
+            )}
+          >
             {getStatusLabel(feature.status)}
           </span>
         </div>
@@ -50,7 +49,12 @@ export function OverviewTab({ feature }: OverviewTabProps) {
           <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             Complexity
           </h4>
-          <span className={clsx('inline-block rounded-full px-2.5 py-1 text-xs font-medium', complexity.color)}>
+          <span
+            className={clsx(
+              'inline-block rounded-full px-2.5 py-1 text-xs font-medium',
+              complexity.color
+            )}
+          >
             {complexity.label}
           </span>
         </div>
@@ -88,7 +92,10 @@ export function OverviewTab({ feature }: OverviewTabProps) {
           </div>
           <div className="space-y-1">
             {feature.blockedBy.map((id) => (
-              <div key={id} className="flex items-center gap-2 text-sm text-red-600 dark:text-red-300">
+              <div
+                key={id}
+                className="flex items-center gap-2 text-sm text-red-600 dark:text-red-300"
+              >
                 <LinkIcon className="h-3 w-3" />
                 {id.toUpperCase()}
               </div>
@@ -100,7 +107,9 @@ export function OverviewTab({ feature }: OverviewTabProps) {
       {/* Dependencies */}
       {feature.dependencies.length > 0 && (
         <div>
-          <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Dependencies</h4>
+          <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            Dependencies
+          </h4>
           <div className="space-y-2">
             {feature.dependencies.map((dep) => (
               <DependencyItem key={dep.featureId} dependency={dep} />
@@ -117,7 +126,7 @@ export function OverviewTab({ feature }: OverviewTabProps) {
             {feature.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-primary-100 px-2.5 py-1 text-xs font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-400"
+                className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400 rounded-full px-2.5 py-1 text-xs font-medium"
               >
                 {tag}
               </span>

@@ -42,22 +42,19 @@ export function useFeatureActions(featureId: string) {
       answerFeatureQuestion(questionId, answer),
     onSuccess: (_data, variables) => {
       // Update questions cache optimistically
-      queryClient.setQueryData<FeatureQuestion[]>(
-        ['feature-questions', featureId],
-        (old) => {
-          if (!old) return old;
-          return old.map((q) =>
-            q.id === variables.questionId
-              ? {
-                  ...q,
-                  answered: true,
-                  answer: variables.answer,
-                  answeredAt: new Date().toISOString(),
-                }
-              : q
-          );
-        }
-      );
+      queryClient.setQueryData<FeatureQuestion[]>(['feature-questions', featureId], (old) => {
+        if (!old) return old;
+        return old.map((q) =>
+          q.id === variables.questionId
+            ? {
+                ...q,
+                answered: true,
+                answer: variables.answer,
+                answeredAt: new Date().toISOString(),
+              }
+            : q
+        );
+      });
       // Invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['feature', featureId] });
       queryClient.invalidateQueries({ queryKey: ['feature-questions', featureId] });

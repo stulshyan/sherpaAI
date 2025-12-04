@@ -57,7 +57,7 @@ export function AnswerInput({
                 checked={answer === option}
                 onChange={(e) => setAnswer(e.target.value)}
                 disabled={isSubmitting}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                className="text-primary-600 focus:ring-primary-500 h-4 w-4"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">{option}</span>
             </label>

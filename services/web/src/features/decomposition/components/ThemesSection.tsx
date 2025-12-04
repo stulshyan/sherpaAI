@@ -27,7 +27,7 @@ export function ThemesSection({
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Showing features for:{' '}
-              <span className="font-medium text-primary-600 dark:text-primary-400">
+              <span className="text-primary-600 dark:text-primary-400 font-medium">
                 {selectedTheme.label}
               </span>
             </span>

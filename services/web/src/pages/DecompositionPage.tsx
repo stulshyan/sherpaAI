@@ -64,7 +64,7 @@ export default function DecompositionPage() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="text-center">
-          <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-primary-500" />
+          <Loader2 className="text-primary-500 mx-auto mb-4 h-8 w-8 animate-spin" />
           <p className="text-gray-500 dark:text-gray-400">Loading decomposition...</p>
         </div>
       </div>
@@ -80,8 +80,8 @@ export default function DecompositionPage() {
             {statusError instanceof Error
               ? statusError.message
               : resultError instanceof Error
-              ? resultError.message
-              : 'Failed to load decomposition'}
+                ? resultError.message
+                : 'Failed to load decomposition'}
           </p>
           <Button variant="outline" className="mt-4" onClick={() => navigate('/intake')}>
             Back to Intake Hub
@@ -195,7 +195,7 @@ export default function DecompositionPage() {
       {/* Results Loading */}
       {isCompleted && resultLoading && (
         <div className="flex min-h-[200px] items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+          <Loader2 className="text-primary-500 h-8 w-8 animate-spin" />
         </div>
       )}
 

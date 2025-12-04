@@ -28,7 +28,11 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
   const [answeringQuestionId, setAnsweringQuestionId] = useState<string | undefined>();
 
   // Fetch data
-  const { data: feature, isLoading: featureLoading, error: featureError } = useFeatureDetail(featureId);
+  const {
+    data: feature,
+    isLoading: featureLoading,
+    error: featureError,
+  } = useFeatureDetail(featureId);
   const { data: requirements, isLoading: requirementsLoading } = useFeatureRequirements(featureId);
   const { data: questions, isLoading: questionsLoading } = useFeatureQuestions(featureId);
   const { data: history, isLoading: historyLoading } = useFeatureHistory(featureId);
@@ -82,7 +86,7 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
         <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="w-full max-w-3xl rounded-xl bg-white p-8 text-center dark:bg-gray-800">
-            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-primary-500" />
+            <Loader2 className="text-primary-500 mx-auto mb-4 h-8 w-8 animate-spin" />
             <p className="text-gray-500 dark:text-gray-400">Loading feature details...</p>
           </div>
         </div>
@@ -112,10 +116,7 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/50 transition-opacity"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/50 transition-opacity" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
@@ -130,7 +131,12 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
                 <span className="font-mono text-sm text-gray-400 dark:text-gray-500">
                   {feature.id.toUpperCase()}
                 </span>
-                <span className={clsx('rounded-full px-2 py-0.5 text-xs font-medium', getStatusColor(feature.status))}>
+                <span
+                  className={clsx(
+                    'rounded-full px-2 py-0.5 text-xs font-medium',
+                    getStatusColor(feature.status)
+                  )}
+                >
                   {getStatusLabel(feature.status)}
                 </span>
               </div>
@@ -158,10 +164,7 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
           <div className="max-h-[calc(90vh-250px)] overflow-y-auto">
             {activeTab === 'overview' && <OverviewTab feature={feature} />}
             {activeTab === 'requirements' && (
-              <RequirementsTab
-                requirements={requirements || []}
-                isLoading={requirementsLoading}
-              />
+              <RequirementsTab requirements={requirements || []} isLoading={requirementsLoading} />
             )}
             {activeTab === 'questions' && (
               <QuestionsTab
@@ -173,10 +176,7 @@ export function FeatureDetailModal({ featureId, onClose }: FeatureDetailModalPro
               />
             )}
             {activeTab === 'history' && (
-              <HistoryTab
-                history={history || []}
-                isLoading={historyLoading}
-              />
+              <HistoryTab history={history || []} isLoading={historyLoading} />
             )}
           </div>
 

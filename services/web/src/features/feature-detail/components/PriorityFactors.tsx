@@ -14,9 +14,12 @@ interface PriorityFactorsProps {
 }
 
 function getFactorLabel(value: number): { label: string; color: string; Icon: typeof TrendingUp } {
-  if (value >= 0.7) return { label: 'High', color: 'text-green-600 dark:text-green-400', Icon: TrendingUp };
-  if (value >= 0.4) return { label: 'Medium', color: 'text-yellow-600 dark:text-yellow-400', Icon: Minus };
-  if (value >= 0) return { label: 'Low', color: 'text-gray-500 dark:text-gray-400', Icon: TrendingDown };
+  if (value >= 0.7)
+    return { label: 'High', color: 'text-green-600 dark:text-green-400', Icon: TrendingUp };
+  if (value >= 0.4)
+    return { label: 'Medium', color: 'text-yellow-600 dark:text-yellow-400', Icon: Minus };
+  if (value >= 0)
+    return { label: 'Low', color: 'text-gray-500 dark:text-gray-400', Icon: TrendingDown };
   // Negative values (penalties)
   return { label: 'Penalty', color: 'text-red-600 dark:text-red-400', Icon: TrendingDown };
 }
@@ -31,7 +34,12 @@ export function PriorityFactors({ score, factors, className }: PriorityFactorsPr
   ];
 
   return (
-    <div className={clsx('rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50', className)}>
+    <div
+      className={clsx(
+        'rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50',
+        className
+      )}
+    >
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Priority Score</h4>
         <span className="text-lg font-bold text-gray-900 dark:text-white">{score.toFixed(2)}</span>
@@ -48,9 +56,7 @@ export function PriorityFactors({ score, factors, className }: PriorityFactorsPr
               <span className="text-gray-600 dark:text-gray-400">{item.label}</span>
               <div className="flex items-center gap-1">
                 <FactorIcon className={clsx('h-3 w-3', factorInfo.color)} />
-                <span className={clsx('font-medium', factorInfo.color)}>
-                  {factorInfo.label}
-                </span>
+                <span className={clsx('font-medium', factorInfo.color)}>{factorInfo.label}</span>
               </div>
             </div>
           );

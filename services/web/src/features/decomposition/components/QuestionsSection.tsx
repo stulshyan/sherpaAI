@@ -21,8 +21,10 @@ export function QuestionsSection({
   const sortedQuestions = useMemo(() => {
     return [...questions].sort((a, b) => {
       // Unanswered blocking first
-      if (!a.answered && a.impact === 'blocking' && !(!b.answered && b.impact === 'blocking')) return -1;
-      if (!b.answered && b.impact === 'blocking' && !(!a.answered && a.impact === 'blocking')) return 1;
+      if (!a.answered && a.impact === 'blocking' && !(!b.answered && b.impact === 'blocking'))
+        return -1;
+      if (!b.answered && b.impact === 'blocking' && !(!a.answered && a.impact === 'blocking'))
+        return 1;
       // Then unanswered
       if (!a.answered && b.answered) return -1;
       if (a.answered && !b.answered) return 1;
@@ -64,9 +66,7 @@ export function QuestionsSection({
 
         {questions.length === 0 && (
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-700 dark:bg-gray-800/50">
-            <p className="text-gray-500 dark:text-gray-400">
-              No clarification questions needed.
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">No clarification questions needed.</p>
           </div>
         )}
       </div>

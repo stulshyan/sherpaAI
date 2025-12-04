@@ -27,17 +27,30 @@ export function getStatusColor(status: FeatureDetailStatus): string {
     needs_clarification: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
     deferred: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
     deployed_staging: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-    deployed_production: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+    deployed_production:
+      'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   };
   return colors[status] || colors.backlog;
 }
 
 export function getComplexityLabel(complexity: string): { label: string; color: string } {
   const config: Record<string, { label: string; color: string }> = {
-    low: { label: 'Low', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' },
-    medium: { label: 'Medium', color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' },
-    high: { label: 'High', color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' },
-    very_high: { label: 'Very High', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' },
+    low: {
+      label: 'Low',
+      color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    },
+    medium: {
+      label: 'Medium',
+      color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    },
+    high: {
+      label: 'High',
+      color: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+    },
+    very_high: {
+      label: 'Very High',
+      color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    },
   };
   return config[complexity] || config.medium;
 }

@@ -1,5 +1,13 @@
 import clsx from 'clsx';
-import { Layers, Package, FileText, HelpCircle, AlertTriangle, Star, BarChart3 } from 'lucide-react';
+import {
+  Layers,
+  Package,
+  FileText,
+  HelpCircle,
+  AlertTriangle,
+  Star,
+  BarChart3,
+} from 'lucide-react';
 import type { DecompositionSummary as DecompositionSummaryType } from '../types';
 
 interface DecompositionSummaryCardProps {
@@ -94,15 +102,16 @@ export function DecompositionSummaryCard({
         {summary.recommendedFirstFeature && (
           <button
             onClick={onRecommendedClick}
-            className="flex items-center gap-3 rounded-lg border border-primary-200 bg-primary-50 p-3 text-left transition-all hover:border-primary-300 hover:shadow-sm dark:border-primary-800 dark:bg-primary-900/20 dark:hover:border-primary-700"
+            className="border-primary-200 bg-primary-50 hover:border-primary-300 dark:border-primary-800 dark:bg-primary-900/20 dark:hover:border-primary-700 flex items-center gap-3 rounded-lg border p-3 text-left transition-all hover:shadow-sm"
           >
-            <Star className="h-5 w-5 text-primary-500" />
+            <Star className="text-primary-500 h-5 w-5" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-primary-700 dark:text-primary-400">
+              <p className="text-primary-700 dark:text-primary-400 text-sm font-medium">
                 Recommended
               </p>
-              <p className="truncate text-xs text-primary-600 dark:text-primary-300">
-                {summary.recommendedFirstFeature.id.toUpperCase()}: {summary.recommendedFirstFeature.title}
+              <p className="text-primary-600 dark:text-primary-300 truncate text-xs">
+                {summary.recommendedFirstFeature.id.toUpperCase()}:{' '}
+                {summary.recommendedFirstFeature.title}
               </p>
             </div>
           </button>

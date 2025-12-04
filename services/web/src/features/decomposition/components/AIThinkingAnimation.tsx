@@ -24,7 +24,7 @@ export function AIThinkingAnimation({ size = 'md', className }: AIThinkingAnimat
         <div
           key={index}
           className={clsx(
-            'rounded-full bg-primary-500 dark:bg-primary-400',
+            'bg-primary-500 dark:bg-primary-400 rounded-full',
             sizeClasses[size],
             'animate-bounce'
           )}

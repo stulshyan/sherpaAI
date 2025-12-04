@@ -47,10 +47,10 @@ export function ProcessingProgress({ status, onRetry, isRetrying }: ProcessingPr
   const timeRemaining = formatTimeRemaining(status.estimatedTimeRemaining);
 
   return (
-    <div className="rounded-xl border border-primary-200 bg-primary-50 p-8 dark:border-primary-800 dark:bg-primary-900/20">
+    <div className="border-primary-200 bg-primary-50 dark:border-primary-800 dark:bg-primary-900/20 rounded-xl border p-8">
       <div className="mb-6 text-center">
-        <div className="mb-4 inline-flex items-center justify-center rounded-full bg-primary-100 p-4 dark:bg-primary-800/50">
-          <Bot className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+        <div className="bg-primary-100 dark:bg-primary-800/50 mb-4 inline-flex items-center justify-center rounded-full p-4">
+          <Bot className="text-primary-600 dark:text-primary-400 h-8 w-8" />
         </div>
         <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
           AI is analyzing your requirements
@@ -62,7 +62,7 @@ export function ProcessingProgress({ status, onRetry, isRetrying }: ProcessingPr
       <div className="mb-4">
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">{status.currentStage}</span>
-          <span className="font-medium text-primary-600 dark:text-primary-400">
+          <span className="text-primary-600 dark:text-primary-400 font-medium">
             {status.progress}%
           </span>
         </div>

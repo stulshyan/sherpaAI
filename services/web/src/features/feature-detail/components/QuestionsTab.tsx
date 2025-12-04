@@ -33,19 +33,24 @@ export function QuestionsTab({
     }
     // Sort: blocking unanswered first, then unanswered, then answered
     return filtered.sort((a, b) => {
-      if (!a.answered && a.impact === 'blocking' && !(!b.answered && b.impact === 'blocking')) return -1;
-      if (!b.answered && b.impact === 'blocking' && !(!a.answered && a.impact === 'blocking')) return 1;
+      if (!a.answered && a.impact === 'blocking' && !(!b.answered && b.impact === 'blocking'))
+        return -1;
+      if (!b.answered && b.impact === 'blocking' && !(!a.answered && a.impact === 'blocking'))
+        return 1;
       if (!a.answered && b.answered) return -1;
       if (a.answered && !b.answered) return 1;
       return 0;
     });
   }, [questions, filter]);
 
-  const counts = useMemo(() => ({
-    all: questions.length,
-    unanswered: questions.filter((q) => !q.answered).length,
-    blocking: questions.filter((q) => q.impact === 'blocking' && !q.answered).length,
-  }), [questions]);
+  const counts = useMemo(
+    () => ({
+      all: questions.length,
+      unanswered: questions.filter((q) => !q.answered).length,
+      blocking: questions.filter((q) => q.impact === 'blocking' && !q.answered).length,
+    }),
+    [questions]
+  );
 
   if (isLoading) {
     return (
@@ -141,14 +146,16 @@ function QuestionItem({ question, onAnswer, isAnswering }: QuestionItemProps) {
         <span className="font-mono text-xs text-gray-400 dark:text-gray-500">
           {question.id.toUpperCase()}
         </span>
-        <span className={clsx(
-          'rounded-full px-2 py-0.5 text-xs font-medium',
-          question.impact === 'blocking'
-            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-            : question.impact === 'clarifying'
-            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-            : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
-        )}>
+        <span
+          className={clsx(
+            'rounded-full px-2 py-0.5 text-xs font-medium',
+            question.impact === 'blocking'
+              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+              : question.impact === 'clarifying'
+                ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+          )}
+        >
           {question.impact}
         </span>
       </div>
@@ -216,7 +223,7 @@ function QuestionItem({ question, onAnswer, isAnswering }: QuestionItemProps) {
                 checked={answer === option}
                 onChange={(e) => setAnswer(e.target.value)}
                 disabled={isAnswering}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500"
+                className="text-primary-600 focus:ring-primary-500 h-4 w-4"
               />
               <span className="text-sm text-gray-700 dark:text-gray-300">{option}</span>
             </label>

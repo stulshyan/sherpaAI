@@ -77,7 +77,12 @@ export function QuestionCard({ question, onAnswer, isAnswering }: QuestionCardPr
         </span>
 
         {/* Impact Badge */}
-        <span className={clsx('flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium', impactBadge.color)}>
+        <span
+          className={clsx(
+            'flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
+            impactBadge.color
+          )}
+        >
           <ImpactIcon className="h-3 w-3" />
           {impactBadge.label}
         </span>

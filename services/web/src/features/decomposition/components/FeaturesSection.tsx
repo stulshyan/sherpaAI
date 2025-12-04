@@ -59,9 +59,7 @@ export function FeaturesSection({
 
         {filteredFeatures.length === 0 && (
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-700 dark:bg-gray-800/50">
-            <p className="text-gray-500 dark:text-gray-400">
-              No features found for this theme.
-            </p>
+            <p className="text-gray-500 dark:text-gray-400">No features found for this theme.</p>
           </div>
         )}
       </div>
@@ -72,7 +70,9 @@ export function FeaturesSection({
             variant="ghost"
             size="sm"
             onClick={() => setShowAll(!showAll)}
-            rightIcon={showAll ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            rightIcon={
+              showAll ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+            }
           >
             {showAll ? 'Show less' : `Show ${sortedFeatures.length - initialShowCount} more`}
           </Button>

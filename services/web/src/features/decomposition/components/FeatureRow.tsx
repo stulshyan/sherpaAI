@@ -17,8 +17,8 @@ export function FeatureRow({ feature, onClick }: FeatureRowProps) {
       onClick={onClick}
       className={clsx(
         'flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-4 transition-all',
-        'cursor-pointer hover:border-primary-300 hover:shadow-md',
-        'dark:border-gray-700 dark:bg-gray-800 dark:hover:border-primary-600'
+        'hover:border-primary-300 cursor-pointer hover:shadow-md',
+        'dark:hover:border-primary-600 dark:border-gray-700 dark:bg-gray-800'
       )}
     >
       {/* Feature ID */}
@@ -42,7 +42,10 @@ export function FeatureRow({ feature, onClick }: FeatureRowProps) {
       <div className="flex w-24 flex-shrink-0 items-center gap-2">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
           <div
-            className={clsx('h-full rounded-full transition-all', getReadinessColor(feature.readinessScore))}
+            className={clsx(
+              'h-full rounded-full transition-all',
+              getReadinessColor(feature.readinessScore)
+            )}
             style={{ width: `${readinessPercent}%` }}
           />
         </div>

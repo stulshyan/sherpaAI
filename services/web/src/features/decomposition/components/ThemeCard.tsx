@@ -41,8 +41,8 @@ export function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps) {
         'cursor-pointer rounded-lg border p-4 transition-all',
         'hover:shadow-md',
         isSelected
-          ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-200 dark:border-primary-400 dark:bg-primary-900/30 dark:ring-primary-800'
-          : 'border-gray-200 bg-white hover:border-primary-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-primary-600'
+          ? 'border-primary-500 bg-primary-50 ring-primary-200 dark:border-primary-400 dark:bg-primary-900/30 dark:ring-primary-800 ring-2'
+          : 'hover:border-primary-300 dark:hover:border-primary-600 border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
       )}
     >
       {/* Icon */}
