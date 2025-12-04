@@ -291,16 +291,16 @@ Located in `services/web/src/`. Feature-based React application:
 
 **Pages:**
 
-| Page               | Description                                    |
-| ------------------ | ---------------------------------------------- |
-| `Login`            | Authentication page                            |
-| `Dashboard`        | Main dashboard overview                        |
-| `IntakeHub`        | Document upload and intake processing          |
-| `Backlog`          | Feature backlog management view                |
-| `DecompositionPage`| Decomposition results display                  |
-| `HealthDashboard`  | Service health monitoring                      |
-| `Settings`         | Configuration and model settings               |
-| `TestHarness`      | Testing utilities (development only)           |
+| Page                | Description                           |
+| ------------------- | ------------------------------------- |
+| `Login`             | Authentication page                   |
+| `Dashboard`         | Main dashboard overview               |
+| `IntakeHub`         | Document upload and intake processing |
+| `Backlog`           | Feature backlog management view       |
+| `DecompositionPage` | Decomposition results display         |
+| `HealthDashboard`   | Service health monitoring             |
+| `Settings`          | Configuration and model settings      |
+| `TestHarness`       | Testing utilities (development only)  |
 
 **Feature Modules:**
 
