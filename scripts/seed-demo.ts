@@ -583,7 +583,7 @@ const DEMO_ATOMIC_REQUIREMENTS: DemoAtomicRequirement[] = [
     feature_id: DEMO_FEATURE_IDS.user_auth,
     text: 'System shall implement refresh token rotation for security',
     theme: 'Security',
-    clarity_score: 0.90,
+    clarity_score: 0.9,
     sequence_order: 4,
   },
   {
@@ -665,10 +665,10 @@ async function createDbConnection(env: string): Promise<DbConnection> {
 // ============================================================================
 
 async function checkDemoDataExists(db: DbConnection): Promise<boolean> {
-  const result = await db.query(
-    `SELECT COUNT(*) as count FROM projects WHERE id = $1 OR id = $2`,
-    [DEMO_PROJECT_IDS.ecommerce, DEMO_PROJECT_IDS.banking]
-  );
+  const result = await db.query(`SELECT COUNT(*) as count FROM projects WHERE id = $1 OR id = $2`, [
+    DEMO_PROJECT_IDS.ecommerce,
+    DEMO_PROJECT_IDS.banking,
+  ]);
   const count = parseInt((result.rows[0] as { count: string }).count, 10);
   return count > 0;
 }
@@ -867,7 +867,9 @@ async function seedQuestions(db: DbConnection): Promise<void> {
 
   const answered = DEMO_QUESTIONS.filter((q) => q.answer).length;
   const pending = DEMO_QUESTIONS.filter((q) => !q.answer).length;
-  console.log(`  Created ${DEMO_QUESTIONS.length} questions (${answered} answered, ${pending} pending).`);
+  console.log(
+    `  Created ${DEMO_QUESTIONS.length} questions (${answered} answered, ${pending} pending).`
+  );
 }
 
 async function seedDependencies(db: DbConnection): Promise<void> {
@@ -912,14 +914,34 @@ function printSummary(): void {
   console.log('\n┌────────────────────────────────────────────────────────────┐');
   console.log('│                    DEMO DATA SUMMARY                       │');
   console.log('├────────────────────────────────────────────────────────────┤');
-  console.log(`│ Projects:              ${DEMO_PROJECTS.length.toString().padStart(3)}                                  │`);
-  console.log(`│ Requirements:          ${DEMO_REQUIREMENTS.length.toString().padStart(3)}                                  │`);
-  console.log(`│ Features:              ${DEMO_FEATURES.length.toString().padStart(3)}                                  │`);
-  console.log(`│ Clarification Questions: ${DEMO_QUESTIONS.length.toString().padStart(2)}                                  │`);
-  console.log(`│   - Answered:          ${DEMO_QUESTIONS.filter((q) => q.answer).length.toString().padStart(3)}                                  │`);
-  console.log(`│   - Pending:           ${DEMO_QUESTIONS.filter((q) => !q.answer).length.toString().padStart(3)}                                  │`);
-  console.log(`│ Dependencies:          ${DEMO_DEPENDENCIES.length.toString().padStart(3)}                                  │`);
-  console.log(`│ Atomic Requirements:   ${DEMO_ATOMIC_REQUIREMENTS.length.toString().padStart(3)}                                  │`);
+  console.log(
+    `│ Projects:              ${DEMO_PROJECTS.length.toString().padStart(3)}                                  │`
+  );
+  console.log(
+    `│ Requirements:          ${DEMO_REQUIREMENTS.length.toString().padStart(3)}                                  │`
+  );
+  console.log(
+    `│ Features:              ${DEMO_FEATURES.length.toString().padStart(3)}                                  │`
+  );
+  console.log(
+    `│ Clarification Questions: ${DEMO_QUESTIONS.length.toString().padStart(2)}                                  │`
+  );
+  console.log(
+    `│   - Answered:          ${DEMO_QUESTIONS.filter((q) => q.answer)
+      .length.toString()
+      .padStart(3)}                                  │`
+  );
+  console.log(
+    `│   - Pending:           ${DEMO_QUESTIONS.filter((q) => !q.answer)
+      .length.toString()
+      .padStart(3)}                                  │`
+  );
+  console.log(
+    `│ Dependencies:          ${DEMO_DEPENDENCIES.length.toString().padStart(3)}                                  │`
+  );
+  console.log(
+    `│ Atomic Requirements:   ${DEMO_ATOMIC_REQUIREMENTS.length.toString().padStart(3)}                                  │`
+  );
   console.log('├────────────────────────────────────────────────────────────┤');
   console.log('│                   FEATURE STATUS DISTRIBUTION              │');
   console.log('├────────────────────────────────────────────────────────────┤');
@@ -933,7 +955,9 @@ function printSummary(): void {
   );
 
   Object.entries(statusCounts).forEach(([status, count]) => {
-    console.log(`│ ${status.padEnd(20)} ${count.toString().padStart(3)}                                  │`);
+    console.log(
+      `│ ${status.padEnd(20)} ${count.toString().padStart(3)}                                  │`
+    );
   });
 
   console.log('└────────────────────────────────────────────────────────────┘');
@@ -993,7 +1017,8 @@ function parseArgs(): SeedOptions {
   const args = process.argv.slice(2);
   return {
     clean: args.includes('--clean'),
-    env: (args.find((a) => a.startsWith('--env='))?.split('=')[1] as 'local' | 'staging') || 'local',
+    env:
+      (args.find((a) => a.startsWith('--env='))?.split('=')[1] as 'local' | 'staging') || 'local',
     verbose: args.includes('--verbose') || args.includes('-v'),
   };
 }

@@ -58,7 +58,8 @@ type CheckFunction = (options: SmokeTestOptions) => Promise<CheckResult>;
 // ============================================================================
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://entropy:entropy@localhost:5432/entropy_dev';
+const DATABASE_URL =
+  process.env.DATABASE_URL || 'postgresql://entropy:entropy@localhost:5432/entropy_dev';
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 const S3_BUCKET = process.env.S3_BUCKET_UPLOADS || 'entropy-dev-uploads';
 const S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost:4566'; // LocalStack
@@ -123,9 +124,7 @@ async function checkApiHealth(options: SmokeTestOptions): Promise<CheckResult> {
       name,
       status: 'fail',
       duration: Date.now() - start,
-      error: message.includes('ECONNREFUSED')
-        ? `Cannot connect to API at ${API_URL}`
-        : message,
+      error: message.includes('ECONNREFUSED') ? `Cannot connect to API at ${API_URL}` : message,
     };
   }
 }
@@ -168,9 +167,7 @@ async function checkDatabase(options: SmokeTestOptions): Promise<CheckResult> {
       name,
       status: 'fail',
       duration: Date.now() - start,
-      error: message.includes('ECONNREFUSED')
-        ? `Cannot connect to database`
-        : message,
+      error: message.includes('ECONNREFUSED') ? `Cannot connect to database` : message,
     };
   }
 }
@@ -180,12 +177,8 @@ async function checkS3(options: SmokeTestOptions): Promise<CheckResult> {
   const name = 'S3 Storage';
 
   try {
-    const {
-      S3Client,
-      PutObjectCommand,
-      GetObjectCommand,
-      DeleteObjectCommand,
-    } = await import('@aws-sdk/client-s3');
+    const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } =
+      await import('@aws-sdk/client-s3');
 
     const s3Config: { region: string; endpoint?: string; forcePathStyle?: boolean } = {
       region: AWS_REGION,
@@ -507,8 +500,7 @@ async function runSmokeTests(options: SmokeTestOptions): Promise<SmokeTestReport
     checks.push(result);
 
     if (options.format === 'text') {
-      const icon =
-        result.status === 'pass' ? '✅' : result.status === 'skip' ? '⏭️ ' : '❌';
+      const icon = result.status === 'pass' ? '✅' : result.status === 'skip' ? '⏭️ ' : '❌';
       const statusColor =
         result.status === 'pass' ? 'green' : result.status === 'skip' ? 'yellow' : 'red';
       const statusText = result.status.toUpperCase().padEnd(4);

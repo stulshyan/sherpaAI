@@ -77,35 +77,32 @@ const DEMO_STEPS: DemoStep[] = [
     name: 'login',
     action: loginStep,
     duration: 3000,
-    narrationText: 'Welcome to Entropy AI Platform. Let\'s start by logging in.',
+    narrationText: "Welcome to Entropy AI Platform. Let's start by logging in.",
   },
   {
     name: 'intake',
     action: intakeStep,
     duration: 5000,
-    narrationText:
-      'This is the Intake Hub where you can upload your requirement documents.',
+    narrationText: 'This is the Intake Hub where you can upload your requirement documents.',
   },
   {
     name: 'upload',
     action: uploadStep,
     duration: 8000,
-    narrationText:
-      'Simply drag and drop your requirements PDF, DOCX, or TXT files here.',
+    narrationText: 'Simply drag and drop your requirements PDF, DOCX, or TXT files here.',
   },
   {
     name: 'decomposition',
     action: decompositionStep,
     duration: 15000,
     narrationText:
-      'Watch as Entropy\'s AI analyzes and decomposes your requirements into actionable features.',
+      "Watch as Entropy's AI analyzes and decomposes your requirements into actionable features.",
   },
   {
     name: 'backlog',
     action: backlogStep,
     duration: 10000,
-    narrationText:
-      'Your features are automatically prioritized in the Backlog view.',
+    narrationText: 'Your features are automatically prioritized in the Backlog view.',
   },
   {
     name: 'feature-detail',
@@ -125,8 +122,7 @@ const DEMO_STEPS: DemoStep[] = [
     name: 'settings',
     action: settingsStep,
     duration: 5000,
-    narrationText:
-      'Configure your AI models and API keys in the Settings page.',
+    narrationText: 'Configure your AI models and API keys in the Settings page.',
   },
 ];
 
