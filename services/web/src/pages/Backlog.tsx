@@ -70,18 +70,14 @@ export default function Backlog() {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6">
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20">
         <h2 className="mb-2 text-lg font-semibold text-red-700 dark:text-red-400">
           Failed to load backlog
         </h2>
         <p className="text-red-600 dark:text-red-300">
           {error instanceof Error ? error.message : 'Unknown error'}
         </p>
-        <Button
-          variant="danger"
-          className="mt-4"
-          onClick={() => refetch()}
-        >
+        <Button variant="danger" className="mt-4" onClick={() => refetch()}>
           Retry
         </Button>
       </div>
@@ -89,13 +85,11 @@ export default function Backlog() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Feature Backlog
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Feature Backlog</h1>
           <p className="text-gray-500 dark:text-gray-400">
             {totalFeatures} features
             {hasFilters && ' (filtered)'}
@@ -116,7 +110,7 @@ export default function Backlog() {
           <select
             value={minReadiness}
             onChange={(e) => setMinReadiness(parseFloat(e.target.value))}
-            className="h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800"
+            className="focus:border-primary-500 focus:ring-primary-200 dark:focus:ring-primary-800 h-10 rounded-lg border border-gray-300 bg-white px-3 text-sm focus:outline-none focus:ring-2 dark:border-gray-600 dark:bg-gray-800"
           >
             <option value="0">All Readiness</option>
             <option value="0.5">50%+</option>
@@ -141,11 +135,7 @@ export default function Backlog() {
             variant="outline"
             onClick={() => refetch()}
             disabled={isFetching}
-            leftIcon={
-              <RefreshCw
-                className={clsx('h-4 w-4', isFetching && 'animate-spin')}
-              />
-            }
+            leftIcon={<RefreshCw className={clsx('h-4 w-4', isFetching && 'animate-spin')} />}
           >
             <span className="hidden sm:inline">Refresh</span>
           </Button>
@@ -154,11 +144,11 @@ export default function Backlog() {
 
       {/* Kanban Board */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
+        <div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {BACKLOG_COLUMNS.map((column) => (
             <div
               key={column.id}
-              className="animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800 p-4"
+              className="animate-pulse rounded-lg bg-gray-100 p-4 dark:bg-gray-800"
             >
               <div className="mb-4 h-6 w-24 rounded bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
@@ -170,7 +160,7 @@ export default function Backlog() {
         </div>
       ) : (
         <div className="flex-1 overflow-x-auto pb-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 min-w-[900px]">
+          <div className="grid min-w-[900px] grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {BACKLOG_COLUMNS.map((column) => {
               const columnData = backlogData?.[column.key];
               const features = columnData?.items || [];
@@ -179,18 +169,13 @@ export default function Backlog() {
               return (
                 <div
                   key={column.id}
-                  className={clsx(
-                    'rounded-lg p-4 min-h-[400px]',
-                    column.bgColor
-                  )}
+                  className={clsx('min-h-[400px] rounded-lg p-4', column.bgColor)}
                 >
                   {/* Column Header */}
                   <div className="mb-4 flex items-center gap-2">
                     <span className="text-lg">{column.icon}</span>
-                    <h2 className="font-semibold text-gray-900 dark:text-white">
-                      {column.title}
-                    </h2>
-                    <span className="rounded-full bg-white/50 dark:bg-black/20 px-2 py-0.5 text-sm font-medium text-gray-600 dark:text-gray-300">
+                    <h2 className="font-semibold text-gray-900 dark:text-white">{column.title}</h2>
+                    <span className="rounded-full bg-white/50 px-2 py-0.5 text-sm font-medium text-gray-600 dark:bg-black/20 dark:text-gray-300">
                       {count}
                     </span>
                   </div>
@@ -223,10 +208,7 @@ export default function Backlog() {
 
       {/* Detail Panel (Slide-in) */}
       {selectedFeature && (
-        <FeatureDetailPanel
-          feature={selectedFeature}
-          onClose={() => setSelectedFeature(null)}
-        />
+        <FeatureDetailPanel feature={selectedFeature} onClose={() => setSelectedFeature(null)} />
       )}
     </div>
   );
@@ -246,25 +228,25 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
     <div
       onClick={onClick}
       className={clsx(
-        'cursor-pointer rounded-lg border bg-white dark:bg-gray-800 p-4 transition-all hover:shadow-md',
+        'cursor-pointer rounded-lg border bg-white p-4 transition-all hover:shadow-md dark:bg-gray-800',
         isSelected
-          ? 'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800'
+          ? 'border-primary-500 ring-primary-200 dark:ring-primary-800 ring-2'
           : 'border-gray-200 dark:border-gray-700'
       )}
     >
       {/* Feature ID */}
-      <p className="text-xs font-mono text-gray-400 dark:text-gray-500 mb-1">
+      <p className="mb-1 font-mono text-xs text-gray-400 dark:text-gray-500">
         {feature.id.toUpperCase()}
       </p>
 
       {/* Title */}
-      <h3 className="font-medium text-gray-900 dark:text-white mb-2 line-clamp-2">
+      <h3 className="mb-2 line-clamp-2 font-medium text-gray-900 dark:text-white">
         {feature.title}
       </h3>
 
       {/* Loop Indicator (for Now Playing) */}
       {feature.currentLoop && (
-        <div className="flex items-center gap-2 mb-3">
+        <div className="mb-3 flex items-center gap-2">
           <LoopIndicator loop={feature.currentLoop} />
           <span className="text-xs text-gray-500 dark:text-gray-400">
             Loop {feature.currentLoop}: {feature.loopProgress || 0}%
@@ -273,16 +255,16 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
       )}
 
       {/* Priority & Readiness */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <PriorityBadge score={feature.priorityScore} />
         <ReadinessBar score={feature.readinessScore} />
       </div>
 
       {/* Warnings/Badges */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-wrap items-center gap-2">
         {hasBlocker && (
           <div
-            className="flex items-center gap-1 rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-0.5 text-xs text-red-600 dark:text-red-400"
+            className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-600 dark:bg-red-900/30 dark:text-red-400"
             title={`Blocked by: ${feature.blockedBy?.join(', ')}`}
           >
             <AlertTriangle className="h-3 w-3" />
@@ -290,7 +272,7 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
           </div>
         )}
         {hasQuestions && (
-          <div className="flex items-center gap-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2 py-0.5 text-xs text-yellow-600 dark:text-yellow-400">
+          <div className="flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-xs text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400">
             <MessageSquare className="h-3 w-3" />
             {feature.pendingQuestions} question
             {feature.pendingQuestions > 1 ? 's' : ''}
@@ -304,15 +286,13 @@ function FeatureCard({ feature, onClick, isSelected }: FeatureCardProps) {
           {feature.themes.slice(0, 2).map((theme) => (
             <span
               key={theme}
-              className="rounded bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 text-xs text-gray-600 dark:text-gray-300"
+              className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-300"
             >
               {theme}
             </span>
           ))}
           {feature.themes.length > 2 && (
-            <span className="text-xs text-gray-400">
-              +{feature.themes.length - 2}
-            </span>
+            <span className="text-xs text-gray-400">+{feature.themes.length - 2}</span>
           )}
         </div>
       )}
@@ -330,9 +310,7 @@ function LoopIndicator({ loop }: { loop: 'A' | 'B' | 'C' }) {
           key={i}
           className={clsx(
             'h-2 w-2 rounded-full',
-            i <= loopIndex
-              ? 'bg-green-500'
-              : 'bg-gray-300 dark:bg-gray-600'
+            i <= loopIndex ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
           )}
         />
       ))}
@@ -364,18 +342,12 @@ function ReadinessBar({ score }: { score: number }) {
         <div
           className={clsx(
             'h-full rounded-full transition-all',
-            percentage >= 80
-              ? 'bg-green-500'
-              : percentage >= 60
-                ? 'bg-yellow-500'
-                : 'bg-gray-400'
+            percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-yellow-500' : 'bg-gray-400'
           )}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-xs text-gray-500 dark:text-gray-400">
-        {percentage}%
-      </span>
+      <span className="text-xs text-gray-500 dark:text-gray-400">{percentage}%</span>
     </div>
   );
 }
@@ -391,21 +363,16 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/20 dark:bg-black/40" onClick={onClose} />
 
       {/* Panel */}
-      <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-gray-800 shadow-xl z-50 overflow-y-auto animate-slide-in">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+      <div className="animate-slide-in fixed bottom-0 right-0 top-0 z-50 w-full max-w-md overflow-y-auto bg-white shadow-xl dark:bg-gray-800">
+        <div className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
           <div>
-            <p className="text-xs font-mono text-gray-400 dark:text-gray-500">
+            <p className="font-mono text-xs text-gray-400 dark:text-gray-500">
               {feature.id.toUpperCase()}
             </p>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Feature Details
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feature Details</h2>
           </div>
           <button
             onClick={onClose}
@@ -415,23 +382,19 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="space-y-6 p-6">
           {/* Title & Description */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
-              {feature.title}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{feature.title}</h3>
             {feature.description && (
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                {feature.description}
-              </p>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
             )}
           </div>
 
           {/* Loop Progress */}
           {feature.currentLoop && (
-            <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+              <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <LoopIndicator loop={feature.currentLoop} />
                   <span className="font-medium text-green-700 dark:text-green-400">
@@ -453,14 +416,12 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
 
           {/* Blocker Warning */}
           {hasBlocker && (
-            <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
-              <div className="flex items-center gap-2 text-red-700 dark:text-red-400 mb-2">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
+              <div className="mb-2 flex items-center gap-2 text-red-700 dark:text-red-400">
                 <AlertTriangle className="h-5 w-5" />
                 <span className="font-medium">Blocked</span>
               </div>
-              <p className="text-sm text-red-600 dark:text-red-300">
-                This feature is blocked by:
-              </p>
+              <p className="text-sm text-red-600 dark:text-red-300">This feature is blocked by:</p>
               <div className="mt-2 space-y-1">
                 {feature.blockedBy?.map((blockerId) => (
                   <div
@@ -477,7 +438,7 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
 
           {/* Pending Questions */}
           {feature.pendingQuestions > 0 && (
-            <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4">
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
               <div className="flex items-center gap-2 text-yellow-700 dark:text-yellow-400">
                 <MessageSquare className="h-5 w-5" />
                 <span className="font-medium">
@@ -493,22 +454,22 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
 
           {/* Metrics */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4">
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
+              <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Priority
               </label>
               <div className="mt-2">
                 <PriorityBadge score={feature.priorityScore} />
               </div>
             </div>
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-700/50 p-4">
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-700/50">
+              <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Readiness
               </label>
               <div className="mt-2 flex items-center gap-2">
                 <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
                   <div
-                    className="h-full bg-primary-500 rounded-full"
+                    className="bg-primary-500 h-full rounded-full"
                     style={{
                       width: `${Math.round(feature.readinessScore * 100)}%`,
                     }}
@@ -524,14 +485,14 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
           {/* Themes */}
           {feature.themes && feature.themes.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Themes
               </label>
               <div className="mt-2 flex flex-wrap gap-2">
                 {feature.themes.map((theme) => (
                   <span
                     key={theme}
-                    className="rounded-full bg-primary-100 dark:bg-primary-900/30 px-3 py-1 text-sm text-primary-700 dark:text-primary-300"
+                    className="bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full px-3 py-1 text-sm"
                   >
                     {theme}
                   </span>
@@ -543,7 +504,7 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
           {/* Acceptance Criteria */}
           {feature.acceptanceCriteria && feature.acceptanceCriteria.length > 0 && (
             <div>
-              <label className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Acceptance Criteria
               </label>
               <ul className="mt-2 space-y-2">
@@ -552,7 +513,7 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
                     key={index}
                     className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
                   >
-                    <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-gray-400 dark:bg-gray-500 flex-shrink-0" />
+                    <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-gray-400 dark:bg-gray-500" />
                     {criterion}
                   </li>
                 ))}
@@ -561,7 +522,7 @@ function FeatureDetailPanel({ feature, onClose }: FeatureDetailPanelProps) {
           )}
 
           {/* Timestamps */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+          <div className="space-y-1 border-t border-gray-200 pt-4 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
             <p>Created: {new Date(feature.createdAt).toLocaleDateString()}</p>
             <p>Updated: {new Date(feature.updatedAt).toLocaleDateString()}</p>
           </div>

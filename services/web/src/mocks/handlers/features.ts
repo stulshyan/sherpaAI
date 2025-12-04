@@ -65,7 +65,7 @@ const mockFeatures: BacklogFeature[] = [
     description: 'Send email notifications for key user events',
     status: 'in_loop_c',
     priorityScore: 0.75,
-    readinessScore: 0.90,
+    readinessScore: 0.9,
     currentLoop: 'C',
     loopProgress: 30,
     pendingQuestions: 0,
@@ -144,7 +144,7 @@ const mockFeatures: BacklogFeature[] = [
     description: 'Allow users to export their data in multiple formats',
     status: 'backlog',
     priorityScore: 0.65,
-    readinessScore: 0.80,
+    readinessScore: 0.8,
     pendingQuestions: 0,
     themes: ['Data', 'Export'],
     requirementId: 'req-003',
@@ -191,7 +191,7 @@ const mockFeatures: BacklogFeature[] = [
     description: 'Implement dark mode theme across the application',
     status: 'backlog',
     priorityScore: 0.45,
-    readinessScore: 0.70,
+    readinessScore: 0.7,
     pendingQuestions: 0,
     themes: ['UI', 'Theme'],
     requirementId: 'req-003',
@@ -205,7 +205,7 @@ const mockFeatures: BacklogFeature[] = [
     description: 'Create native mobile app shell using React Native',
     status: 'deferred',
     priorityScore: 0.52,
-    readinessScore: 0.60,
+    readinessScore: 0.6,
     pendingQuestions: 0,
     themes: ['Mobile', 'React Native'],
     requirementId: 'req-003',
@@ -219,7 +219,7 @@ const mockFeatures: BacklogFeature[] = [
     description: 'Internationalization and localization support',
     status: 'backlog',
     priorityScore: 0.38,
-    readinessScore: 0.50,
+    readinessScore: 0.5,
     pendingQuestions: 0,
     themes: ['i18n', 'UX'],
     requirementId: 'req-003',
@@ -274,7 +274,7 @@ const mockFeatures: BacklogFeature[] = [
     title: 'Webhooks System',
     description: 'Allow third-party integrations via webhooks',
     status: 'backlog',
-    priorityScore: 0.40,
+    priorityScore: 0.4,
     readinessScore: 0.58,
     pendingQuestions: 0,
     themes: ['Integration', 'API'],
@@ -421,9 +421,7 @@ export const featureHandlers = [
 
     if (search) {
       filtered = filtered.filter(
-        (f) =>
-          f.title.toLowerCase().includes(search) ||
-          f.id.toLowerCase().includes(search)
+        (f) => f.title.toLowerCase().includes(search) || f.id.toLowerCase().includes(search)
       );
     }
 
@@ -459,10 +457,7 @@ export const featureHandlers = [
   // Get recent features
   http.get('/api/v1/features/recent', () => {
     const recent = [...mockFeatures]
-      .sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-      )
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .slice(0, 5);
     return HttpResponse.json({ features: recent });
   }),

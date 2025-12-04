@@ -115,8 +115,7 @@ export const intakeHandlers = [
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const body = (await request.json()) as { content: string };
-    const contentPreview =
-      body.content.substring(0, 30) + (body.content.length > 30 ? '...' : '');
+    const contentPreview = body.content.substring(0, 30) + (body.content.length > 30 ? '...' : '');
 
     const newUpload: ExtendedUpload = {
       id: `upload-${Date.now()}`,

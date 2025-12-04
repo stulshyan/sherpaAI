@@ -54,9 +54,9 @@ export default function IntakeHub() {
   const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [localUploads, setLocalUploads] = useState<
-    Map<string, { name: string; size: number }>
-  >(new Map());
+  const [localUploads, setLocalUploads] = useState<Map<string, { name: string; size: number }>>(
+    new Map()
+  );
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -165,9 +165,7 @@ export default function IntakeHub() {
 
     // Add to local state for immediate feedback
     const tempId = crypto.randomUUID();
-    setLocalUploads((prev) =>
-      new Map(prev).set(tempId, { name: file.name, size: file.size })
-    );
+    setLocalUploads((prev) => new Map(prev).set(tempId, { name: file.name, size: file.size }));
 
     try {
       await uploadMutation.mutateAsync(file);
@@ -203,20 +201,16 @@ export default function IntakeHub() {
   const pendingUploads = Array.from(localUploads.entries());
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="mx-auto max-w-4xl">
       {/* Page Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="rounded-lg bg-primary-100 p-2 dark:bg-primary-900">
-            <Upload className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+        <div className="mb-2 flex items-center gap-3">
+          <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+            <Upload className="text-primary-600 dark:text-primary-400 h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Intake Hub
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Intake Hub</h1>
         </div>
-        <p className="text-gray-500 dark:text-gray-400">
-          Drop Anything, AI Handles the Rest
-        </p>
+        <p className="text-gray-500 dark:text-gray-400">Drop Anything, AI Handles the Rest</p>
       </div>
 
       {/* Upload Zone */}
@@ -228,19 +222,17 @@ export default function IntakeHub() {
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         className={clsx(
-          'rounded-xl border-2 border-dashed p-8 md:p-12 text-center transition-all duration-200',
+          'rounded-xl border-2 border-dashed p-8 text-center transition-all duration-200 md:p-12',
           isDragging
             ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 scale-[1.02]'
-            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500',
+            : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500',
           uploadMutation.isPending && 'pointer-events-none opacity-50'
         )}
       >
         <Upload
           className={clsx(
             'mx-auto mb-4 h-12 w-12 transition-colors',
-            isDragging
-              ? 'text-primary-500'
-              : 'text-gray-400 dark:text-gray-500'
+            isDragging ? 'text-primary-500' : 'text-gray-400 dark:text-gray-500'
           )}
         />
         <p className="mb-2 text-lg font-medium text-gray-900 dark:text-white">
@@ -252,11 +244,11 @@ export default function IntakeHub() {
         </p>
 
         {/* Mobile: Show "Tap to Upload" */}
-        <p className="mb-4 text-sm text-gray-400 dark:text-gray-500 md:hidden">
+        <p className="mb-4 text-sm text-gray-400 md:hidden dark:text-gray-500">
           Tap below to upload from your device
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <input
             type="file"
             id="file-upload"
@@ -278,7 +270,7 @@ export default function IntakeHub() {
           >
             {uploadMutation.isPending ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Uploading...
               </>
             ) : (
@@ -323,27 +315,26 @@ export default function IntakeHub() {
 
       {/* Upload Progress */}
       {uploadProgress && (
-        <div className="mt-4 rounded-lg border border-primary-200 bg-primary-50 p-4 dark:border-primary-800 dark:bg-primary-900/20">
+        <div className="border-primary-200 bg-primary-50 dark:border-primary-800 dark:bg-primary-900/20 mt-4 rounded-lg border p-4">
           <div className="flex items-center gap-3">
-            <File className="h-6 w-6 text-primary-500" />
+            <File className="text-primary-500 h-6 w-6" />
             <div className="flex-1">
-              <div className="flex items-center justify-between mb-1">
+              <div className="mb-1 flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Uploading...
                 </span>
-                <span className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                <span className="text-primary-600 dark:text-primary-400 text-sm font-medium">
                   {uploadProgress.percentage}%
                 </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                 <div
-                  className="h-full bg-primary-500 transition-all duration-300 rounded-full"
+                  className="bg-primary-500 h-full rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress.percentage}%` }}
                 />
               </div>
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                {formatFileSize(uploadProgress.loaded)} /{' '}
-                {formatFileSize(uploadProgress.total)}
+                {formatFileSize(uploadProgress.loaded)} / {formatFileSize(uploadProgress.total)}
               </p>
             </div>
           </div>
@@ -353,9 +344,7 @@ export default function IntakeHub() {
       {/* Recent Uploads */}
       <div className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Recent Uploads
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Uploads</h2>
           {uploadsLoading && (
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <RefreshCw className="h-4 w-4 animate-spin" />
@@ -374,12 +363,8 @@ export default function IntakeHub() {
               >
                 <File className="text-primary-500 h-8 w-8" />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {name}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {formatFileSize(size)}
-                  </p>
+                  <p className="font-medium text-gray-900 dark:text-white">{name}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(size)}</p>
                 </div>
                 <div className="text-primary-600 dark:text-primary-400 flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -408,9 +393,9 @@ export default function IntakeHub() {
         ) : (
           !uploadsLoading &&
           pendingUploads.length === 0 && (
-            <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-8 text-center">
-              <Upload className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-3" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800/50">
+              <Upload className="mx-auto mb-3 h-12 w-12 text-gray-300 dark:text-gray-600" />
+              <p className="font-medium text-gray-500 dark:text-gray-400">
                 No requirements uploaded yet
               </p>
               <p className="mt-1 text-sm text-gray-400 dark:text-gray-500">
@@ -489,17 +474,16 @@ function UploadCard({
       className={clsx(
         'flex items-center gap-4 rounded-lg border p-4 transition-all',
         upload.status === 'error'
-          ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20'
-          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800',
-        isClickable && 'cursor-pointer hover:shadow-md hover:border-primary-300 dark:hover:border-primary-600'
+          ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
+          : 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800',
+        isClickable &&
+          'hover:border-primary-300 dark:hover:border-primary-600 cursor-pointer hover:shadow-md'
       )}
     >
       <File className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-gray-900 dark:text-white truncate">
-          {upload.filename}
-        </p>
-        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 flex-wrap">
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-medium text-gray-900 dark:text-white">{upload.filename}</p>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
           <span>{formatFileSize(upload.size)}</span>
           <span>•</span>
           <span>{formatRelativeTime(upload.uploadedAt)}</span>
@@ -513,16 +497,14 @@ function UploadCard({
           )}
         </div>
         {upload.error && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-            {upload.error}
-          </p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{upload.error}</p>
         )}
       </div>
 
       <div className="flex items-center gap-2">
         {/* Processing progress bar */}
         {upload.status === 'processing' && upload.progress !== undefined && (
-          <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden mr-2">
+          <div className="mr-2 h-1.5 w-16 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
             <div
               className="h-full bg-yellow-500 transition-all duration-300"
               style={{ width: `${upload.progress}%` }}
@@ -531,21 +513,13 @@ function UploadCard({
         )}
 
         {/* Status badge */}
-        <div
-          className={clsx(
-            'flex items-center gap-1 rounded-full px-2 py-1',
-            status.bgColor
-          )}
-        >
+        <div className={clsx('flex items-center gap-1 rounded-full px-2 py-1', status.bgColor)}>
           <StatusIcon
             className={clsx('h-4 w-4', status.color, {
-              'animate-spin':
-                upload.status === 'uploading' || upload.status === 'processing',
+              'animate-spin': upload.status === 'uploading' || upload.status === 'processing',
             })}
           />
-          <span className={clsx('text-xs font-medium', status.color)}>
-            {status.label}
-          </span>
+          <span className={clsx('text-xs font-medium', status.color)}>{status.label}</span>
         </div>
 
         {/* Actions */}
@@ -559,15 +533,11 @@ function UploadCard({
             className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
             title="Retry"
           >
-            <RefreshCw
-              className={clsx('h-4 w-4', isReprocessing && 'animate-spin')}
-            />
+            <RefreshCw className={clsx('h-4 w-4', isReprocessing && 'animate-spin')} />
           </button>
         )}
 
-        {isClickable && (
-          <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-        )}
+        {isClickable && <ArrowRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />}
 
         <button
           onClick={(e) => {

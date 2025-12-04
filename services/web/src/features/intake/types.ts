@@ -14,12 +14,7 @@ export interface UploadedRequirement {
   projectId: string;
 }
 
-export type RequirementStatus =
-  | 'uploading'
-  | 'uploaded'
-  | 'processing'
-  | 'completed'
-  | 'failed';
+export type RequirementStatus = 'uploading' | 'uploaded' | 'processing' | 'completed' | 'failed';
 
 export interface UploadProgress {
   loaded: number;

@@ -1,12 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useState, useCallback } from 'react';
-import {
-  FileValidationResult,
-  UploadProgress,
-  ALLOWED_EXTENSIONS,
-  MAX_FILE_SIZE,
-} from '../types';
+import { FileValidationResult, UploadProgress, ALLOWED_EXTENSIONS, MAX_FILE_SIZE } from '../types';
 
 const api = axios.create({
   baseURL: '/api/v1/intake',

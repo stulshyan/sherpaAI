@@ -61,10 +61,10 @@ export function PasteTextModal({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-xl bg-white p-6 shadow-xl transition-all dark:bg-gray-800">
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="rounded-lg bg-primary-100 p-2 dark:bg-primary-900">
-                      <FileText className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+                    <div className="bg-primary-100 dark:bg-primary-900 rounded-lg p-2">
+                      <FileText className="text-primary-600 dark:text-primary-400 h-5 w-5" />
                     </div>
                     <Dialog.Title className="text-lg font-semibold text-gray-900 dark:text-white">
                       Paste Requirements
@@ -79,8 +79,8 @@ export function PasteTextModal({
                 </div>
 
                 <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-                  Paste your requirement text below. It will be processed and
-                  decomposed into features.
+                  Paste your requirement text below. It will be processed and decomposed into
+                  features.
                 </p>
 
                 <textarea
@@ -90,7 +90,7 @@ export function PasteTextModal({
 
 Example:
 The system shall allow users to upload requirement documents in PDF, DOCX, TXT, or MD format. The maximum file size should be 10MB. Users should see upload progress and receive confirmation when the upload is complete."
-                  className="w-full h-64 rounded-lg border border-gray-300 p-4 text-sm focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-primary-400 dark:focus:ring-primary-800"
+                  className="focus:border-primary-500 focus:ring-primary-200 dark:focus:border-primary-400 dark:focus:ring-primary-800 h-64 w-full rounded-lg border border-gray-300 p-4 text-sm focus:outline-none focus:ring-2 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   disabled={isSubmitting}
                 />
 
@@ -108,11 +108,7 @@ The system shall allow users to upload requirement documents in PDF, DOCX, TXT, 
                 </div>
 
                 <div className="mt-6 flex justify-end gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={handleClose}
-                    disabled={isSubmitting}
-                  >
+                  <Button variant="outline" onClick={handleClose} disabled={isSubmitting}>
                     Cancel
                   </Button>
                   <Button
