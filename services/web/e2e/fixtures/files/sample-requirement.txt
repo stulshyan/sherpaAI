@@ -1,0 +1,36 @@
+E-Commerce Platform Core Requirements
+======================================
+
+1. User Authentication
+   - Users must be able to register with email and password
+   - Support OAuth2 login (Google, Microsoft)
+   - Implement multi-factor authentication (MFA)
+   - JWT token-based session management
+
+2. Product Catalog
+   - Display products in grid/list view
+   - Support product search by name, description, SKU
+   - Filter products by category, price, attributes
+   - Product detail pages with images, variants, pricing
+
+3. Shopping Cart
+   - Add/remove items from cart
+   - Update quantities
+   - Save cart for later
+   - Support guest checkout
+
+4. Payment Gateway
+   - Integrate with Stripe for payment processing
+   - Support credit cards, Apple Pay, Google Pay
+   - Handle subscription billing
+   - Process refunds
+
+5. Order Management
+   - Create orders from cart
+   - Track order status
+   - Integration with fulfillment system
+   - Order history view
+
+This is a sample requirement document for testing the Entropy platform's
+decomposition capabilities. The system should identify themes, extract
+atomic requirements, and generate clarification questions.
