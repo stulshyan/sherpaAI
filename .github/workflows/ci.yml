@@ -119,6 +119,7 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
+        working-directory: services/web
 
       - name: Build packages
         run: pnpm build
