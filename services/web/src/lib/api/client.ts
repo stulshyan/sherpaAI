@@ -3,7 +3,7 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
 // API base URL from environment
 // When using mocks, use relative URLs so MSW can intercept requests
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
-const API_URL = USE_MOCKS ? '/api/v1' : (import.meta.env.VITE_API_URL || '/api/v1');
+const API_URL = USE_MOCKS ? '/api/v1' : import.meta.env.VITE_API_URL || '/api/v1';
 
 // Create axios instance
 export const api = axios.create({
