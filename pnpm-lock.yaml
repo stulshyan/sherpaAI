@@ -169,6 +169,9 @@ importers:
       '@types/franc':
         specifier: ^6.0.0
         version: 6.0.0
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.25
       '@types/pdf-parse':
         specifier: ^1.1.5
         version: 1.1.5

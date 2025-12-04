@@ -23,6 +23,7 @@ export interface DatabaseConfig {
  */
 export interface TypedQueryResult<T extends QueryResultRow> extends QueryResult<T> {
   rows: T[];
+  rowCount: number | null;
 }
 
 /**
