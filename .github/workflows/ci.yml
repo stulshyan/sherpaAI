@@ -123,6 +123,12 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Generate large test fixtures
+        run: |
+          cd services/web/e2e/fixtures/files
+          head -c 10485760 /dev/zero | tr '\0' 'A' > large-file.pdf
+          echo "%PDF-1.4" | cat - large-file.pdf > temp && mv temp large-file.pdf
+
       - name: Run E2E tests
         run: pnpm test:e2e
         env:
