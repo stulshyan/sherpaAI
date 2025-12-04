@@ -188,7 +188,7 @@ test.describe('Settings - Validation', () => {
     await settingsPage.goto();
   });
 
-  test('should show error for invalid API key format', async ({ page }) => {
+  test('should show error for invalid API key format', async () => {
     // Enter an invalid API key format
     await settingsPage.setApiKey('anthropic', 'invalid-key');
 

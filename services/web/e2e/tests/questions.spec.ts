@@ -110,7 +110,7 @@ test.describe('Clarification Questions - Multiple Choice', () => {
     expect(options.length).toBeGreaterThanOrEqual(2);
   });
 
-  test('should allow selecting multiple options', async ({ page }) => {
+  test('should allow selecting multiple options', async () => {
     const options = await featureDetail.multipleChoiceOptions.all();
 
     if (options.length < 2) {

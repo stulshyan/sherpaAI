@@ -1,6 +1,6 @@
+import path from 'path';
 import { test, expect } from '@playwright/test';
 import { IntakePage, DecompositionPage } from '../pages';
-import path from 'path';
 
 /**
  * Intake Hub E2E Tests
@@ -43,7 +43,7 @@ test.describe('Intake Hub - Upload Flow', () => {
     await expect(decompositionPage.processingMessage).toContainText(/processing/i);
   });
 
-  test('should upload DOCX file successfully', async ({ page }) => {
+  test('should upload DOCX file successfully', async () => {
     const filePath = path.join(__dirname, '../fixtures/files/sample-requirement.docx');
 
     await intakePage.uploadFile(filePath);
@@ -54,7 +54,7 @@ test.describe('Intake Hub - Upload Flow', () => {
     expect(uploads.length).toBeGreaterThan(0);
   });
 
-  test('should upload TXT file successfully', async ({ page }) => {
+  test('should upload TXT file successfully', async () => {
     const filePath = path.join(__dirname, '../fixtures/files/sample-requirement.txt');
 
     await intakePage.uploadFile(filePath);
@@ -64,7 +64,7 @@ test.describe('Intake Hub - Upload Flow', () => {
     expect(uploads.length).toBeGreaterThan(0);
   });
 
-  test('should upload multiple files sequentially', async ({ page }) => {
+  test('should upload multiple files sequentially', async () => {
     const files = [
       path.join(__dirname, '../fixtures/files/sample-requirement.pdf'),
       path.join(__dirname, '../fixtures/files/sample-requirement.txt'),

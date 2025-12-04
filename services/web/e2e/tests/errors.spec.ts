@@ -1,6 +1,6 @@
+import path from 'path';
 import { test, expect } from '@playwright/test';
 import { IntakePage, BacklogPage, DecompositionPage } from '../pages';
-import path from 'path';
 
 /**
  * Error Flow E2E Tests
@@ -186,7 +186,6 @@ test.describe('Error Handling - Rate Limiting', () => {
       });
     });
 
-    const backlogPage = new BacklogPage(page);
     await page.goto('/backlog');
 
     // Should show rate limit message

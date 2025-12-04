@@ -15,9 +15,9 @@
  * @see Epic E-009: End-to-End Integration
  */
 
-import { chromium, Page, Browser, BrowserContext } from 'playwright';
 import { writeFileSync, mkdirSync, existsSync, renameSync } from 'fs';
 import { join, dirname } from 'path';
+import { chromium, Page, Browser, BrowserContext } from 'playwright';
 
 // ============================================================================
 // Types

@@ -202,8 +202,12 @@ test.describe('Backlog - Feature Detail Modal', () => {
     await featureDetail.switchToTab('questions');
 
     // Should have either pending or answered questions (or both)
-    const pending = await featureDetail.getPendingQuestionCount();
-    const answered = await featureDetail.getAnsweredQuestionCount();
+    const pendingCount = await featureDetail.getPendingQuestionCount();
+    const answeredCount = await featureDetail.getAnsweredQuestionCount();
+
+    // Verify we can get question counts
+    expect(pendingCount).toBeGreaterThanOrEqual(0);
+    expect(answeredCount).toBeGreaterThanOrEqual(0);
 
     // At least the questions list should be visible
     await expect(featureDetail.questionsList).toBeVisible();

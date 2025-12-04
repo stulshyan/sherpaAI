@@ -451,7 +451,7 @@ test.describe('Edge Cases - Accessibility', () => {
 });
 
 test.describe('Edge Cases - Browser Compatibility', () => {
-  test('should work with JavaScript disabled for static content', async ({ page, context }) => {
+  test('should work with JavaScript disabled for static content', async ({ page }) => {
     // Note: This test checks that the initial page structure loads
     // Full functionality requires JavaScript
 
@@ -464,9 +464,9 @@ test.describe('Edge Cases - Browser Compatibility', () => {
 
   test('should handle page refresh during loading', async ({ page }) => {
     // Start loading backlog
-    const loadPromise = page.goto('/backlog');
+    await page.goto('/backlog', { waitUntil: 'domcontentloaded' });
 
-    // Refresh before load completes
+    // Refresh before full load completes
     await page.waitForTimeout(100);
     await page.reload();
 
