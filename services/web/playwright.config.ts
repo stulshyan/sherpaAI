@@ -70,6 +70,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
@@ -88,6 +89,7 @@ export default defineConfig({
       name: 'mobile-chrome',
       use: {
         ...devices['Pixel 5'],
+        storageState: 'e2e/.auth/user.json',
       },
       dependencies: ['setup'],
     },
