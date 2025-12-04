@@ -83,8 +83,8 @@ export class CacheService {
 
     this.pubSubClient = this.client.duplicate();
 
-    this.client.on('error', (err) => console.error('Redis Client Error:', err));
-    this.pubSubClient.on('error', (err) => console.error('Redis PubSub Error:', err));
+    this.client.on('error', (err: Error) => console.error('Redis Client Error:', err));
+    this.pubSubClient.on('error', (err: Error) => console.error('Redis PubSub Error:', err));
 
     await this.client.connect();
     await this.pubSubClient.connect();
@@ -175,7 +175,7 @@ export class CacheService {
   async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
     const client = this.getClient();
     const values = await client.mGet(keys);
-    return values.map((v) => (v ? (JSON.parse(v) as T) : null));
+    return values.map((v: string | null) => (v ? (JSON.parse(v) as T) : null));
   }
 
   /**
@@ -324,7 +324,7 @@ export class CacheService {
       this.subscriptions.set(channel, []);
 
       // Actually subscribe to Redis
-      await this.pubSubClient.subscribe(channel, (message) => {
+      await this.pubSubClient.subscribe(channel, (message: string) => {
         const handlers = this.subscriptions.get(channel) || [];
         const parsed = JSON.parse(message);
         for (const h of handlers) {

@@ -11,6 +11,7 @@ import {
   CopyObjectCommand,
   PutObjectCommandInput,
   GetObjectCommandInput,
+  _Object,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { detectContentType } from '../utils/s3-keys.js';
@@ -337,7 +338,7 @@ export class StorageService {
 
     const response = await this.s3.send(command);
 
-    const objects: ObjectInfo[] = (response.Contents || []).map((obj) => ({
+    const objects: ObjectInfo[] = (response.Contents || []).map((obj: _Object) => ({
       key: obj.Key || '',
       size: obj.Size || 0,
       lastModified: obj.LastModified || new Date(),
