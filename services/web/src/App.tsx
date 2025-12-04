@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout';
 import { ProtectedRoute } from '@/features/auth';
 import Backlog from '@/pages/Backlog';
 import Dashboard from '@/pages/Dashboard';
+import DecompositionPage from '@/pages/DecompositionPage';
 import HealthDashboard from '@/pages/HealthDashboard';
 import IntakeHub from '@/pages/IntakeHub';
 import Login from '@/pages/Login';
@@ -26,6 +27,7 @@ export default function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="intake" element={<IntakeHub />} />
+        <Route path="intake/:requirementId" element={<DecompositionPage />} />
         <Route path="backlog" element={<Backlog />} />
         <Route path="test-harness" element={<TestHarness />} />
         <Route path="health" element={<HealthDashboard />} />
