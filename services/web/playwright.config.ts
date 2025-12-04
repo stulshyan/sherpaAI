@@ -39,8 +39,8 @@ export default defineConfig({
 
   // Shared settings for all projects
   use: {
-    // Base URL for navigation
-    baseURL: process.env.E2E_BASE_URL || 'http://localhost:5173',
+    // Base URL for navigation (matches vite.config.ts server.port)
+    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3001',
 
     // Collect trace when retrying a failed test
     trace: 'on-first-retry',
@@ -98,7 +98,7 @@ export default defineConfig({
   // Local dev server configuration
   webServer: {
     command: 'pnpm dev',
-    url: 'http://localhost:5173',
+    url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
