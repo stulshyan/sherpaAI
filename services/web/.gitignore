@@ -1,0 +1,4 @@
+# E2E Test Artifacts
+e2e/.auth/
+e2e/test-results/
+playwright-report/
