@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { AlertTriangle } from 'lucide-react';
 import { useMemo } from 'react';
-import { QuestionCard } from './QuestionCard';
 import type { ClarificationQuestion } from '../types';
+import { QuestionCard } from './QuestionCard';
 
 interface QuestionsSectionProps {
   questions: ClarificationQuestion[];

@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { CheckCircle, Play, Edit2, AlertTriangle } from 'lucide-react';
-import { Button, Input } from '@/components/ui';
+import { useState } from 'react';
 import type { FeatureDetail } from '../types';
+import { Button, Input } from '@/components/ui';
 
 interface ActionButtonsProps {
   feature: FeatureDetail;

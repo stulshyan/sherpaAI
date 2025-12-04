@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui';
-import { FeatureRow } from './FeatureRow';
 import type { FeatureCandidate, Theme } from '../types';
+import { FeatureRow } from './FeatureRow';
+import { Button } from '@/components/ui';
 
 interface FeaturesSectionProps {
   features: FeatureCandidate[];

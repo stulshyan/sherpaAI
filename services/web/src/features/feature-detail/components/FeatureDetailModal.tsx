@@ -1,14 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { X, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui';
-import { TabNavigation } from './TabNavigation';
-import { OverviewTab } from './OverviewTab';
-import { RequirementsTab } from './RequirementsTab';
-import { QuestionsTab } from './QuestionsTab';
-import { HistoryTab } from './HistoryTab';
-import { ActionButtons } from './ActionButtons';
-import { getStatusLabel, getStatusColor } from './helpers';
+import { useEffect, useState, useCallback } from 'react';
 import {
   useFeatureDetail,
   useFeatureRequirements,
@@ -17,6 +9,14 @@ import {
   useFeatureActions,
 } from '../hooks';
 import type { FeatureDetailTab } from '../types';
+import { ActionButtons } from './ActionButtons';
+import { getStatusLabel, getStatusColor } from './helpers';
+import { HistoryTab } from './HistoryTab';
+import { OverviewTab } from './OverviewTab';
+import { QuestionsTab } from './QuestionsTab';
+import { RequirementsTab } from './RequirementsTab';
+import { TabNavigation } from './TabNavigation';
+import { Button } from '@/components/ui';
 
 interface FeatureDetailModalProps {
   featureId: string;

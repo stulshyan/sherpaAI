@@ -1,7 +1,7 @@
 import { authHandlers } from './auth';
 import { decompositionHandlers } from './decomposition';
-import { featureHandlers } from './features';
 import { featureDetailHandlers } from './featureDetail';
+import { featureHandlers } from './features';
 import { intakeHandlers } from './intake';
 import { projectHandlers } from './projects';
 

@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { X } from 'lucide-react';
-import { Button } from '@/components/ui';
-import { ThemeCard } from './ThemeCard';
 import type { Theme } from '../types';
+import { ThemeCard } from './ThemeCard';
+import { Button } from '@/components/ui';
 
 interface ThemesSectionProps {
   themes: Theme[];

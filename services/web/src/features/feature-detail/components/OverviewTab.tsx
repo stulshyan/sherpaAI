@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { Link as LinkIcon, AlertTriangle } from 'lucide-react';
-import { ReadinessBreakdown } from './ReadinessBreakdown';
-import { PriorityFactors } from './PriorityFactors';
 import type { FeatureDetail, FeatureDependency } from '../types';
 import { getStatusLabel, getStatusColor, getComplexityLabel } from './helpers';
+import { PriorityFactors } from './PriorityFactors';
+import { ReadinessBreakdown } from './ReadinessBreakdown';
 
 interface OverviewTabProps {
   feature: FeatureDetail;

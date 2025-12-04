@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { AlertTriangle, Check, MessageCircle } from 'lucide-react';
-import { AnswerInput } from './AnswerInput';
 import type { ClarificationQuestion } from '../types';
+import { AnswerInput } from './AnswerInput';
 
 interface QuestionCardProps {
   question: ClarificationQuestion;

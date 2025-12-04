@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { AlertCircle, RefreshCw, Bot } from 'lucide-react';
-import { Button } from '@/components/ui';
+import type { DecompositionStatus } from '../types';
 import { AIThinkingAnimation } from './AIThinkingAnimation';
 import { ProgressStages } from './ProgressStages';
-import type { DecompositionStatus } from '../types';
+import { Button } from '@/components/ui';
 
 interface ProcessingProgressProps {
   status: DecompositionStatus;

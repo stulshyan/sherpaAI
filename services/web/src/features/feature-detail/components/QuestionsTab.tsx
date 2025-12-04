@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { AlertTriangle, Check, MessageCircle } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import { Button, Input } from '@/components/ui';
 import type { FeatureQuestion } from '../types';
 import { formatRelativeTime } from './helpers';
+import { Button, Input } from '@/components/ui';
 
 interface QuestionsTabProps {
   questions: FeatureQuestion[];

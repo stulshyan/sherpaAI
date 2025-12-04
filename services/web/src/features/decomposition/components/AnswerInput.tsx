@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useState, useEffect } from 'react';
-import { Button, Input } from '@/components/ui';
 import type { QuestionType } from '../types';
+import { Button, Input } from '@/components/ui';
 
 interface AnswerInputProps {
   questionType: QuestionType;

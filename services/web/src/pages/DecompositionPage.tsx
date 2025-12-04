@@ -1,6 +1,6 @@
+import { ArrowLeft, ArrowRight, CheckCircle, File, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, CheckCircle, File, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui';
 import {
   useDecompositionStatus,
