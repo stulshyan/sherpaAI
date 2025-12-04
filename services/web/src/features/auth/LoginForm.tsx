@@ -1,10 +1,10 @@
+import type { AxiosError } from 'axios';
+import { Lock, Mail, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Lock, Mail, AlertCircle } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { useAuthStore } from '@/stores';
-import type { AxiosError } from 'axios';
 
 interface LoginFormData {
   username: string;

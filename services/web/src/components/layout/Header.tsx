@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Menu, Moon, Sun, LogOut, User, ChevronDown, Settings } from 'lucide-react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown, type DropdownItem } from '@/components/ui';
 import { api } from '@/lib/api/client';
