@@ -1,8 +1,8 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { X } from 'lucide-react';
 import { Fragment } from 'react';
-import { Sidebar } from './Sidebar';
 import { useUIStore } from '@/stores';
+import { Sidebar } from './Sidebar';
 
 export function MobileNav() {
   const { sidebarOpen, setSidebarOpen } = useUIStore();

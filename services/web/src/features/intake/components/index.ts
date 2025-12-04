@@ -1,0 +1,1 @@
+export { PasteTextModal } from './PasteTextModal';
