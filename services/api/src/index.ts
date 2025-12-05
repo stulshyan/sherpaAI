@@ -8,6 +8,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { errorHandler } from './middleware/error-handler.js';
+import { authRouter } from './routes/auth.js';
 import { backlogRouter } from './routes/backlog.js';
 import { featuresRouter } from './routes/features.js';
 import { healthRouter } from './routes/health.js';
@@ -43,6 +44,7 @@ async function main() {
       version: '0.1.0',
       endpoints: {
         health: '/health',
+        auth: '/api/v1/auth',
         testHarness: '/api/v1/test-harness',
         requirements: '/api/v1/requirements',
         features: '/api/v1/features',
@@ -56,6 +58,7 @@ async function main() {
   // Routes
   app.use('/health', healthRouter);
   app.use('/api/v1/health', healthRouter); // Also serve health under /api/v1
+  app.use('/api/v1/auth', authRouter);
   app.use('/api/v1/requirements', requirementsRouter);
   app.use('/api/v1/features', featuresRouter);
   app.use('/api/v1/backlog', backlogRouter);
