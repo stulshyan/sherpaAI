@@ -62,7 +62,7 @@ export function LoginForm() {
         <Input
           label="Email"
           type="email"
-          placeholder="demo@entropy.app"
+          placeholder="Enter your email"
           leftIcon={<Mail className="h-5 w-5" />}
           error={errors.username?.message}
           {...register('username', {
@@ -94,16 +94,6 @@ export function LoginForm() {
         </Button>
       </form>
 
-      {/* Demo credentials hint */}
-      <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
-        <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Demo Credentials</p>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">
-          Email: <code className="text-gray-700 dark:text-gray-300">demo@entropy.app</code>
-        </p>
-        <p className="text-sm text-gray-500 dark:text-gray-500">
-          Password: <code className="text-gray-700 dark:text-gray-300">demo123</code>
-        </p>
-      </div>
     </div>
   );
 }
