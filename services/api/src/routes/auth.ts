@@ -1,7 +1,7 @@
 // Authentication routes
 
-import { createLogger } from '@entropy/shared';
 import crypto from 'crypto';
+import { createLogger } from '@entropy/shared';
 import { Router, type IRouter, type Request, type Response } from 'express';
 
 const logger = createLogger('auth');
@@ -40,7 +40,12 @@ function generateToken(userId: string): string {
 
 function verifyToken(token: string): { userId: string } | null {
   try {
-    const [data, signature] = token.split('.');
+    const parts = token.split('.');
+    if (parts.length !== 2) return null;
+
+    const [data, signature] = parts;
+    if (!data || !signature) return null;
+
     const expectedSignature = crypto
       .createHmac('sha256', process.env.JWT_SECRET || 'entropy-dev-secret')
       .update(data)
