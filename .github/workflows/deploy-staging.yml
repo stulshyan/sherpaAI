@@ -10,7 +10,6 @@ concurrency:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
 
 jobs:
   deploy:
@@ -23,53 +22,56 @@ jobs:
       contents: read
 
     steps:
-      - name: Check required secrets
-        run: |
-          if [ -z "${{ secrets.AWS_ACCOUNT_ID }}" ]; then
-            echo "::error::AWS_ACCOUNT_ID secret is not set"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AWS_ROLE_ARN }}" ]; then
-            echo "::error::AWS_ROLE_ARN secret is not set"
-            exit 1
-          fi
-          echo "All required secrets are configured"
-
-          # Check optional API keys
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
-            echo "::warning::ANTHROPIC_API_KEY is not set - AI features will not work"
-          fi
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Load environment variables
+        run: |
+          # Load staging environment variables from .env.staging file
+          if [ -f .env.staging ]; then
+            echo "Loading environment from .env.staging"
+            set -a
+            source .env.staging
+            set +a
+          else
+            echo "::error::.env.staging file not found. Please create it from .env.staging.example"
+            exit 1
+          fi
+
+          # Export variables for subsequent steps
+          echo "AWS_ACCOUNT_ID=${AWS_ACCOUNT_ID}" >> $GITHUB_ENV
+          echo "AWS_ROLE_ARN=${AWS_ROLE_ARN}" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION:-us-east-1}.amazonaws.com" >> $GITHUB_ENV
+          echo "STAGING_DATABASE_URL=${STAGING_DATABASE_URL}" >> $GITHUB_ENV
+          echo "STAGING_REDIS_URL=${STAGING_REDIS_URL}" >> $GITHUB_ENV
+          echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> $GITHUB_ENV
+          echo "GOOGLE_API_KEY=${GOOGLE_API_KEY}" >> $GITHUB_ENV
+          echo "SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}" >> $GITHUB_ENV
+
+      - name: Check required environment variables
+        run: |
+          if [ -z "${{ env.AWS_ACCOUNT_ID }}" ]; then
+            echo "::error::AWS_ACCOUNT_ID is not set in .env.staging"
+            exit 1
+          fi
+          if [ -z "${{ env.AWS_ROLE_ARN }}" ]; then
+            echo "::error::AWS_ROLE_ARN is not set in .env.staging"
+            exit 1
+          fi
+          echo "All required environment variables are configured"
+
+          # Check optional API keys
+          if [ -z "${{ env.ANTHROPIC_API_KEY }}" ]; then
+            echo "::warning::ANTHROPIC_API_KEY is not set - AI features will not work"
+          fi
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: github-actions-deploy
-
-      - name: Store API keys in AWS Secrets Manager
-        if: secrets.ANTHROPIC_API_KEY != ''
-        run: |
-          # Create or update the secrets in AWS Secrets Manager
-          aws secretsmanager create-secret \
-            --name entropy/staging/api-keys \
-            --secret-string '{
-              "ANTHROPIC_API_KEY": "${{ secrets.ANTHROPIC_API_KEY }}",
-              "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
-              "GOOGLE_API_KEY": "${{ secrets.GOOGLE_API_KEY }}"
-            }' \
-            2>/dev/null || \
-          aws secretsmanager update-secret \
-            --secret-id entropy/staging/api-keys \
-            --secret-string '{
-              "ANTHROPIC_API_KEY": "${{ secrets.ANTHROPIC_API_KEY }}",
-              "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
-              "GOOGLE_API_KEY": "${{ secrets.GOOGLE_API_KEY }}"
-            }'
-          echo "API keys stored in AWS Secrets Manager"
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -163,11 +165,11 @@ jobs:
           pnpm smoke
         env:
           API_URL: https://staging.entropy.example.com
-          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-          REDIS_URL: ${{ secrets.STAGING_REDIS_URL }}
+          DATABASE_URL: ${{ env.STAGING_DATABASE_URL }}
+          REDIS_URL: ${{ env.STAGING_REDIS_URL }}
           S3_BUCKET_UPLOADS: entropy-staging-uploads
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ env.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ env.OPENAI_API_KEY }}
 
       - name: Rollback on smoke test failure
         if: failure()
@@ -181,11 +183,11 @@ jobs:
           echo "Rollback initiated"
 
       - name: Notify Slack
-        if: always() && secrets.SLACK_WEBHOOK_URL != ''
+        if: always() && env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           text: 'Staging deployment ${{ job.status }}'
           fields: repo,message,commit,author,action,workflow
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
