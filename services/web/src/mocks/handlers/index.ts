@@ -5,6 +5,7 @@ import { featureHandlers } from './features';
 import { intakeHandlers } from './intake';
 import { projectHandlers } from './projects';
 import { settingsHandlers } from './settings';
+import { testHarnessHandlers } from './testHarness';
 
 export const handlers = [
   ...authHandlers,
@@ -14,4 +15,5 @@ export const handlers = [
   ...intakeHandlers,
   ...decompositionHandlers,
   ...settingsHandlers,
+  ...testHarnessHandlers,
 ];
