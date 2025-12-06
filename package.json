@@ -23,8 +23,9 @@
     "format:check": "prettier --check .",
     "typecheck": "pnpm run -r typecheck",
     "clean": "pnpm run -r clean && rm -rf node_modules",
-    "db:migrate": "pnpm --filter @entropy/api db:migrate",
+    "db:migrate": "npx tsx scripts/migrate.ts",
     "db:seed": "pnpm --filter @entropy/api db:seed",
+    "init:s3": "bash scripts/init-localstack.sh",
     "seed:demo": "npx tsx scripts/seed-demo.ts",
     "seed:demo:clean": "npx tsx scripts/seed-demo.ts --clean",
     "smoke": "npx tsx scripts/smoke-test.ts",
@@ -68,6 +69,7 @@
     "file-type": "^21.1.1",
     "franc": "^6.2.0",
     "mammoth": "^1.11.0",
-    "pdf-parse": "^2.4.5"
+    "pdf-parse": "^2.4.5",
+    "pg": "^8.11.3"
   }
 }
