@@ -76,12 +76,7 @@ async function processDocument(
 
   // 1. Upload original file to S3
   const s3Key = `clients/${clientId}/projects/${projectId}/requirements/${requirementId}/original/${originalName}`;
-  await storageService.upload(
-    s3Key,
-    buffer,
-    { contentType: mimeType },
-    uploadBucket
-  );
+  await storageService.upload(s3Key, buffer, { contentType: mimeType }, uploadBucket);
 
   logger.info('File uploaded to S3', { s3Key, size: buffer.length });
 
@@ -334,7 +329,8 @@ intakeRouter.get('/uploads/:id', async (req, res, next) => {
       status: requirement.status,
       type: requirement.type,
       uploadedAt: requirement.createdAt,
-      processedAt: requirement.updatedAt !== requirement.createdAt ? requirement.updatedAt : undefined,
+      processedAt:
+        requirement.updatedAt !== requirement.createdAt ? requirement.updatedAt : undefined,
       error: requirement.errorMessage,
     });
   } catch (error) {

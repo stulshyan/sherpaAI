@@ -1,10 +1,6 @@
 // Features routes - Database-backed implementation
 
-import {
-  createLogger,
-  getDatabase,
-  FeatureRepository,
-} from '@entropy/shared';
+import { createLogger, getDatabase, FeatureRepository } from '@entropy/shared';
 import type { FeatureStatus } from '@entropy/shared';
 import { Router, type IRouter } from 'express';
 
