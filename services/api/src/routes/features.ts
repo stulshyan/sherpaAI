@@ -1,146 +1,24 @@
-// Features routes
+// Features routes - Database-backed implementation
 
-import type { Feature, FeatureStatus } from '@entropy/shared';
+import { createLogger, getDatabase, FeatureRepository } from '@entropy/shared';
+import type { FeatureStatus } from '@entropy/shared';
 import { Router, type IRouter } from 'express';
+
+const logger = createLogger('features-routes');
 
 export const featuresRouter: IRouter = Router();
 
-// Extended feature interface for demo purposes
-// In production, clarifications would come from a separate table
-interface Clarification {
-  id: string;
-  question: string;
-  status: 'pending' | 'answered';
-  answer?: string;
-  createdAt: Date;
-  answeredAt?: Date;
-}
+// Initialize repository lazily
+let featureRepo: FeatureRepository | null = null;
 
-interface DemoFeature extends Feature {
-  clarifications?: Clarification[];
-  themes?: string[];
-  acceptanceCriteria?: string[];
+async function getFeatureRepository(): Promise<FeatureRepository> {
+  if (!featureRepo) {
+    const db = getDatabase();
+    await db.connect();
+    featureRepo = new FeatureRepository(db);
+  }
+  return featureRepo;
 }
-
-// Mock data for demo purposes
-// TODO: Replace with database queries
-const mockFeatures: DemoFeature[] = [
-  {
-    id: 'f-001',
-    requirementId: 'req-001',
-    projectId: 'proj-001',
-    title: 'User Authentication Flow',
-    description: 'Implement secure user authentication with OAuth 2.0',
-    status: 'ready',
-    readinessScore: 0.92,
-    priorityScore: 0.85,
-    clarifications: [],
-    themes: ['authentication', 'security'],
-    acceptanceCriteria: [
-      'Users can sign in with email/password',
-      'Users can sign in with Google OAuth',
-      'Session management with JWT tokens',
-    ],
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-20'),
-  },
-  {
-    id: 'f-002',
-    requirementId: 'req-001',
-    projectId: 'proj-001',
-    title: 'Password Reset Flow',
-    description: 'Allow users to reset their password via email',
-    status: 'ready',
-    readinessScore: 0.88,
-    priorityScore: 0.72,
-    clarifications: [],
-    themes: ['authentication'],
-    acceptanceCriteria: [
-      'User can request password reset',
-      'Reset link expires after 24 hours',
-      'Email notification on password change',
-    ],
-    createdAt: new Date('2024-01-15'),
-    updatedAt: new Date('2024-01-18'),
-  },
-  {
-    id: 'f-003',
-    requirementId: 'req-002',
-    projectId: 'proj-001',
-    title: 'Dashboard Overview',
-    description: 'Main dashboard showing key metrics and recent activity',
-    status: 'in_progress',
-    readinessScore: 0.65,
-    priorityScore: 0.9,
-    clarifications: [
-      {
-        id: 'cl-001',
-        question: 'What metrics should be displayed on the dashboard?',
-        status: 'pending',
-        createdAt: new Date('2024-01-16'),
-      },
-    ],
-    themes: ['dashboard', 'analytics'],
-    acceptanceCriteria: [
-      'Show total user count',
-      'Display recent activity feed',
-      'Show system health indicators',
-    ],
-    createdAt: new Date('2024-01-16'),
-    updatedAt: new Date('2024-01-21'),
-  },
-  {
-    id: 'f-004',
-    requirementId: 'req-002',
-    projectId: 'proj-001',
-    title: 'Real-time Notifications',
-    description: 'Push notifications for important events',
-    status: 'draft',
-    readinessScore: 0.45,
-    priorityScore: 0.6,
-    clarifications: [
-      {
-        id: 'cl-002',
-        question: 'Should notifications support email delivery?',
-        status: 'pending',
-        createdAt: new Date('2024-01-17'),
-      },
-      {
-        id: 'cl-003',
-        question: 'What events trigger notifications?',
-        status: 'pending',
-        createdAt: new Date('2024-01-17'),
-      },
-    ],
-    themes: ['notifications', 'real-time'],
-    acceptanceCriteria: [
-      'In-app notification center',
-      'Browser push notifications',
-      'Configurable notification preferences',
-    ],
-    createdAt: new Date('2024-01-17'),
-    updatedAt: new Date('2024-01-17'),
-  },
-  {
-    id: 'f-005',
-    requirementId: 'req-003',
-    projectId: 'proj-001',
-    title: 'File Upload System',
-    description: 'Support uploading and managing document files',
-    status: 'draft',
-    readinessScore: 0.35,
-    priorityScore: 0.55,
-    clarifications: [],
-    themes: ['files', 'storage'],
-    acceptanceCriteria: [
-      'Support PDF, DOCX, TXT, MD file types',
-      'Max file size 10MB',
-      'Progress indicator during upload',
-    ],
-    createdAt: new Date('2024-01-18'),
-    updatedAt: new Date('2024-01-18'),
-  },
-];
 
 // Map frontend status names to FeatureStatus
 function mapStatusToFeatureStatus(status: string): FeatureStatus {
@@ -171,19 +49,28 @@ function mapFeatureStatusToFrontend(status: FeatureStatus): string {
  * GET /api/v1/features/stats
  * Get feature statistics for dashboard
  */
-featuresRouter.get('/stats', async (_req, res, next) => {
+featuresRouter.get('/stats', async (req, res, next) => {
   try {
-    // Calculate stats from mock data
-    // TODO: Replace with database aggregation
-    const total = mockFeatures.length;
-    const ready = mockFeatures.filter((f) => f.status === 'ready').length;
-    const inProgress = mockFeatures.filter((f) => f.status === 'in_progress').length;
-    const needsAttention = mockFeatures.filter(
-      (f) => f.clarifications && f.clarifications.some((c) => c.status === 'pending')
-    ).length;
-    const pending = mockFeatures.filter(
-      (f) => f.status === 'draft' || f.status === 'needs_clarification'
-    ).length;
+    const { projectId } = req.query;
+
+    if (!projectId) {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'projectId query parameter is required',
+        },
+      });
+      return;
+    }
+
+    const repo = await getFeatureRepository();
+    const statusCounts = await repo.countByStatusForProject(projectId as string);
+
+    const total = Object.values(statusCounts).reduce((sum, count) => sum + count, 0);
+    const ready = statusCounts.ready || 0;
+    const inProgress = statusCounts.in_progress || 0;
+    const needsAttention = statusCounts.needs_clarification || 0;
+    const pending = (statusCounts.draft || 0) + (statusCounts.needs_clarification || 0);
 
     res.json({
       total,
@@ -191,13 +78,12 @@ featuresRouter.get('/stats', async (_req, res, next) => {
       inProgress,
       needsAttention,
       pending,
-      byStatus: {
-        ready,
-        in_progress: inProgress,
-        pending,
-      },
+      byStatus: statusCounts,
     });
   } catch (error) {
+    logger.error('Failed to get feature stats', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -206,26 +92,49 @@ featuresRouter.get('/stats', async (_req, res, next) => {
  * GET /api/v1/features/recent
  * Get recent feature activity
  */
-featuresRouter.get('/recent', async (_req, res, next) => {
+featuresRouter.get('/recent', async (req, res, next) => {
   try {
-    const limit = 10;
+    const { projectId, limit = '10' } = req.query;
 
-    // Sort by updatedAt descending and take top N
-    const recentFeatures = [...mockFeatures]
-      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-      .slice(0, limit)
-      .map((f) => ({
-        id: f.id,
-        title: f.title,
-        status: mapFeatureStatusToFrontend(f.status),
-        readinessScore: f.readinessScore,
-        updatedAt: f.updatedAt,
-      }));
+    if (!projectId) {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'projectId query parameter is required',
+        },
+      });
+      return;
+    }
+
+    const db = getDatabase();
+    await db.connect();
+
+    const limitNum = Math.min(parseInt(limit as string, 10), 50);
+
+    const rows = await db.queryAll(
+      `SELECT id, title, status, readiness_score, updated_at
+       FROM features
+       WHERE project_id = $1
+       ORDER BY updated_at DESC
+       LIMIT $2`,
+      [projectId, limitNum]
+    );
+
+    const recentFeatures = rows.map((f) => ({
+      id: f.id,
+      title: f.title,
+      status: mapFeatureStatusToFrontend(f.status as FeatureStatus),
+      readinessScore: parseFloat(f.readiness_score as string) || 0,
+      updatedAt: f.updated_at,
+    }));
 
     res.json({
       features: recentFeatures,
     });
   } catch (error) {
+    logger.error('Failed to get recent features', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -236,50 +145,88 @@ featuresRouter.get('/recent', async (_req, res, next) => {
  */
 featuresRouter.get('/', async (req, res, next) => {
   try {
-    const { page = '1', limit = '20', status, minReadiness, search } = req.query;
+    const { projectId, page = '1', limit = '20', status, minReadiness, search } = req.query;
 
-    let filtered = [...mockFeatures];
+    if (!projectId) {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'projectId query parameter is required',
+        },
+      });
+      return;
+    }
+
+    const db = getDatabase();
+    await db.connect();
+
+    let query = `SELECT * FROM features WHERE project_id = $1`;
+    const params: unknown[] = [projectId];
+    let paramIndex = 2;
 
     // Filter by status
     if (status && typeof status === 'string') {
       const featureStatus = mapStatusToFeatureStatus(status);
-      filtered = filtered.filter((f) => f.status === featureStatus);
+      query += ` AND status = $${paramIndex++}`;
+      params.push(featureStatus);
     }
 
     // Filter by minimum readiness score
     if (minReadiness && typeof minReadiness === 'string') {
       const minScore = parseFloat(minReadiness);
-      filtered = filtered.filter((f) => f.readinessScore >= minScore);
+      query += ` AND readiness_score >= $${paramIndex++}`;
+      params.push(minScore);
     }
 
     // Search in title and description
     if (search && typeof search === 'string') {
-      const searchLower = search.toLowerCase();
-      filtered = filtered.filter(
-        (f) =>
-          f.title.toLowerCase().includes(searchLower) ||
-          f.description.toLowerCase().includes(searchLower)
-      );
+      query += ` AND (LOWER(title) LIKE $${paramIndex} OR LOWER(description) LIKE $${paramIndex})`;
+      params.push(`%${search.toLowerCase()}%`);
+      paramIndex++;
     }
+
+    // Count total
+    const countQuery = query.replace('SELECT *', 'SELECT COUNT(*) as count');
+    const countResult = await db.queryOne<{ count: string }>(countQuery, params);
+    const total = parseInt(countResult?.count || '0', 10);
+
+    // Add ordering and pagination
+    query += ` ORDER BY priority_score DESC, created_at DESC`;
 
     const pageNum = parseInt(page as string, 10);
     const limitNum = parseInt(limit as string, 10);
-    const startIndex = (pageNum - 1) * limitNum;
-    const endIndex = startIndex + limitNum;
+    const offset = (pageNum - 1) * limitNum;
 
-    const paginatedFeatures = filtered.slice(startIndex, endIndex).map((f) => ({
-      ...f,
+    query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+    params.push(limitNum, offset);
+
+    const rows = await db.queryAll(query, params);
+
+    const features = rows.map((f) => ({
+      id: f.id,
+      requirementId: f.requirement_id,
+      projectId: f.project_id,
+      title: f.title,
+      description: f.description,
       status: mapFeatureStatusToFrontend(f.status as FeatureStatus),
+      readinessScore: parseFloat(f.readiness_score as string) || 0,
+      priorityScore: parseFloat(f.priority_score as string) || 0,
+      theme: f.theme,
+      createdAt: f.created_at,
+      updatedAt: f.updated_at,
     }));
 
     res.json({
-      data: paginatedFeatures,
-      total: filtered.length,
+      data: features,
+      total,
       page: pageNum,
       limit: limitNum,
-      hasMore: endIndex < filtered.length,
+      hasMore: offset + limitNum < total,
     });
   } catch (error) {
+    logger.error('Failed to list features', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -292,10 +239,16 @@ featuresRouter.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const feature = mockFeatures.find((f) => f.id === id);
+    const repo = await getFeatureRepository();
+    const feature = await repo.findByIdWithDetails(id);
 
     if (!feature) {
-      res.status(404).json({ error: 'Feature not found' });
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Feature not found',
+        },
+      });
       return;
     }
 
@@ -304,6 +257,9 @@ featuresRouter.get('/:id', async (req, res, next) => {
       status: mapFeatureStatusToFrontend(feature.status),
     });
   } catch (error) {
+    logger.error('Failed to get feature', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -317,27 +273,86 @@ featuresRouter.patch('/:id', async (req, res, next) => {
     const { id } = req.params;
     const updates = req.body;
 
-    const featureIndex = mockFeatures.findIndex((f) => f.id === id);
+    const repo = await getFeatureRepository();
+    const existing = await repo.findById(id);
 
-    if (featureIndex === -1) {
-      res.status(404).json({ error: 'Feature not found' });
+    if (!existing) {
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Feature not found',
+        },
+      });
       return;
     }
 
-    // Update in mock data
-    const existingFeature = mockFeatures[featureIndex]!;
-    mockFeatures[featureIndex] = {
-      ...existingFeature,
-      ...updates,
-      updatedAt: new Date(),
-    };
+    // Map status if provided
+    if (updates.status) {
+      updates.status = mapStatusToFeatureStatus(updates.status);
+    }
 
-    const updatedFeature = mockFeatures[featureIndex]!;
-    res.json({
-      ...updatedFeature,
-      status: mapFeatureStatusToFrontend(updatedFeature.status),
-    });
+    const db = getDatabase();
+    const updateFields: string[] = [];
+    const updateParams: unknown[] = [];
+    let paramIndex = 1;
+
+    const allowedFields = ['title', 'description', 'status', 'theme'];
+    for (const field of allowedFields) {
+      if (updates[field] !== undefined) {
+        const snakeField = field.replace(/([A-Z])/g, '_$1').toLowerCase();
+        updateFields.push(`${snakeField} = $${paramIndex++}`);
+        updateParams.push(updates[field]);
+      }
+    }
+
+    if (updateFields.length === 0) {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'No valid fields to update',
+        },
+      });
+      return;
+    }
+
+    updateFields.push(`updated_at = NOW()`);
+    updateParams.push(id);
+
+    const updateQuery = `
+      UPDATE features
+      SET ${updateFields.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING *
+    `;
+
+    const result = await db.queryOne(updateQuery, updateParams);
+
+    if (result) {
+      res.json({
+        id: result.id,
+        requirementId: result.requirement_id,
+        projectId: result.project_id,
+        title: result.title,
+        description: result.description,
+        status: mapFeatureStatusToFrontend(result.status as FeatureStatus),
+        readinessScore: parseFloat(result.readiness_score as string) || 0,
+        priorityScore: parseFloat(result.priority_score as string) || 0,
+        theme: result.theme,
+        createdAt: result.created_at,
+        updatedAt: result.updated_at,
+      });
+    } else {
+      res.status(500).json({
+        error: {
+          code: 'UPDATE_FAILED',
+          message: 'Failed to update feature',
+        },
+      });
+    }
   } catch (error) {
+    logger.error('Failed to update feature', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -351,27 +366,50 @@ featuresRouter.patch('/:id/status', async (req, res, next) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    const featureIndex = mockFeatures.findIndex((f) => f.id === id);
-
-    if (featureIndex === -1) {
-      res.status(404).json({ error: 'Feature not found' });
-      return;
-    }
-
     if (!['pending', 'ready', 'in_progress', 'done'].includes(status)) {
-      res.status(400).json({ error: 'Invalid status' });
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid status',
+        },
+      });
       return;
     }
 
-    const feature = mockFeatures[featureIndex]!;
-    feature.status = mapStatusToFeatureStatus(status);
-    feature.updatedAt = new Date();
+    const repo = await getFeatureRepository();
+    const existing = await repo.findById(id);
 
-    res.json({
-      ...feature,
-      status: mapFeatureStatusToFrontend(feature.status),
-    });
+    if (!existing) {
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Feature not found',
+        },
+      });
+      return;
+    }
+
+    const featureStatus = mapStatusToFeatureStatus(status);
+    const updated = await repo.updateStatus(id, featureStatus);
+
+    if (updated) {
+      res.json({
+        id: updated.id,
+        status: mapFeatureStatusToFrontend(updated.status),
+        updatedAt: updated.updatedAt,
+      });
+    } else {
+      res.status(500).json({
+        error: {
+          code: 'UPDATE_FAILED',
+          message: 'Failed to update feature status',
+        },
+      });
+    }
   } catch (error) {
+    logger.error('Failed to update feature status', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -384,15 +422,22 @@ featuresRouter.post('/:id/approve', async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const feature = mockFeatures.find((f) => f.id === id);
+    const repo = await getFeatureRepository();
+    const feature = await repo.findById(id);
 
     if (!feature) {
-      res.status(404).json({ error: 'Feature not found' });
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Feature not found',
+        },
+      });
       return;
     }
 
-    feature.status = 'in_progress';
-    feature.updatedAt = new Date();
+    await repo.updateStatus(id, 'in_progress');
+
+    logger.info('Feature approved', { featureId: id });
 
     res.json({
       id,
@@ -400,6 +445,9 @@ featuresRouter.post('/:id/approve', async (req, res, next) => {
       message: 'Feature approved for next loop',
     });
   } catch (error) {
+    logger.error('Failed to approve feature', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
@@ -413,45 +461,84 @@ featuresRouter.post('/:id/answer', async (req, res, next) => {
     const { id } = req.params;
     const { questionId, answer } = req.body;
 
-    const feature = mockFeatures.find((f) => f.id === id);
+    if (!questionId || !answer) {
+      res.status(400).json({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'questionId and answer are required',
+        },
+      });
+      return;
+    }
+
+    const repo = await getFeatureRepository();
+    const feature = await repo.findById(id);
 
     if (!feature) {
-      res.status(404).json({ error: 'Feature not found' });
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Feature not found',
+        },
+      });
       return;
     }
 
-    const clarification = feature.clarifications?.find((c) => c.id === questionId);
+    const db = getDatabase();
 
-    if (!clarification) {
-      res.status(404).json({ error: 'Clarification question not found' });
+    // Update the clarification question
+    const result = await db.queryOne(
+      `UPDATE clarification_questions
+       SET answer = $1, answered_at = NOW()
+       WHERE id = $2 AND feature_id = $3
+       RETURNING *`,
+      [answer, questionId, id]
+    );
+
+    if (!result) {
+      res.status(404).json({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Clarification question not found',
+        },
+      });
       return;
     }
 
-    clarification.answer = answer;
-    clarification.status = 'answered';
-    clarification.answeredAt = new Date();
+    // Recalculate readiness score based on answered questions
+    const questionStats = await db.queryOne<{ total: string; answered: string }>(
+      `SELECT
+         COUNT(*) as total,
+         COUNT(*) FILTER (WHERE answer IS NOT NULL) as answered
+       FROM clarification_questions
+       WHERE feature_id = $1`,
+      [id]
+    );
 
-    // Recalculate readiness score
-    const totalClarifications = feature.clarifications?.length || 0;
-    const answeredClarifications =
-      feature.clarifications?.filter((c) => c.status === 'answered').length || 0;
+    const totalQuestions = parseInt(questionStats?.total || '0', 10);
+    const answeredQuestions = parseInt(questionStats?.answered || '0', 10);
 
-    if (totalClarifications > 0) {
+    let newReadinessScore = feature.readinessScore;
+    if (totalQuestions > 0) {
       // Boost readiness based on answered clarifications
-      const clarificationBoost = (answeredClarifications / totalClarifications) * 0.2;
-      feature.readinessScore = Math.min(1, feature.readinessScore + clarificationBoost);
+      const clarificationBoost = (answeredQuestions / totalQuestions) * 0.2;
+      newReadinessScore = Math.min(1, feature.readinessScore + clarificationBoost);
+      await repo.updateReadinessScore(id, newReadinessScore);
     }
 
-    feature.updatedAt = new Date();
+    logger.info('Question answered', { featureId: id, questionId });
 
     res.json({
       featureId: id,
       questionId,
       answered: true,
-      newReadinessScore: feature.readinessScore,
+      newReadinessScore,
       message: 'Question answered',
     });
   } catch (error) {
+    logger.error('Failed to answer question', {
+      error: error instanceof Error ? error.message : String(error),
+    });
     next(error);
   }
 });
